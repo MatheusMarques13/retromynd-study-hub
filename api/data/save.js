@@ -9,22 +9,25 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inválido ou expirado' });
+      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
     }
 
     const { data_type, data } = req.body || {};
 
-    const validTypes = ['goals', 'notes', 'timer', 'streak', 'hub_state', 'quiz', 'lessons'];
+    const validTypes = [
+      'goals', 'notes', 'timer', 'streak', 'hub_state',
+      'quiz', 'lessons',
+      'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle'
+    ];
     if (!data_type || !validTypes.includes(data_type)) {
-      return res.status(400).json({ error: `data_type inválido. Use: ${validTypes.join(', ')}` });
+      return res.status(400).json({ error: 'data_type inv\u00e1lido. Use: ' + validTypes.join(', ') });
     }
     if (data === undefined || data === null) {
-      return res.status(400).json({ error: 'Campo data é obrigatório' });
+      return res.status(400).json({ error: 'Campo data \u00e9 obrigat\u00f3rio' });
     }
 
     const supabase = getSupabase();
 
-    // Upsert: update if exists, insert if not
     const { data: existing } = await supabase
       .from('user_data')
       .select('id')
