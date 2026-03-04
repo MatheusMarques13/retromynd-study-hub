@@ -1,7 +1,6 @@
 (function(){
   'use strict';
   var THEME_KEY = 'rm_theme';
-  var THEMES = ['comfy','retro-dark','retro-light'];
 
   /* ===== INJECT GOOGLE FONTS ===== */
   if (!document.getElementById('rm-retro-fonts')) {
@@ -205,7 +204,7 @@
   + 'body.retro-dark input[type="checkbox"]:checked, body.retro-light input[type="checkbox"]:checked {'
   + '  background:var(--rgold)!important; border-color:var(--rgold)!important; box-shadow:0 0 8px var(--rgold-glow)!important; }'
   + 'body.retro-dark input[type="checkbox"]:checked::after, body.retro-light input[type="checkbox"]:checked::after {'
-  + '  content:"\u2713";position:absolute;top:-2px;left:2px;color:#000;font-weight:900;font-size:14px; }'
+  + '  content:"\\u2713";position:absolute;top:-2px;left:2px;color:#000;font-weight:900;font-size:14px; }'
 
   /* --- Tags/Badges --- */
   + 'body.retro-dark [class*="tag"]:not(#rmLoginOverlay *), body.retro-dark [class*="badge"]:not(#rmLoginOverlay *),'
@@ -266,11 +265,9 @@
   + '  border:1.5px solid #f2d6d0; color:#d4726a; background:transparent; cursor:pointer;'
   + '  font-weight:600; transition:all .2s; border-radius:12px; margin-left:4px; }'
   + '.retro-toggle:hover { background:#e8477a; color:#fff; border-color:#e8477a; }'
-  /* Dark retro toggle */
   + 'body.retro-dark .retro-toggle { border-color:#1e3a6e!important; color:#7a8faa!important;'
   + '  border-radius:0!important; font-family:"Space Mono",monospace!important; }'
   + 'body.retro-dark .retro-toggle:hover { background:var(--rgold)!important; color:#000!important; border-color:var(--rgold)!important; }'
-  /* Light retro toggle */
   + 'body.retro-light .retro-toggle { border-color:#1e3a6e!important; color:#1e3a6e!important;'
   + '  border-radius:0!important; font-family:"Space Mono",monospace!important; }'
   + 'body.retro-light .retro-toggle:hover { background:var(--rgold)!important; color:#000!important; border-color:var(--rgold)!important; }'
@@ -286,6 +283,7 @@
   /* ===== THEME LOGIC ===== */
   function getTheme() { return localStorage.getItem(THEME_KEY) || 'comfy'; }
   function setTheme(t) { localStorage.setItem(THEME_KEY, t); }
+  function isRetro() { var t = getTheme(); return t === 'retro-dark' || t === 'retro-light'; }
 
   function applyTheme(theme) {
     document.body.classList.remove('retro-dark','retro-light','retro-mode');
@@ -295,38 +293,46 @@
     updateToggleButtons(theme);
   }
 
-  function cycleTheme() {
-    var cur = getTheme();
-    var idx = THEMES.indexOf(cur);
-    var next = THEMES[(idx + 1) % THEMES.length];
-    applyTheme(next);
-  }
-
   function updateToggleButtons(theme) {
-    var labels = { 'comfy':'RETRO', 'retro-dark':'LIGHT', 'retro-light':'COMFY' };
+    var isR = (theme === 'retro-dark' || theme === 'retro-light');
     document.querySelectorAll('.retro-toggle').forEach(function(btn) {
-      btn.textContent = labels[theme] || 'RETRO';
+      btn.textContent = isR ? 'COMFY' : 'RETRO';
     });
   }
 
+  /* Toggle retro on/off — RETRO enters retro-dark, COMFY goes back to comfy */
   window.toggleRetroMode = function(force) {
-    if (typeof force === 'string' && THEMES.indexOf(force) >= 0) { applyTheme(force); }
-    else { cycleTheme(); }
+    if (typeof force === 'string') { applyTheme(force); return; }
+    if (isRetro()) { applyTheme('comfy'); }
+    else { applyTheme('retro-dark'); }
   };
 
-  /* ===== HOOK EXISTING THEME BUTTONS ===== */
+  /* ===== HOOK EXISTING ☀️/🌙 BUTTONS ===== */
   function hookThemeButtons() {
     document.querySelectorAll('button,[role="button"],[class*="theme"],[class*="toggle"],[class*="mode"]').forEach(function(btn) {
       if (btn.classList.contains('retro-toggle')) return;
       if (btn.id && btn.id.startsWith('rm')) return;
+      if (btn._rmHooked) return;
       var txt = (btn.textContent||'').trim();
       var title = (btn.getAttribute('title')||'').toLowerCase();
       var aria = (btn.getAttribute('aria-label')||'').toLowerCase();
-      if (txt==='\uD83C\uDF19'||title.includes('dark')||aria.includes('dark')) {
-        if (!btn._rmHooked) { btn._rmHooked=true; btn.addEventListener('click',function(){applyTheme('retro-dark');}); }
+
+      var isSun = (txt==='\u2600\uFE0F' || txt==='\u2600' || title.includes('light') || aria.includes('light'));
+      var isMoon = (txt==='\uD83C\uDF19' || title.includes('dark') || aria.includes('dark'));
+
+      if (isSun) {
+        btn._rmHooked = true;
+        btn.addEventListener('click', function() {
+          if (isRetro()) applyTheme('retro-light');
+          /* if comfy, let the app handle it normally */
+        });
       }
-      if (txt==='\u2600\uFE0F'||txt==='\u2600'||title.includes('light')||aria.includes('light')) {
-        if (!btn._rmHooked) { btn._rmHooked=true; btn.addEventListener('click',function(){applyTheme('comfy');}); }
+      if (isMoon) {
+        btn._rmHooked = true;
+        btn.addEventListener('click', function() {
+          if (isRetro()) applyTheme('retro-dark');
+          /* if comfy, let the app handle it normally */
+        });
       }
     });
   }
@@ -337,9 +343,8 @@
     if (!bar || bar.querySelector('.retro-toggle')) return;
     var btn = document.createElement('button');
     btn.className = 'retro-toggle';
-    var labels = { 'comfy':'RETRO', 'retro-dark':'LIGHT', 'retro-light':'COMFY' };
-    btn.textContent = labels[getTheme()] || 'RETRO';
-    btn.onclick = function() { cycleTheme(); };
+    btn.textContent = isRetro() ? 'COMFY' : 'RETRO';
+    btn.onclick = function() { window.toggleRetroMode(); };
     var sairBtn = bar.querySelector('.pb-logout');
     if (sairBtn) bar.insertBefore(btn, sairBtn);
     else bar.appendChild(btn);
