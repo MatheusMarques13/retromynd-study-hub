@@ -2,10 +2,10 @@
   'use strict';
 
   /* ========== CONFIG ========== */
-  const TOKEN_KEY = 'retromynd_token';
-  const USER_KEY  = 'retromynd_user';
+  var TOKEN_KEY = 'retromynd_token';
+  var USER_KEY  = 'retromynd_user';
 
-  const SYNC_MAP = {
+  var SYNC_MAP = {
     history:      'lessonhistoryv1',
     quiz_history: 'lessonquizv1',
     seen_quiz:    'lessonseenquizidsv2',
@@ -16,7 +16,7 @@
   /* ========== AUTH HELPERS ========== */
   function getToken()  { return localStorage.getItem(TOKEN_KEY); }
   function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
-  function getUser()   { try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; } }
+  function getUser()   { try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch(e) { return null; } }
   function setUser(u)  { localStorage.setItem(USER_KEY, JSON.stringify(u)); }
   function clearAuth() { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); }
 
@@ -27,22 +27,27 @@
     if (token) h['Authorization'] = 'Bearer ' + token;
     var res = await fetch(path, Object.assign({}, opts, { headers: h }));
     var data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Erro ' + res.status);
+    if (!res.ok) {
+      // Show debug detail if available
+      var msg = data.error || 'Erro ' + res.status;
+      if (data.debug) msg += ' | DEBUG: ' + data.debug;
+      if (data.hint) msg += ' | HINT: ' + data.hint;
+      if (data.code) msg += ' | CODE: ' + data.code;
+      throw new Error(msg);
+    }
     return data;
   }
 
   /* ========== UI HELPERS ========== */
   function showErr(msg) {
     var e = document.getElementById('loginErr');
-    if (e) e.textContent = msg;
+    if (e) { e.textContent = msg; e.style.fontSize = '11px'; }
   }
 
   function enterApp(user) {
     setUser(user);
-    // Hide login overlay
     var ov = document.getElementById('loginOverlay');
     if (ov) ov.style.display = 'none';
-    // Set profile info if elements exist
     var n = document.getElementById('profName');   if (n) n.textContent = user.name || '';
     var e = document.getElementById('profEmail');  if (e) e.textContent = user.email || '';
     var a = document.getElementById('profAvatar'); if (a) a.textContent = user.avatar || '\uD83D\uDC95';
