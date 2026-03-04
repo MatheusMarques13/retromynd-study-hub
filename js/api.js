@@ -14,7 +14,6 @@
     gen_cycle:'lessongencycle'
   };
 
-  /* ===== AUTH ===== */
   function getToken()  { return localStorage.getItem(TOKEN_KEY); }
   function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
   function getUser()   { try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch(e) { return null; } }
@@ -45,14 +44,11 @@
     return data;
   }
 
-  /* ===== AGGRESSIVELY HIDE OLD LOGIN HTML ===== */
-  function nukeOldLogin() {
-    /* Hide by known IDs */
+  /* ===== NUKE ALL OLD LOGIN ELEMENTS ===== */
+  function nukeOldLogin(user) {
     ['loginOverlay','login-overlay','loginSection','login-section'].forEach(function(id){
-      var el = document.getElementById(id);
-      if(el) el.style.display = 'none';
+      var el = document.getElementById(id); if(el) el.style.display = 'none';
     });
-    /* Traverse from known login elements */
     ['loginErr','loginEmail','loginName','loginPass'].forEach(function(id){
       var el = document.getElementById(id);
       if(el) {
@@ -61,11 +57,34 @@
         if(c && c !== document.body) c.style.display = 'none';
       }
     });
-    /* Hide anything with onclick containing doLogin/doRegister */
     document.querySelectorAll('[onclick*="doLogin"],[onclick*="doRegister"]').forEach(function(el){
       var c = el;
       while(c.parentElement && c.parentElement !== document.body) c = c.parentElement;
       if(c && c !== document.body) c.style.display = 'none';
+    });
+
+    /* Find and replace "Entrar" buttons/links anywhere in the page */
+    var allEls = document.querySelectorAll('button, a, span, div, p');
+    allEls.forEach(function(el) {
+      var txt = el.textContent.trim();
+      /* Match elements that contain "Entrar" as primary text */
+      if (txt.match(/Entrar/) && txt.length < 20 && el.children.length <= 1) {
+        if (user && user.name) {
+          el.textContent = (user.avatar || '\uD83D\uDC95') + ' ' + user.name;
+          el.style.cursor = 'pointer';
+          el.onclick = function() { window._rmToggleProfile(); };
+        } else {
+          el.style.display = 'none';
+        }
+      }
+    });
+
+    /* Also find "Cadastrar" buttons in the app header */
+    allEls.forEach(function(el) {
+      var txt = el.textContent.trim();
+      if (txt.match(/Cadastrar/) && txt.length < 25 && el.children.length <= 1) {
+        el.style.display = 'none';
+      }
     });
   }
 
@@ -158,12 +177,9 @@
     } catch(e){if(err)err.textContent=e.message;}
   };
 
-  /* ===== PROFILE BAR (injected into app) ===== */
+  /* ===== PROFILE BAR ===== */
   function injectProfileBar(user) {
-    if(document.getElementById(PROFILE_BAR_ID)) {
-      updateProfileBar(user);
-      return;
-    }
+    if(document.getElementById(PROFILE_BAR_ID)) { updateProfileBar(user); return; }
     var bar = document.createElement('div');
     bar.id = PROFILE_BAR_ID;
     bar.innerHTML = '<style>'
@@ -176,7 +192,6 @@
       +'.pb-btn{background:none;border:1px solid #1e3a6e;color:#3a5a8a;font-size:.6rem;padding:3px 8px;cursor:pointer;font-family:"Space Mono",monospace;transition:all .15s;border-radius:2px}'
       +'.pb-btn:hover{border-color:#f5c518;color:#f5c518}'
       +'.pb-logout{color:#e8477a;border-color:rgba(232,71,122,.3)}.pb-logout:hover{border-color:#e8477a;color:#e8477a;background:rgba(232,71,122,.08)}'
-      /* Profile Panel */
       +'#'+PROFILE_PANEL_ID+'{display:none;position:fixed;top:0;right:0;width:320px;max-width:90vw;height:100vh;background:#0d1f3c;border-left:2px solid #1e3a6e;z-index:9999;overflow-y:auto;font-family:Inter,sans-serif;animation:ppSlide .25s ease;box-shadow:-4px 0 24px rgba(0,0,0,.5)}'
       +'#'+PROFILE_PANEL_ID+'.open{display:block}'
       +'@keyframes ppSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}'
@@ -198,17 +213,15 @@
       +'.pp-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998}'
       +'.pp-backdrop.open{display:block}'
       +'</style>'
-      +'<span class="pb-avatar" onclick="window._rmToggleProfile()" id="pbAvatar">'+( user.avatar||'\uD83D\uDC95')+'</span>'
+      +'<span class="pb-avatar" onclick="window._rmToggleProfile()" id="pbAvatar">'+(user.avatar||'\uD83D\uDC95')+'</span>'
       +'<div class="pb-info"><div class="pb-name" id="pbName">'+(user.name||'User')+'</div>'
       +'<div class="pb-meta">Lvl <span id="pbLevel">'+(user.level||1)+'</span> \u2022 '+(user.title||'Novato')+'</div></div>'
       +'<button class="pb-btn" onclick="window._rmToggleProfile()">PERFIL</button>'
       +'<button class="pb-btn pb-logout" onclick="window.doLogout()">SAIR</button>';
     document.body.insertBefore(bar, document.body.firstChild);
 
-    /* Profile Panel */
     var backdrop = document.createElement('div');
-    backdrop.className = 'pp-backdrop';
-    backdrop.id = 'rmBackdrop';
+    backdrop.className = 'pp-backdrop'; backdrop.id = 'rmBackdrop';
     backdrop.onclick = function(){window._rmToggleProfile();};
     document.body.appendChild(backdrop);
 
@@ -256,37 +269,29 @@
     var bio = (document.getElementById('ppEditBio')||{}).value||'';
     var avatar = (document.getElementById('ppEditAvatar')||{}).value||'';
     try {
-      var d = await api('/api/auth/profile',{
-        method:'PUT',
-        body:JSON.stringify({name:name.trim(),bio:bio.trim(),avatar:avatar.trim()})
-      });
-      setUser(d.user);
-      saveAccount(d.user);
-      updateProfileBar(d.user);
+      var d = await api('/api/auth/profile',{method:'PUT',body:JSON.stringify({name:name.trim(),bio:bio.trim(),avatar:avatar.trim()})});
+      setUser(d.user); saveAccount(d.user); updateProfileBar(d.user);
       window._rmToggleProfile();
     } catch(e){ alert('Erro: '+e.message); }
   };
 
   /* ===== ENTER APP ===== */
   function enterApp(user) {
-    setUser(user);
-    saveAccount(user);
+    setUser(user); saveAccount(user);
     var ov = document.getElementById(OVERLAY_ID);
     if(ov) { ov.classList.add('out'); setTimeout(function(){ov.remove();},500); }
-    nukeOldLogin();
+    nukeOldLogin(user);
     injectProfileBar(user);
   }
 
-  /* ===== LOGOUT ===== */
   window.doLogout = function() {
     clearAuth();
-    var bar = document.getElementById(PROFILE_BAR_ID); if(bar) bar.remove();
-    var panel = document.getElementById(PROFILE_PANEL_ID); if(panel) panel.remove();
-    var bd = document.getElementById('rmBackdrop'); if(bd) bd.remove();
-    createLoginOverlay();
+    var bar=document.getElementById(PROFILE_BAR_ID); if(bar) bar.remove();
+    var panel=document.getElementById(PROFILE_PANEL_ID); if(panel) panel.remove();
+    var bd=document.getElementById('rmBackdrop'); if(bd) bd.remove();
+    window.location.reload();
   };
 
-  /* ===== PROFILE (legacy) ===== */
   window.saveProfile = async function() {
     if(!getToken()) return;
     try {
@@ -314,7 +319,6 @@
       }
     } catch(e){}
   }
-
   setInterval(function(){if(getToken())syncUp();},60000);
   window.addEventListener('beforeunload',function(){
     if(!getToken())return;
@@ -327,7 +331,7 @@
 
   /* ===== BOOT ===== */
   async function boot() {
-    nukeOldLogin();
+    nukeOldLogin(null);
     if(getToken()) {
       try {
         var d = await api('/api/auth/me');
