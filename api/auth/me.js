@@ -9,27 +9,27 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
+      return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 
     const supabase = getSupabase();
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('id, email, display_name, avatar, avatar_url, bio, theme, accent_color, level, xp, title, badges, preferences, login_count, created_at')
+      .select('*')
       .eq('id', tokenUser.id)
       .single();
 
     if (!profile) {
-      return res.status(404).json({ error: 'Usu\u00e1rio n\u00e3o encontrado' });
+      return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
     return res.status(200).json({
       user: {
         id: profile.id,
         email: profile.email,
-        name: profile.display_name,
-        avatar: profile.avatar || '\uD83D\uDC95',
+        name: profile.display_name || '',
+        avatar: profile.avatar || '💕',
         avatar_url: profile.avatar_url || '',
         bio: profile.bio || '',
         theme: profile.theme || 'comfy',

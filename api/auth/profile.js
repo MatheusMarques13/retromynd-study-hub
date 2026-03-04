@@ -9,17 +9,12 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
+      return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 
     const body = req.body || {};
-    const allowed = [
-      'display_name', 'avatar', 'avatar_url', 'bio',
-      'theme', 'accent_color', 'preferences'
-    ];
-
     const updates = {};
-    // Map friendly names to DB columns
+
     if (body.name !== undefined) updates.display_name = String(body.name).trim();
     if (body.avatar !== undefined) updates.avatar = String(body.avatar).trim();
     if (body.avatar_url !== undefined) updates.avatar_url = String(body.avatar_url).trim();
@@ -43,7 +38,7 @@ module.exports = async (req, res) => {
       .from('profiles')
       .update(updates)
       .eq('id', tokenUser.id)
-      .select('id, email, display_name, avatar, avatar_url, bio, theme, accent_color, level, xp, title, badges, preferences, login_count, created_at')
+      .select('*')
       .single();
 
     if (error) {
@@ -54,8 +49,8 @@ module.exports = async (req, res) => {
       user: {
         id: profile.id,
         email: profile.email,
-        name: profile.display_name,
-        avatar: profile.avatar || '\uD83D\uDC95',
+        name: profile.display_name || '',
+        avatar: profile.avatar || '💕',
         avatar_url: profile.avatar_url || '',
         bio: profile.bio || '',
         theme: profile.theme || 'comfy',

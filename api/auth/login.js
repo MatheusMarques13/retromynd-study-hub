@@ -11,18 +11,18 @@ module.exports = async (req, res) => {
     const { email, password } = req.body || {};
 
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email e senha s\u00e3o obrigat\u00f3rios' });
+      return res.status(400).json({ error: 'Email e senha são obrigatórios' });
     }
 
     const supabase = getSupabase();
 
-    const { data: profile, error } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('*')
       .eq('email', email.toLowerCase().trim())
       .maybeSingle();
 
-    if (!profile) {
+    if (!profile || !profile.password_hash) {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
@@ -31,14 +31,16 @@ module.exports = async (req, res) => {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
-    // Update last_login and login_count
-    await supabase
-      .from('profiles')
-      .update({
-        last_login: new Date().toISOString(),
-        login_count: (profile.login_count || 0) + 1
-      })
-      .eq('id', profile.id);
+    // Update last_login
+    try {
+      await supabase
+        .from('profiles')
+        .update({
+          last_login: new Date().toISOString(),
+          login_count: (profile.login_count || 0) + 1
+        })
+        .eq('id', profile.id);
+    } catch (_) { /* non-blocking */ }
 
     const token = signToken(profile);
 
@@ -47,8 +49,8 @@ module.exports = async (req, res) => {
       user: {
         id: profile.id,
         email: profile.email,
-        name: profile.display_name,
-        avatar: profile.avatar || '\uD83D\uDC95',
+        name: profile.display_name || '',
+        avatar: profile.avatar || '💕',
         avatar_url: profile.avatar_url || '',
         bio: profile.bio || '',
         theme: profile.theme || 'comfy',

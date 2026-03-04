@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { getSupabase } = require('../_lib/supabase');
 const { signToken, cors } = require('../_lib/auth');
 const bcrypt = require('bcryptjs');
@@ -11,38 +12,47 @@ module.exports = async (req, res) => {
     const { email, password, name } = req.body || {};
 
     if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Email, senha e nome s\u00e3o obrigat\u00f3rios' });
+      return res.status(400).json({ error: 'Email, senha e nome são obrigatórios' });
     }
     if (password.length < 6) {
       return res.status(400).json({ error: 'Senha deve ter pelo menos 6 caracteres' });
     }
 
     const supabase = getSupabase();
+    const cleanEmail = email.toLowerCase().trim();
 
-    // Check existing
+    // 1. Check if email already exists
     const { data: existing } = await supabase
       .from('profiles')
       .select('id')
-      .eq('email', email.toLowerCase().trim())
+      .eq('email', cleanEmail)
       .maybeSingle();
 
     if (existing) {
-      return res.status(409).json({ error: 'Email j\u00e1 cadastrado' });
+      return res.status(409).json({ error: 'Email já cadastrado' });
     }
 
+    // 2. Hash password
     const password_hash = await bcrypt.hash(password, 12);
 
-    // Create profile with full schema
+    // 3. Generate UUID explicitly (table may not have default)
+    const id = crypto.randomUUID();
+
+    // 4. Create profile
     const { data: profile, error: profileErr } = await supabase
       .from('profiles')
       .insert({
-        email: email.toLowerCase().trim(),
+        id,
+        email: cleanEmail,
         password_hash,
         display_name: name.trim(),
-        avatar: '\uD83D\uDC95',
+        avatar: '💕',
+        avatar_url: '',
         bio: '',
         theme: 'comfy',
         accent_color: '#f5c518',
+        language: 'pt-BR',
+        timezone: 'America/Fortaleza',
         level: 1,
         xp: 0,
         title: 'Novato',
@@ -62,17 +72,19 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Create default user_data
-    const defaults = [
-      { user_id: profile.id, data_type: 'goals', data: { items: [], history: [] } },
-      { user_id: profile.id, data_type: 'notes', data: { notes: [] } },
-      { user_id: profile.id, data_type: 'timer', data: { pomodoros: 0, totalMinutes: 0 } },
-      { user_id: profile.id, data_type: 'streak', data: { current: 0, best: 0, days: [] } },
-      { user_id: profile.id, data_type: 'hub_state', data: {} }
-    ];
+    // 5. Create default user_data (non-blocking)
+    try {
+      const defaults = [
+        { user_id: profile.id, data_type: 'goals', data: { items: [], history: [] } },
+        { user_id: profile.id, data_type: 'notes', data: { notes: [] } },
+        { user_id: profile.id, data_type: 'timer', data: { pomodoros: 0, totalMinutes: 0 } },
+        { user_id: profile.id, data_type: 'streak', data: { current: 0, best: 0, days: [] } },
+        { user_id: profile.id, data_type: 'hub_state', data: {} }
+      ];
+      await supabase.from('user_data').insert(defaults);
+    } catch (_) { /* user_data is optional on first register */ }
 
-    await supabase.from('user_data').insert(defaults);
-
+    // 6. Generate JWT
     const token = signToken(profile);
 
     return res.status(201).json({
@@ -81,7 +93,7 @@ module.exports = async (req, res) => {
         id: profile.id,
         email: profile.email,
         name: profile.display_name,
-        avatar: profile.avatar,
+        avatar: profile.avatar || '💕',
         avatar_url: profile.avatar_url || '',
         bio: profile.bio || '',
         theme: profile.theme || 'comfy',
