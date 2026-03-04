@@ -69,9 +69,7 @@
           el.textContent = (user.avatar || '\uD83D\uDC95') + ' ' + user.name;
           el.style.cursor = 'pointer';
           el.onclick = function() { window._rmToggleProfile(); };
-        } else {
-          el.style.display = 'none';
-        }
+        } else { el.style.display = 'none'; }
       }
       if (txt.match(/Cadastrar/) && txt.length < 25 && el.children.length <= 1) {
         el.style.display = 'none';
@@ -134,10 +132,10 @@
   }
 
   window._rmTab = function(t) {
-    document.getElementById('rmTL').className = 'rm-tb'+(t==='l'?' on':'');
-    document.getElementById('rmTR').className = 'rm-tb'+(t==='r'?' on':'');
-    document.getElementById('rmVL').className = 'rm-v'+(t==='l'?' on':'');
-    document.getElementById('rmVR').className = 'rm-v'+(t==='r'?' on':'');
+    document.getElementById('rmTL').className='rm-tb'+(t==='l'?' on':'');
+    document.getElementById('rmTR').className='rm-tb'+(t==='r'?' on':'');
+    document.getElementById('rmVL').className='rm-v'+(t==='l'?' on':'');
+    document.getElementById('rmVR').className='rm-v'+(t==='r'?' on':'');
   };
   window._rmFill = function(email) {
     var e=document.getElementById('rmLE'); if(e) e.value=email;
@@ -150,7 +148,7 @@
     if(!email.trim()||!pass){if(err)err.textContent='Preencha email e senha';return;}
     try {
       if(err)err.textContent='Entrando...';
-      var d = await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:email.trim(),password:pass})});
+      var d=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:email.trim(),password:pass})});
       setToken(d.token); enterApp(d.user); syncDown();
     } catch(e){if(err)err.textContent=e.message;}
   };
@@ -163,46 +161,89 @@
     if(pass.length<6){if(err)err.textContent='Senha min 6 chars';return;}
     try {
       if(err)err.textContent='Cadastrando...';
-      var d = await api('/api/auth/register',{method:'POST',body:JSON.stringify({email:email.trim(),password:pass,name:name.trim()})});
+      var d=await api('/api/auth/register',{method:'POST',body:JSON.stringify({email:email.trim(),password:pass,name:name.trim()})});
       setToken(d.token); enterApp(d.user); syncUp();
     } catch(e){if(err)err.textContent=e.message;}
   };
 
-  /* ===== PROFILE BAR ===== */
+  /* ===== PROFILE BAR + PANEL (THEME-ADAPTIVE) ===== */
   function injectProfileBar(user) {
     if(document.getElementById(PROFILE_BAR_ID)) { updateProfileBar(user); return; }
     var bar = document.createElement('div');
     bar.id = PROFILE_BAR_ID;
     bar.innerHTML = '<style>'
-      +'#'+PROFILE_BAR_ID+'{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.2rem;background:#0a1628;border-bottom:2px solid #1e3a6e;font-family:Inter,sans-serif;position:relative;z-index:100}'
+      /* ---- COMFY (default) profile bar ---- */
+      +'#'+PROFILE_BAR_ID+'{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.2rem;'
+      +'background:linear-gradient(135deg,#fff0f5,#fff5ee,#f0f8ff);'
+      +'border-bottom:2px solid #f2d6d0;font-family:Inter,sans-serif;position:relative;z-index:100;'
+      +'transition:all .4s ease}'
       +'.pb-avatar{font-size:1.4rem;cursor:pointer;transition:transform .2s}.pb-avatar:hover{transform:scale(1.2)}'
       +'.pb-info{flex:1;min-width:0}'
-      +'.pb-name{font-size:.78rem;color:#f5c518;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
-      +'.pb-meta{font-size:.58rem;color:#3a5a8a;font-family:"Space Mono",monospace}'
+      +'.pb-name{font-size:.8rem;color:#d4726a;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s}'
+      +'.pb-meta{font-size:.6rem;color:#b8a080;font-family:Inter,sans-serif;transition:color .3s}'
       +'.pb-meta span{color:#e8477a}'
-      +'.pb-btn{background:none;border:1px solid #1e3a6e;color:#3a5a8a;font-size:.6rem;padding:3px 8px;cursor:pointer;font-family:"Space Mono",monospace;transition:all .15s;border-radius:2px}'
-      +'.pb-btn:hover{border-color:#f5c518;color:#f5c518}'
-      +'.pb-logout{color:#e8477a;border-color:rgba(232,71,122,.3)}.pb-logout:hover{border-color:#e8477a;color:#e8477a;background:rgba(232,71,122,.08)}'
-      +'#'+PROFILE_PANEL_ID+'{display:none;position:fixed;top:0;right:0;width:320px;max-width:90vw;height:100vh;background:#0d1f3c;border-left:2px solid #1e3a6e;z-index:9999;overflow-y:auto;font-family:Inter,sans-serif;animation:ppSlide .25s ease;box-shadow:-4px 0 24px rgba(0,0,0,.5)}'
+      +'.pb-btn{background:none;border:1.5px solid #f2d6d0;color:#d4726a;font-size:.6rem;padding:3px 10px;cursor:pointer;'
+      +'font-family:Inter,sans-serif;transition:all .2s;border-radius:12px;font-weight:600}'
+      +'.pb-btn:hover{border-color:#e8477a;color:#e8477a;background:rgba(232,71,122,.05)}'
+      +'.pb-logout{color:#b8a080;border-color:#e0d5c5}'
+      +'.pb-logout:hover{border-color:#e8477a;color:#e8477a;background:rgba(232,71,122,.05)}'
+
+      /* ---- RETRO profile bar override ---- */
+      +'body.retro-mode #'+PROFILE_BAR_ID+'{'
+      +'background:#0a1628 !important;border-bottom:2px solid #1e3a6e !important}'
+      +'body.retro-mode .pb-name{color:#f5c518 !important}'
+      +'body.retro-mode .pb-meta{color:#3a5a8a !important;font-family:"Space Mono",monospace !important}'
+      +'body.retro-mode .pb-btn{border-color:#1e3a6e !important;color:#3a5a8a !important;border-radius:0 !important;'
+      +'font-family:"Space Mono",monospace !important}'
+      +'body.retro-mode .pb-btn:hover{border-color:#f5c518 !important;color:#f5c518 !important;background:transparent !important}'
+      +'body.retro-mode .pb-logout{color:#e8477a !important;border-color:rgba(232,71,122,.3) !important}'
+      +'body.retro-mode .pb-logout:hover{border-color:#e8477a !important;color:#e8477a !important}'
+
+      /* ---- COMFY profile panel ---- */
+      +'#'+PROFILE_PANEL_ID+'{display:none;position:fixed;top:0;right:0;width:320px;max-width:90vw;height:100vh;'
+      +'background:linear-gradient(180deg,#fff5f5,#fffef7);'
+      +'border-left:2px solid #f2d6d0;z-index:9999;overflow-y:auto;font-family:Inter,sans-serif;'
+      +'animation:ppSlide .25s ease;box-shadow:-4px 0 24px rgba(0,0,0,.08);transition:all .4s}'
       +'#'+PROFILE_PANEL_ID+'.open{display:block}'
       +'@keyframes ppSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}'
-      +'.pp-header{text-align:center;padding:2rem 1.5rem 1rem;border-bottom:1px solid #1e3a6e}'
+      +'.pp-header{text-align:center;padding:2rem 1.5rem 1rem;border-bottom:1px solid #f2d6d0;transition:border-color .3s}'
       +'.pp-avatar{font-size:3rem;margin-bottom:.5rem;cursor:pointer}'
-      +'.pp-name{font-family:VT323,monospace;font-size:1.6rem;color:#f5c518;margin:0}'
-      +'.pp-email{font-size:.7rem;color:#3a5a8a;margin-top:.15rem}'
-      +'.pp-level{font-family:"Space Mono",monospace;font-size:.65rem;color:#e8477a;margin-top:.4rem}'
-      +'.pp-section{padding:1rem 1.5rem;border-bottom:1px solid #1e3a6e}'
-      +'.pp-label{font-size:.6rem;color:#3a5a8a;letter-spacing:.1em;font-weight:700;margin-bottom:.5rem;font-family:"Space Mono",monospace}'
-      +'.pp-input{width:100%;padding:.5rem .7rem;background:#112244;border:1px solid #1e3a6e;color:#e8f0ff;font-size:.8rem;font-family:inherit;outline:none;box-sizing:border-box;border-radius:2px;margin-bottom:.4rem}'
-      +'.pp-input:focus{border-color:#f5c518}'
-      +'.pp-save{background:#f5c518;color:#000;border:none;padding:.5rem 1.2rem;font-size:.7rem;font-weight:700;cursor:pointer;font-family:"Space Mono",monospace;letter-spacing:.05em;margin-top:.3rem}'
-      +'.pp-save:hover{background:#e6b800}'
-      +'.pp-close{position:absolute;top:.8rem;right:1rem;background:none;border:none;color:#3a5a8a;font-size:1.2rem;cursor:pointer;padding:.3rem}'
+      +'.pp-name{font-family:cursive;font-size:1.6rem;color:#d4726a;margin:0;transition:color .3s}'
+      +'.pp-email{font-size:.7rem;color:#b8a080;margin-top:.15rem}'
+      +'.pp-level{font-size:.65rem;color:#e8477a;margin-top:.4rem}'
+      +'.pp-section{padding:1rem 1.5rem;border-bottom:1px solid #f2d6d0;transition:border-color .3s}'
+      +'.pp-label{font-size:.6rem;color:#b8a080;letter-spacing:.1em;font-weight:700;margin-bottom:.5rem}'
+      +'.pp-input{width:100%;padding:.5rem .7rem;background:#fffef7;border:1.5px solid #e0d5c5;color:#5a4a3a;font-size:.8rem;'
+      +'font-family:inherit;outline:none;box-sizing:border-box;border-radius:8px;margin-bottom:.4rem;transition:all .3s}'
+      +'.pp-input:focus{border-color:#f9a8b8}'
+      +'.pp-save{background:linear-gradient(135deg,#f9a8b8,#f48fb1);color:#fff;border:none;padding:.5rem 1.2rem;font-size:.7rem;'
+      +'font-weight:700;cursor:pointer;font-family:Inter,sans-serif;border-radius:20px;margin-top:.3rem;transition:all .3s}'
+      +'.pp-save:hover{box-shadow:0 3px 12px rgba(244,143,177,.4)}'
+      +'.pp-close{position:absolute;top:.8rem;right:1rem;background:none;border:none;color:#b8a080;font-size:1.2rem;cursor:pointer;padding:.3rem}'
       +'.pp-close:hover{color:#e8477a}'
-      +'.pp-logout{display:block;width:100%;padding:.7rem;background:rgba(232,71,122,.08);border:1px solid rgba(232,71,122,.3);color:#e8477a;font-size:.75rem;font-weight:700;cursor:pointer;font-family:"Space Mono",monospace;text-align:center;margin-top:1rem;border-radius:2px}'
-      +'.pp-logout:hover{background:rgba(232,71,122,.15)}'
-      +'.pp-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998}'
+      +'.pp-logout{display:block;width:100%;padding:.7rem;background:rgba(232,71,122,.05);border:1.5px solid rgba(232,71,122,.2);'
+      +'color:#e8477a;font-size:.75rem;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;text-align:center;'
+      +'margin-top:1rem;border-radius:12px;transition:all .3s}'
+      +'.pp-logout:hover{background:rgba(232,71,122,.1)}'
+      +'.pp-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9998}'
       +'.pp-backdrop.open{display:block}'
+
+      /* ---- RETRO profile panel override ---- */
+      +'body.retro-mode #'+PROFILE_PANEL_ID+'{background:#0d1f3c !important;border-left:2px solid #1e3a6e !important;'
+      +'box-shadow:-4px 0 24px rgba(0,0,0,.5) !important}'
+      +'body.retro-mode .pp-header{border-bottom-color:#1e3a6e !important}'
+      +'body.retro-mode .pp-name{font-family:VT323,monospace !important;color:#f5c518 !important}'
+      +'body.retro-mode .pp-email{color:#3a5a8a !important}'
+      +'body.retro-mode .pp-level{color:#e8477a !important;font-family:"Space Mono",monospace !important}'
+      +'body.retro-mode .pp-section{border-bottom-color:#1e3a6e !important}'
+      +'body.retro-mode .pp-label{color:#3a5a8a !important;font-family:"Space Mono",monospace !important}'
+      +'body.retro-mode .pp-input{background:#112244 !important;border-color:#1e3a6e !important;color:#e8f0ff !important;border-radius:0 !important}'
+      +'body.retro-mode .pp-input:focus{border-color:#f5c518 !important}'
+      +'body.retro-mode .pp-save{background:#f5c518 !important;color:#000 !important;border-radius:0 !important}'
+      +'body.retro-mode .pp-close{color:#3a5a8a !important}'
+      +'body.retro-mode .pp-close:hover{color:#e8477a !important}'
+      +'body.retro-mode .pp-logout{background:rgba(232,71,122,.08) !important;border-color:rgba(232,71,122,.3) !important;border-radius:0 !important}'
+      +'body.retro-mode .pp-backdrop{background:rgba(0,0,0,.5) !important}'
       +'</style>'
       +'<span class="pb-avatar" onclick="window._rmToggleProfile()" id="pbAvatar">'+(user.avatar||'\uD83D\uDC95')+'</span>'
       +'<div class="pb-info"><div class="pb-name" id="pbName">'+(user.name||'User')+'</div>'
@@ -212,8 +253,8 @@
     document.body.insertBefore(bar, document.body.firstChild);
 
     var backdrop = document.createElement('div');
-    backdrop.className = 'pp-backdrop'; backdrop.id = 'rmBackdrop';
-    backdrop.onclick = function(){window._rmToggleProfile();};
+    backdrop.className='pp-backdrop'; backdrop.id='rmBackdrop';
+    backdrop.onclick=function(){window._rmToggleProfile();};
     document.body.appendChild(backdrop);
 
     var panel = document.createElement('div');
@@ -249,18 +290,18 @@
   }
 
   window._rmToggleProfile = function() {
-    var p = document.getElementById(PROFILE_PANEL_ID);
-    var b = document.getElementById('rmBackdrop');
+    var p=document.getElementById(PROFILE_PANEL_ID);
+    var b=document.getElementById('rmBackdrop');
     if(p) p.classList.toggle('open');
     if(b) b.classList.toggle('open');
   };
 
   window._rmSaveProfile = async function() {
-    var name = (document.getElementById('ppEditName')||{}).value||'';
-    var bio = (document.getElementById('ppEditBio')||{}).value||'';
-    var avatar = (document.getElementById('ppEditAvatar')||{}).value||'';
+    var name=(document.getElementById('ppEditName')||{}).value||'';
+    var bio=(document.getElementById('ppEditBio')||{}).value||'';
+    var avatar=(document.getElementById('ppEditAvatar')||{}).value||'';
     try {
-      var d = await api('/api/auth/profile',{method:'PUT',body:JSON.stringify({name:name.trim(),bio:bio.trim(),avatar:avatar.trim()})});
+      var d=await api('/api/auth/profile',{method:'PUT',body:JSON.stringify({name:name.trim(),bio:bio.trim(),avatar:avatar.trim()})});
       setUser(d.user); saveAccount(d.user); updateProfileBar(d.user);
       window._rmToggleProfile();
     } catch(e){ alert('Erro: '+e.message); }
@@ -268,8 +309,8 @@
 
   function enterApp(user) {
     setUser(user); saveAccount(user);
-    var ov = document.getElementById(OVERLAY_ID);
-    if(ov) { ov.classList.add('out'); setTimeout(function(){ov.remove();},500); }
+    var ov=document.getElementById(OVERLAY_ID);
+    if(ov){ov.classList.add('out');setTimeout(function(){ov.remove();},500);}
     nukeOldLogin(user);
     injectProfileBar(user);
     loadRetroMode();
@@ -286,46 +327,43 @@
   window.saveProfile = async function() {
     if(!getToken()) return;
     try {
-      var u = getUser();
-      var d = await api('/api/auth/profile',{method:'PUT',body:JSON.stringify({name:u.name,bio:u.bio,avatar:u.avatar})});
+      var u=getUser();
+      var d=await api('/api/auth/profile',{method:'PUT',body:JSON.stringify({name:u.name,bio:u.bio,avatar:u.avatar})});
       setUser(d.user); saveAccount(d.user); updateProfileBar(d.user);
     } catch(e){}
   };
 
-  /* ===== LOAD RETRO MODE ===== */
   function loadRetroMode() {
-    if (document.getElementById('retro-mode-script')) return;
-    var s = document.createElement('script');
-    s.id = 'retro-mode-script';
-    s.src = '/js/retro-mode.js';
+    if(document.getElementById('retro-mode-script')) return;
+    var s=document.createElement('script');
+    s.id='retro-mode-script'; s.src='/js/retro-mode.js';
     document.head.appendChild(s);
   }
 
-  /* ===== SYNC ===== */
   async function syncUp() {
     if(!getToken()) return;
     for(var type in SYNC_MAP) {
-      try { var r=localStorage.getItem(SYNC_MAP[type]);
+      try{var r=localStorage.getItem(SYNC_MAP[type]);
         if(r) await api('/api/data/save',{method:'POST',body:JSON.stringify({data_type:type,data:JSON.parse(r)})});
-      } catch(e){}
+      }catch(e){}
     }
   }
   async function syncDown() {
     if(!getToken()) return;
     try {
-      var data = await api('/api/data/load');
+      var data=await api('/api/data/load');
       for(var type in SYNC_MAP) {
         if(data[type]&&data[type].data!=null) localStorage.setItem(SYNC_MAP[type],JSON.stringify(data[type].data));
       }
-    } catch(e){}
+    }catch(e){}
   }
   setInterval(function(){if(getToken())syncUp();},60000);
   window.addEventListener('beforeunload',function(){
     if(!getToken())return;
     for(var type in SYNC_MAP) {
-      try { var r=localStorage.getItem(SYNC_MAP[type]);
+      try{var r=localStorage.getItem(SYNC_MAP[type]);
         if(r) fetch('/api/data/save',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},body:JSON.stringify({data_type:type,data:JSON.parse(r)}),keepalive:true});
-      } catch(e){}
+      }catch(e){}
     }
   });
 
@@ -333,11 +371,11 @@
     nukeOldLogin(null);
     if(getToken()) {
       try {
-        var d = await api('/api/auth/me');
+        var d=await api('/api/auth/me');
         enterApp(d.user);
         await syncDown();
         return;
-      } catch(e){ clearAuth(); }
+      }catch(e){clearAuth();}
     }
     createLoginOverlay();
   }
