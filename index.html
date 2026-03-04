@@ -391,11 +391,11 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 <input type="text" class="login-name-input" id="loginName" placeholder="Seu nome (ex: Matheus)" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
 <input type="password" class="login-name-input" id="loginPass" placeholder="Senha" onkeydown="if(event.key==='Enter')window.doLogin()">
 <div style="display:flex;gap:8px;margin-top:12px">
-<button class="login-btn" onclick="window.doLogin()" style="flex:1">Entrar &#10084;</button>
-<button class="login-btn" onclick="window.doRegister()" style="flex:1;background:var(--blue);box-shadow:0 4px 16px rgba(109,189,232,.3)">Cadastrar &#9889;</button>
+<button class="login-btn" onclick="window.doLogin()" style="flex:1">Entrar <span class="emoji-themed" data-emoji="&#10084;" data-native="&#10084;">&#10084;</span></button>
+<button class="login-btn" onclick="window.doRegister()" style="flex:1;background:var(--blue);box-shadow:0 4px 16px rgba(109,189,232,.3)">Cadastrar <span class="emoji-themed" data-emoji="&#9889;" data-native="&#9889;">&#9889;</span></button>
 </div>
 <div class="login-error" id="loginErr"></div>
-<div style="margin-top:12px;font-size:13px;color:var(--text-light)">Powered by RetroMynd API ⚡</div>
+<div style="margin-top:12px;font-size:13px;color:var(--text-light)">Powered by RetroMynd API <span class="emoji-themed" data-emoji="&#9889;" data-native="&#9889;">⚡</span></div>
 </div>
 </div>
 </div>
@@ -424,10 +424,10 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 </div><div class="hub-date"><span class="pixel-dot"></span><span id="dateD"></span></div><div class="profile-trigger" id="profileTrigger"><span class="profile-avatar" id="headerAvatar">&#128149;</span><span class="profile-name" id="headerName">Entrar</span></div></div></header>
 <div class="hub-container">
 <div class="stats">
-<div class="stat"><div class="stat-icon pink">&#128293;</div><div><div class="stat-num" id="sS">0</div><div class="stat-label">Streak</div></div></div>
-<div class="stat"><div class="stat-icon blue">&#128221;</div><div><div class="stat-num" id="sN">0</div><div class="stat-label">Notas</div></div></div>
-<div class="stat"><div class="stat-icon lav">&#9989;</div><div><div class="stat-num" id="sG">0/0</div><div class="stat-label">Metas</div></div></div>
-<div class="stat"><div class="stat-icon mint">&#9201;</div><div><div class="stat-num" id="sP">0</div><div class="stat-label">Pomodoros</div></div></div>
+<div class="stat"><div class="stat-icon pink"><span class="emoji-themed" data-emoji="&#128293;" data-native="&#128293;">&#128293;</span></div><div><div class="stat-num" id="sS">0</div><div class="stat-label">Streak</div></div></div>
+<div class="stat"><div class="stat-icon blue"><span class="emoji-themed" data-emoji="&#128221;" data-native="&#128221;">&#128221;</span></div><div><div class="stat-num" id="sN">0</div><div class="stat-label">Notas</div></div></div>
+<div class="stat"><div class="stat-icon lav"><span class="emoji-themed" data-emoji="&#9989;" data-native="&#9989;">&#9989;</span></div><div><div class="stat-num" id="sG">0/0</div><div class="stat-label">Metas</div></div></div>
+<div class="stat"><div class="stat-icon mint"><span class="emoji-themed" data-emoji="&#9201;" data-native="&#9201;">&#9201;</span></div><div><div class="stat-num" id="sP">0</div><div class="stat-label">Pomodoros</div></div></div>
 </div>
 <!-- ROW 1: Timer + Goals -->
 <div class="grid">
@@ -793,7 +793,7 @@ function renderGrid(app){
     var preview=n.content?esc(n.content).substring(0,60):"Nota vazia...";
     var title=n.title?esc(n.title):"Sem titulo";
     var piCount=n.postits?n.postits.length:0;
-    var piTag=piCount?'<span style="font-size:11px;opacity:.6">&#128204; '+piCount+'</span>':"";
+    var piTag=piCount?'<span style="font-size:11px;opacity:.6"><span class="emoji-themed" data-emoji="&#128204;" data-native="&#128204;">&#128204;</span> '+piCount+'</span>':"";
     h+='<div class="note-card" style="background:'+bg+';--rot:'+rot+'deg" data-nid="'+n.id+'">';
     h+='<div class="note-card-del" data-ndel="'+n.id+'">&#215;</div>';
     h+='<div class="note-card-title">'+title+'</div>';
@@ -838,7 +838,7 @@ function renderEditor(app){
   h+='<textarea class="note-textarea" id="nContentIn" placeholder="Escreva aqui..." style="min-height:100px">'+esc(n.content||"")+'</textarea>';
 
   /* POSTITS */
-  h+='<div style="margin:6px 0 2px;font-size:15px;font-weight:700;color:var(--text-mid)">&#128204;</div>';
+  h+='<div style="margin:6px 0 2px;font-size:15px;font-weight:700;color:var(--text-mid)"><span class="emoji-themed" data-emoji="&#128204;" data-native="&#128204;">&#128204;</span></div>';
   h+='<div class="note-postits" id="nPostits">';
   if(n.postits&&n.postits.length){
     for(var p=0;p<n.postits.length;p++){
@@ -855,7 +855,7 @@ function renderEditor(app){
   for(var c=0;c<CVALS.length;c++){
     h+='<div class="postit-color-pick'+(piColor===c?" active":"")+'" style="background:'+CVALS[c]+'" data-pc="'+c+'"></div>';
   }
-  h+='<button class="postit-add-btn" id="piAddBtn">&#128204; Colar</button>';
+  h+='<button class="postit-add-btn" id="piAddBtn"><span class="emoji-themed" data-emoji="&#128204;" data-native="&#128204;">&#128204;</span> Colar</button>';
   h+='</div>';
 
   /* META + HISTORY */
@@ -1080,5 +1080,6 @@ window.addEventListener("message", function(e) {
 })();
 </script>
 <script src="/js/api.js"></script>
+<script src="/js/emoji-theme.js"></script>
 </body>
 </html>
