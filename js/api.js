@@ -44,7 +44,7 @@
     return data;
   }
 
-  /* ===== NUKE ALL OLD LOGIN ELEMENTS ===== */
+  /* ===== NUKE OLD LOGIN ===== */
   function nukeOldLogin(user) {
     ['loginOverlay','login-overlay','loginSection','login-section'].forEach(function(id){
       var el = document.getElementById(id); if(el) el.style.display = 'none';
@@ -62,12 +62,8 @@
       while(c.parentElement && c.parentElement !== document.body) c = c.parentElement;
       if(c && c !== document.body) c.style.display = 'none';
     });
-
-    /* Find and replace "Entrar" buttons/links anywhere in the page */
-    var allEls = document.querySelectorAll('button, a, span, div, p');
-    allEls.forEach(function(el) {
+    document.querySelectorAll('button, a, span, div, p').forEach(function(el) {
       var txt = el.textContent.trim();
-      /* Match elements that contain "Entrar" as primary text */
       if (txt.match(/Entrar/) && txt.length < 20 && el.children.length <= 1) {
         if (user && user.name) {
           el.textContent = (user.avatar || '\uD83D\uDC95') + ' ' + user.name;
@@ -77,11 +73,6 @@
           el.style.display = 'none';
         }
       }
-    });
-
-    /* Also find "Cadastrar" buttons in the app header */
-    allEls.forEach(function(el) {
-      var txt = el.textContent.trim();
       if (txt.match(/Cadastrar/) && txt.length < 25 && el.children.length <= 1) {
         el.style.display = 'none';
       }
@@ -275,13 +266,13 @@
     } catch(e){ alert('Erro: '+e.message); }
   };
 
-  /* ===== ENTER APP ===== */
   function enterApp(user) {
     setUser(user); saveAccount(user);
     var ov = document.getElementById(OVERLAY_ID);
     if(ov) { ov.classList.add('out'); setTimeout(function(){ov.remove();},500); }
     nukeOldLogin(user);
     injectProfileBar(user);
+    loadRetroMode();
   }
 
   window.doLogout = function() {
@@ -300,6 +291,15 @@
       setUser(d.user); saveAccount(d.user); updateProfileBar(d.user);
     } catch(e){}
   };
+
+  /* ===== LOAD RETRO MODE ===== */
+  function loadRetroMode() {
+    if (document.getElementById('retro-mode-script')) return;
+    var s = document.createElement('script');
+    s.id = 'retro-mode-script';
+    s.src = '/js/retro-mode.js';
+    document.head.appendChild(s);
+  }
 
   /* ===== SYNC ===== */
   async function syncUp() {
@@ -329,7 +329,6 @@
     }
   });
 
-  /* ===== BOOT ===== */
   async function boot() {
     nukeOldLogin(null);
     if(getToken()) {
