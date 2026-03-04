@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
       .maybeSingle();
 
     if (checkErr) {
-      return res.status(500).json({ error: 'Erro ao verificar email', debug: checkErr.message, code: checkErr.code, details: checkErr.details });
+      return res.status(500).json({ error: 'Erro ao verificar email', debug: checkErr.message, code: checkErr.code });
     }
 
     if (existing) {
@@ -37,15 +37,13 @@ module.exports = async (req, res) => {
     // Hash password
     const password_hash = await bcrypt.hash(password, 12);
 
-    // Create profile
+    // Create profile - only essential columns
     const { data: profile, error: profileErr } = await supabase
       .from('profiles')
       .insert({
         email: email.toLowerCase().trim(),
         password_hash,
-        display_name: name.trim(),
-        avatar: '\uD83D\uDC95',
-        bio: ''
+        display_name: name.trim()
       })
       .select()
       .single();
@@ -55,8 +53,7 @@ module.exports = async (req, res) => {
         error: 'Erro ao criar perfil',
         debug: profileErr.message,
         code: profileErr.code,
-        hint: profileErr.hint,
-        details: profileErr.details
+        hint: profileErr.hint
       });
     }
 
@@ -72,7 +69,7 @@ module.exports = async (req, res) => {
     const { error: dataErr } = await supabase.from('user_data').insert(defaults);
     if (dataErr) {
       return res.status(500).json({
-        error: 'Perfil criado mas erro ao criar dados iniciais',
+        error: 'Perfil criado mas erro nos dados iniciais',
         debug: dataErr.message,
         code: dataErr.code
       });
@@ -87,12 +84,12 @@ module.exports = async (req, res) => {
         id: profile.id,
         email: profile.email,
         name: profile.display_name,
-        avatar: profile.avatar,
-        bio: profile.bio,
+        avatar: '\uD83D\uDC95',
+        bio: '',
         created_at: profile.created_at
       }
     });
   } catch (err) {
-    return res.status(500).json({ error: 'Erro interno', debug: err.message, stack: err.stack });
+    return res.status(500).json({ error: 'Erro interno', debug: err.message });
   }
 };
