@@ -4,6 +4,7 @@
   /* ========== CONFIG ========== */
   var TOKEN_KEY = 'retromynd_token';
   var USER_KEY  = 'retromynd_user';
+  var ACCOUNTS_KEY = 'retromynd_accounts';
 
   var SYNC_MAP = {
     history:      'lessonhistoryv1',
@@ -20,6 +21,18 @@
   function setUser(u)  { localStorage.setItem(USER_KEY, JSON.stringify(u)); }
   function clearAuth() { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); }
 
+  /* ========== SAVED ACCOUNTS ========== */
+  function getSavedAccounts() {
+    try { return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || []; } catch(e) { return []; }
+  }
+  function saveAccount(user) {
+    var accounts = getSavedAccounts();
+    var idx = accounts.findIndex(function(a) { return a.email === user.email; });
+    var entry = { email: user.email, name: user.name || '', avatar: user.avatar || '\uD83D\uDC95' };
+    if (idx >= 0) accounts[idx] = entry; else accounts.push(entry);
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts.slice(-5)));
+  }
+
   async function api(path, opts) {
     opts = opts || {};
     var token = getToken();
@@ -28,7 +41,6 @@
     var res = await fetch(path, Object.assign({}, opts, { headers: h }));
     var data = await res.json();
     if (!res.ok) {
-      // Show debug detail if available
       var msg = data.error || 'Erro ' + res.status;
       if (data.debug) msg += ' | DEBUG: ' + data.debug;
       if (data.hint) msg += ' | HINT: ' + data.hint;
@@ -44,10 +56,55 @@
     if (e) { e.textContent = msg; e.style.fontSize = '11px'; }
   }
 
+  /* Find the login container by traversing up from known child elements */
+  function findLoginContainer() {
+    var anchor = document.getElementById('loginOverlay')
+              || document.getElementById('login-overlay')
+              || document.getElementById('loginSection')
+              || document.getElementById('login-section');
+    if (anchor) return anchor;
+
+    /* Traverse from known login form elements */
+    var child = document.getElementById('loginErr')
+             || document.getElementById('loginEmail')
+             || document.getElementById('loginName')
+             || document.getElementById('loginPass');
+    if (!child) return null;
+
+    var el = child;
+    while (el.parentElement && el.parentElement !== document.body) {
+      el = el.parentElement;
+    }
+    return (el && el !== document.body) ? el : null;
+  }
+
   function enterApp(user) {
     setUser(user);
-    var ov = document.getElementById('loginOverlay');
-    if (ov) ov.style.display = 'none';
+    saveAccount(user);
+
+    /* Hide login section */
+    var ov = findLoginContainer();
+    if (ov) {
+      ov.style.display = 'none';
+    } else {
+      /* Fallback: reload page (autoLogin will handle it) */
+      if (!sessionStorage.getItem('retromynd_reloaded')) {
+        sessionStorage.setItem('retromynd_reloaded', '1');
+        window.location.reload();
+        return;
+      }
+    }
+    sessionStorage.removeItem('retromynd_reloaded');
+
+    /* Show app content (in case anything is hidden) */
+    var header = document.querySelector('header');
+    if (header) header.style.display = '';
+    var navTabs = document.querySelector('.nav-tabs');
+    if (navTabs) navTabs.style.display = '';
+    var views = document.querySelectorAll('.view');
+    views.forEach(function(v) { v.style.removeProperty('display'); });
+
+    /* Set profile elements if they exist */
     var n = document.getElementById('profName');   if (n) n.textContent = user.name || '';
     var e = document.getElementById('profEmail');  if (e) e.textContent = user.email || '';
     var a = document.getElementById('profAvatar'); if (a) a.textContent = user.avatar || '\uD83D\uDC95';
@@ -55,8 +112,13 @@
   }
 
   function showLoginScreen() {
-    var ov = document.getElementById('loginOverlay');
-    if (ov) ov.style.display = '';
+    clearAuth();
+    var ov = findLoginContainer();
+    if (ov) {
+      ov.style.display = '';
+    } else {
+      window.location.reload();
+    }
   }
 
   /* ========== REGISTER ========== */
@@ -71,6 +133,7 @@
     if (pass.length < 6) { showErr('Senha m\u00EDnimo 6 caracteres'); return; }
 
     try {
+      showErr('Cadastrando...');
       var d = await api('/api/auth/register', {
         method: 'POST',
         body: JSON.stringify({ email: email, password: pass, name: name })
@@ -93,6 +156,7 @@
     if (!email || !pass) { showErr('Preencha email e senha'); return; }
 
     try {
+      showErr('Entrando...');
       var d = await api('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email: email, password: pass })
@@ -105,9 +169,19 @@
     }
   };
 
+  /* ========== LOGIN WITH SAVED ACCOUNT ========== */
+  window.loginWithAccount = function(email) {
+    var emailEl = document.getElementById('loginEmail');
+    if (emailEl) emailEl.value = email;
+    var nameEl = document.getElementById('loginName');
+    if (nameEl) nameEl.value = '';
+    var passEl = document.getElementById('loginPass');
+    if (passEl) { passEl.value = ''; passEl.focus(); }
+    showErr('Digite a senha para entrar');
+  };
+
   /* ========== LOGOUT ========== */
   window.doLogout = function() {
-    clearAuth();
     showLoginScreen();
   };
 
@@ -123,6 +197,7 @@
         body: JSON.stringify({ name: name.trim(), bio: bio.trim(), avatar: avatar.trim() })
       });
       setUser(d.user);
+      saveAccount(d.user);
     } catch (e) { console.warn('Profile save failed:', e.message); }
   };
 
