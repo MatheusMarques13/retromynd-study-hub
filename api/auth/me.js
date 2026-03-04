@@ -9,19 +9,19 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inválido ou expirado' });
+      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
     }
 
     const supabase = getSupabase();
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('id, email, display_name, avatar, bio, created_at')
+      .select('id, email, display_name, avatar, avatar_url, bio, theme, accent_color, level, xp, title, badges, preferences, login_count, created_at')
       .eq('id', tokenUser.id)
       .single();
 
     if (!profile) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
+      return res.status(404).json({ error: 'Usu\u00e1rio n\u00e3o encontrado' });
     }
 
     return res.status(200).json({
@@ -29,13 +29,21 @@ module.exports = async (req, res) => {
         id: profile.id,
         email: profile.email,
         name: profile.display_name,
-        avatar: profile.avatar,
+        avatar: profile.avatar || '\uD83D\uDC95',
+        avatar_url: profile.avatar_url || '',
         bio: profile.bio || '',
+        theme: profile.theme || 'comfy',
+        accent_color: profile.accent_color || '#f5c518',
+        level: profile.level || 1,
+        xp: profile.xp || 0,
+        title: profile.title || 'Novato',
+        badges: profile.badges || [],
+        preferences: profile.preferences || {},
+        login_count: profile.login_count || 0,
         created_at: profile.created_at
       }
     });
   } catch (err) {
-    console.error('Me error:', err);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
+    return res.status(500).json({ error: 'Erro interno', debug: err.message });
   }
 };

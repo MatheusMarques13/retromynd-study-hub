@@ -11,12 +11,11 @@ module.exports = async (req, res) => {
     const { email, password } = req.body || {};
 
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+      return res.status(400).json({ error: 'Email e senha s\u00e3o obrigat\u00f3rios' });
     }
 
     const supabase = getSupabase();
 
-    // Find user
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('*')
@@ -27,13 +26,20 @@ module.exports = async (req, res) => {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
-    // Verify password
     const valid = await bcrypt.compare(password, profile.password_hash);
     if (!valid) {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
-    // Generate token
+    // Update last_login and login_count
+    await supabase
+      .from('profiles')
+      .update({
+        last_login: new Date().toISOString(),
+        login_count: (profile.login_count || 0) + 1
+      })
+      .eq('id', profile.id);
+
     const token = signToken(profile);
 
     return res.status(200).json({
@@ -42,13 +48,21 @@ module.exports = async (req, res) => {
         id: profile.id,
         email: profile.email,
         name: profile.display_name,
-        avatar: profile.avatar,
+        avatar: profile.avatar || '\uD83D\uDC95',
+        avatar_url: profile.avatar_url || '',
         bio: profile.bio || '',
+        theme: profile.theme || 'comfy',
+        accent_color: profile.accent_color || '#f5c518',
+        level: profile.level || 1,
+        xp: profile.xp || 0,
+        title: profile.title || 'Novato',
+        badges: profile.badges || [],
+        preferences: profile.preferences || {},
+        login_count: (profile.login_count || 0) + 1,
         created_at: profile.created_at
       }
     });
   } catch (err) {
-    console.error('Login error:', err);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
+    return res.status(500).json({ error: 'Erro interno', debug: err.message });
   }
 };

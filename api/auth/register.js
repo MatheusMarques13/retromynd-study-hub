@@ -20,30 +20,36 @@ module.exports = async (req, res) => {
     const supabase = getSupabase();
 
     // Check existing
-    const { data: existing, error: checkErr } = await supabase
+    const { data: existing } = await supabase
       .from('profiles')
       .select('id')
       .eq('email', email.toLowerCase().trim())
       .maybeSingle();
 
-    if (checkErr) {
-      return res.status(500).json({ error: 'Erro ao verificar email', debug: checkErr.message, code: checkErr.code });
-    }
-
     if (existing) {
       return res.status(409).json({ error: 'Email j\u00e1 cadastrado' });
     }
 
-    // Hash password
     const password_hash = await bcrypt.hash(password, 12);
 
-    // Create profile - only essential columns
+    // Create profile with full schema
     const { data: profile, error: profileErr } = await supabase
       .from('profiles')
       .insert({
         email: email.toLowerCase().trim(),
         password_hash,
-        display_name: name.trim()
+        display_name: name.trim(),
+        avatar: '\uD83D\uDC95',
+        bio: '',
+        theme: 'comfy',
+        accent_color: '#f5c518',
+        level: 1,
+        xp: 0,
+        title: 'Novato',
+        badges: [],
+        preferences: {},
+        login_count: 1,
+        last_login: new Date().toISOString()
       })
       .select()
       .single();
@@ -52,12 +58,11 @@ module.exports = async (req, res) => {
       return res.status(500).json({
         error: 'Erro ao criar perfil',
         debug: profileErr.message,
-        code: profileErr.code,
-        hint: profileErr.hint
+        code: profileErr.code
       });
     }
 
-    // Create default user_data entries
+    // Create default user_data
     const defaults = [
       { user_id: profile.id, data_type: 'goals', data: { items: [], history: [] } },
       { user_id: profile.id, data_type: 'notes', data: { notes: [] } },
@@ -66,16 +71,8 @@ module.exports = async (req, res) => {
       { user_id: profile.id, data_type: 'hub_state', data: {} }
     ];
 
-    const { error: dataErr } = await supabase.from('user_data').insert(defaults);
-    if (dataErr) {
-      return res.status(500).json({
-        error: 'Perfil criado mas erro nos dados iniciais',
-        debug: dataErr.message,
-        code: dataErr.code
-      });
-    }
+    await supabase.from('user_data').insert(defaults);
 
-    // Generate token
     const token = signToken(profile);
 
     return res.status(201).json({
@@ -84,8 +81,16 @@ module.exports = async (req, res) => {
         id: profile.id,
         email: profile.email,
         name: profile.display_name,
-        avatar: '\uD83D\uDC95',
-        bio: '',
+        avatar: profile.avatar,
+        avatar_url: profile.avatar_url || '',
+        bio: profile.bio || '',
+        theme: profile.theme || 'comfy',
+        accent_color: profile.accent_color || '#f5c518',
+        level: profile.level || 1,
+        xp: profile.xp || 0,
+        title: profile.title || 'Novato',
+        badges: profile.badges || [],
+        preferences: profile.preferences || {},
         created_at: profile.created_at
       }
     });
