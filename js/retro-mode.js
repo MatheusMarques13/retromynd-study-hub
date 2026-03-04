@@ -7,7 +7,7 @@
     var link = document.createElement('link');
     link.id = 'rm-retro-fonts';
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=VT323&display=swap';
     document.head.appendChild(link);
   }
 
@@ -15,6 +15,33 @@
   var css = document.createElement('style');
   css.id = 'retro-mode-css';
   css.textContent = ''
+
+  /* ========== COMFY MODE FONT OVERRIDE ========== */
+  + 'body:not(.retro-dark):not(.retro-light) * {'
+  + '  font-family:Raleway,sans-serif!important;'
+  + '}'
+  + 'body:not(.retro-dark):not(.retro-light) h1:not(#rmLoginOverlay h1),'
+  + 'body:not(.retro-dark):not(.retro-light) h2:not(#rmLoginOverlay *),'
+  + 'body:not(.retro-dark):not(.retro-light) h3,'
+  + 'body:not(.retro-dark):not(.retro-light) h4,'
+  + 'body:not(.retro-dark):not(.retro-light) h5,'
+  + 'body:not(.retro-dark):not(.retro-light) h6 {'
+  + '  font-family:Caveat,cursive!important;'
+  + '  font-weight:600!important;'
+  + '}'
+  /* Profile bar name in comfy */
+  + 'body:not(.retro-dark):not(.retro-light) .pp-name {'
+  + '  font-family:Caveat,cursive!important;'
+  + '  font-weight:700!important;'
+  + '}'
+  /* Login overlay keeps its own style */
+  + '#rmLoginOverlay, #rmLoginOverlay * {'
+  + '  font-family:Raleway,sans-serif!important;'
+  + '}'
+  + '#rmLoginOverlay .rm-tt {'
+  + '  font-family:Caveat,cursive!important;'
+  + '  font-weight:700!important;'
+  + '}'
 
   /* ========== RETRO DARK VARIABLES ========== */
   + 'body.retro-dark {'
@@ -204,7 +231,7 @@
   + 'body.retro-dark input[type="checkbox"]:checked, body.retro-light input[type="checkbox"]:checked {'
   + '  background:var(--rgold)!important; border-color:var(--rgold)!important; box-shadow:0 0 8px var(--rgold-glow)!important; }'
   + 'body.retro-dark input[type="checkbox"]:checked::after, body.retro-light input[type="checkbox"]:checked::after {'
-  + '  content:"\\u2713";position:absolute;top:-2px;left:2px;color:#000;font-weight:900;font-size:14px; }'
+  + '  content:"\u2713";position:absolute;top:-2px;left:2px;color:#000;font-weight:900;font-size:14px; }'
 
   /* --- Tags/Badges --- */
   + 'body.retro-dark [class*="tag"]:not(#rmLoginOverlay *), body.retro-dark [class*="badge"]:not(#rmLoginOverlay *),'
@@ -261,7 +288,7 @@
   + '  color:var(--rpixel)!important; border-radius:0!important; }'
 
   /* ========== RETRO TOGGLE BUTTON ========== */
-  + '.retro-toggle { font-family:Inter,sans-serif!important; font-size:.6rem; padding:3px 10px;'
+  + '.retro-toggle { font-family:Raleway,sans-serif!important; font-size:.6rem; padding:3px 10px;'
   + '  border:1.5px solid #f2d6d0; color:#d4726a; background:transparent; cursor:pointer;'
   + '  font-weight:600; transition:all .2s; border-radius:12px; margin-left:4px; }'
   + '.retro-toggle:hover { background:#e8477a; color:#fff; border-color:#e8477a; }'
@@ -300,14 +327,13 @@
     });
   }
 
-  /* Toggle retro on/off — RETRO enters retro-dark, COMFY goes back to comfy */
   window.toggleRetroMode = function(force) {
     if (typeof force === 'string') { applyTheme(force); return; }
     if (isRetro()) { applyTheme('comfy'); }
     else { applyTheme('retro-dark'); }
   };
 
-  /* ===== HOOK EXISTING ☀️/🌙 BUTTONS ===== */
+  /* ===== HOOK EXISTING SUN/MOON BUTTONS ===== */
   function hookThemeButtons() {
     document.querySelectorAll('button,[role="button"],[class*="theme"],[class*="toggle"],[class*="mode"]').forEach(function(btn) {
       if (btn.classList.contains('retro-toggle')) return;
@@ -324,14 +350,12 @@
         btn._rmHooked = true;
         btn.addEventListener('click', function() {
           if (isRetro()) applyTheme('retro-light');
-          /* if comfy, let the app handle it normally */
         });
       }
       if (isMoon) {
         btn._rmHooked = true;
         btn.addEventListener('click', function() {
           if (isRetro()) applyTheme('retro-dark');
-          /* if comfy, let the app handle it normally */
         });
       }
     });
