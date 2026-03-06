@@ -23,11 +23,11 @@ const auth = {
   },
 
   async loadData(dataType) {
-    return api.get(`/api/data/load?type=${dataType}`);
+    return api.get(`/api/data/load?data_type=${dataType}`);
   },
 
   async saveData(dataType, data) {
-    return api.post('/api/data/save', { type: dataType, data });
+    return api.post('/api/data/save', { data_type: dataType, data });
   },
 
   setAuth(token, user) {
@@ -43,7 +43,7 @@ const auth = {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem(USER_KEY);
-    window.location.reload();
+    window.location.href = '/login.html';
   },
 
   isAuthenticated() {
