@@ -1,166 +1,145 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
-// Fluxo: Splash → Login → Hub (Vercel + Supabase)
+// Fluxo: login.html → Hub (Vercel + Supabase)
 // =============================================================================
 
 (function() {
   'use strict';
   const $ = id => document.getElementById(id);
 
-  // ═══ SPLASH → LOGIN/HUB ═══
-  window.goFromSplash = function() {
-    const splash = $('splash');
-    if (splash) {
-      splash.classList.add('hide');
-      setTimeout(() => { splash.style.display = 'none'; }, 600);
-    }
-    if (auth && auth.isAuthenticated()) showHub();
-    else showLogin();
-  };
+  // ═══ PROFILE PANEL ═══
+  function initProfilePanel() {
+    const trigger = $('profileTrigger');
+    const panel = $('ppPanel');
+    const overlay = $('ppOverlay');
+    const closeBtn = $('ppClose');
+    const logoutBtn = $('ppLogout');
+    const avatarBig = $('ppAvatarBig');
+    const avatarGrid = $('ppAvatarGrid');
 
-  // ═══ SHOW LOGIN ═══
-  function showLogin() {
-    const login = $('loginScreen');
-    const hub = $('hub');
-    if (hub) hub.style.display = 'none';
-
-    if (login) {
-      login.style.display = 'flex';
-      login.classList.add('show');
-    } else {
-      createLoginScreen();
-    }
-    loadSavedUsers();
-  }
-  window.showLogin = showLogin;
-
-  function createLoginScreen() {
-    if ($('loginScreen')) return;
-    const div = document.createElement('div');
-    div.id = 'loginScreen';
-    div.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:20px;';
-    div.innerHTML = `
-      <div class="nb" style="max-width:420px;width:100%;">
-        <div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
-        <div class="nb-header">
-          <h2 style="text-align:center;width:100%;">Entrar no RetroMynd</h2>
-        </div>
-        <div class="nb-body" style="padding-top:20px;padding-bottom:30px;">
-          <div id="loginSaved" style="margin-bottom:16px;"></div>
-
-          <div style="margin-bottom:14px;display:flex;gap:8px;">
-            <button class="postit-btn tm-btn on" id="ltLogin" onclick="window.switchLoginMode('login')" style="flex:1;padding:8px;font-size:15px;">Login</button>
-            <button class="postit-btn tm-btn" id="ltReg" onclick="window.switchLoginMode('register')" style="flex:1;padding:8px;font-size:15px;">Cadastrar</button>
-          </div>
-
-          <div id="loginNameRow" style="display:none;margin-bottom:10px;">
-            <input id="loginName" type="text" placeholder="Seu nome" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;">
-          </div>
-          <div style="margin-bottom:10px;">
-            <input id="loginEmail" type="email" placeholder="Email" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;">
-          </div>
-          <div style="margin-bottom:14px;">
-            <input id="loginPass" type="password" placeholder="Senha (mín. 6 caracteres)" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')window.doLoginAction()">
-          </div>
-
-          <button id="loginActionBtn" class="postit-btn" onclick="window.doLoginAction()" style="width:100%;padding:12px;font-size:17px;background:var(--pink);color:#fff;border-radius:8px;cursor:pointer;font-weight:700;">Entrar</button>
-
-          <div id="loginErr" style="text-align:center;color:var(--pink);font-size:14px;margin-top:10px;min-height:20px;"></div>
-
-          <div style="text-align:center;margin-top:16px;">
-            <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text-light);letter-spacing:1px;">POWERED BY SUPABASE</span>
-          </div>
-        </div>
-      </div>
-    `;
-    document.body.insertBefore(div, document.body.firstChild);
-  }
-
-  let loginMode = 'login';
-  window.switchLoginMode = function(mode) {
-    loginMode = mode;
-    const nameRow = $('loginNameRow');
-    const ltLogin = $('ltLogin');
-    const ltReg = $('ltReg');
-    const btn = $('loginActionBtn');
-    if (mode === 'register') {
-      if (nameRow) nameRow.style.display = 'block';
-      if (ltLogin) ltLogin.classList.remove('on');
-      if (ltReg) ltReg.classList.add('on');
-      if (btn) btn.textContent = 'Cadastrar';
-    } else {
-      if (nameRow) nameRow.style.display = 'none';
-      if (ltLogin) ltLogin.classList.add('on');
-      if (ltReg) ltReg.classList.remove('on');
-      if (btn) btn.textContent = 'Entrar';
-    }
-  };
-
-  window.doLoginAction = async function() {
-    const err = $('loginErr');
-    const btn = $('loginActionBtn');
-    try {
-      if (err) { err.style.color = 'var(--blue)'; err.textContent = loginMode === 'login' ? 'Entrando...' : 'Cadastrando...'; }
-      if (btn) btn.disabled = true;
-
-      if (loginMode === 'register') {
-        const name = ($('loginName') || {}).value || '';
-        const email = ($('loginEmail') || {}).value || '';
-        const pass = ($('loginPass') || {}).value || '';
-        await auth.register(email, pass, name);
-      } else {
-        const email = ($('loginEmail') || {}).value || '';
-        const pass = ($('loginPass') || {}).value || '';
-        await auth.login(email, pass);
+    if (trigger) trigger.onclick = () => openProfile();
+    if (closeBtn) closeBtn.onclick = () => closeProfile();
+    if (overlay) overlay.onclick = () => closeProfile();
+    if (logoutBtn) logoutBtn.onclick = () => {
+      if (auth) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('rms_user');
+        window.location.href = '/login.html';
       }
-      if (err) err.textContent = '';
-      showHub();
-    } catch(e) {
-      if (err) { err.style.color = 'var(--pink)'; err.textContent = e.message || 'Erro ao conectar'; }
-    } finally {
-      if (btn) btn.disabled = false;
-    }
-  };
+    };
 
-  function loadSavedUsers() {
-    const container = $('loginSaved');
-    if (!container) return;
+    // Avatar picker
+    const avatars = ['💖','🎮','🧠','🔥','⭐','🌙','🎵','🦊','🐱','🌸','💜','🎯','🍀','🌈','✨','🎪'];
+    if (avatarGrid) {
+      avatarGrid.innerHTML = avatars.map(a => `<span class="pp-avatar-opt" onclick="window.pickAvatar('${a}')">${a}</span>`).join('');
+    }
+    if (avatarBig) avatarBig.onclick = () => {
+      if (avatarGrid) avatarGrid.classList.toggle('open');
+    };
+
+    // Name/bio save on blur
+    const ppName = $('ppName');
+    const ppBio = $('ppBio');
+    if (ppName) ppName.onblur = () => saveProfile();
+    if (ppBio) ppBio.onblur = () => saveProfile();
+  }
+
+  function openProfile() {
+    const panel = $('ppPanel');
+    const overlay = $('ppOverlay');
+    if (panel) panel.classList.add('open');
+    if (overlay) overlay.classList.add('open');
+
+    // Load user data
     const user = auth ? auth.getUser() : null;
-    if (user && auth.isAuthenticated()) {
-      container.innerHTML = `
-        <div style="text-align:center;margin-bottom:12px;">
-          <div style="font-size:14px;color:var(--text-light);margin-bottom:8px;">Entrar rapidinho:</div>
-          <button class="postit-btn" onclick="window.quickLogin()" style="padding:10px 20px;font-size:16px;background:var(--postit-lilac);color:#7C3AED;border-radius:8px;cursor:pointer;">
-            ${user.name || 'Estudante'} (${user.email || ''})
-          </button>
-        </div>
-        <div style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:8px;">ou entre com outra conta</div>
+    if (user) {
+      const ppName = $('ppName');
+      const ppEmail = $('ppEmail');
+      const ppBio = $('ppBio');
+      const ppAvatarBig = $('ppAvatarBig');
+      const ppSince = $('ppSince');
+      const ppStats = $('ppStats');
+
+      if (ppName) ppName.value = user.name || '';
+      if (ppEmail) ppEmail.textContent = user.email || '';
+      if (ppBio) ppBio.value = user.bio || localStorage.getItem('rms_bio') || '';
+      if (ppAvatarBig) ppAvatarBig.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
+      if (ppSince) ppSince.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR') : 'Hoje';
+
+      // Stats
+      const goals = getGoals();
+      const notes = getNotes();
+      const streak = parseInt(localStorage.getItem('rms_streak') || '0');
+      const pomos = parseInt(localStorage.getItem('rms_pomodoros') || '0');
+      if (ppStats) ppStats.innerHTML = `
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--pink)">${streak}</div><div class="pp-stat-lbl">Streak</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--blue)">${notes.length}</div><div class="pp-stat-lbl">Notas</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--lavender)">${goals.length}</div><div class="pp-stat-lbl">Metas</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--mint)">${pomos}</div><div class="pp-stat-lbl">Pomodoros</div></div>
       `;
-    } else {
-      container.innerHTML = '';
     }
   }
 
-  window.quickLogin = function() {
-    if (auth && auth.isAuthenticated()) showHub();
+  function closeProfile() {
+    const panel = $('ppPanel');
+    const overlay = $('ppOverlay');
+    if (panel) panel.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  }
+
+  window.pickAvatar = function(emoji) {
+    const ppAvatarBig = $('ppAvatarBig');
+    const headerAvatar = $('headerAvatar');
+    if (ppAvatarBig) ppAvatarBig.textContent = emoji;
+    if (headerAvatar) headerAvatar.textContent = emoji;
+    localStorage.setItem('rms_avatar', emoji);
+    const grid = $('ppAvatarGrid');
+    if (grid) grid.classList.remove('open');
+
+    // Update user object
+    const user = auth ? auth.getUser() : null;
+    if (user) { user.avatar = emoji; localStorage.setItem('rms_user', JSON.stringify(user)); }
   };
+
+  function saveProfile() {
+    const ppName = $('ppName');
+    const ppBio = $('ppBio');
+    const name = ppName ? ppName.value : '';
+    const bio = ppBio ? ppBio.value : '';
+    localStorage.setItem('rms_bio', bio);
+
+    const user = auth ? auth.getUser() : null;
+    if (user) {
+      user.name = name;
+      user.bio = bio;
+      localStorage.setItem('rms_user', JSON.stringify(user));
+      const headerName = $('headerName');
+      if (headerName) headerName.textContent = name || user.email || 'Estudante';
+    }
+
+    // Save to server
+    if (auth && auth.updateProfile) {
+      auth.updateProfile({ name, bio }).catch(() => {});
+    }
+  }
 
   // ═══ SHOW HUB ═══
   function showHub() {
-    const login = $('loginScreen');
     const hub = $('hub');
-    if (login) login.style.display = 'none';
     if (hub) { hub.style.display = 'block'; hub.classList.add('show'); }
 
     const user = auth ? auth.getUser() : null;
     if (user) {
       const headerName = $('headerName');
+      const headerAvatar = $('headerAvatar');
       if (headerName) headerName.textContent = user.name || user.email || 'Estudante';
+      if (headerAvatar) headerAvatar.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
     }
 
     updateDate();
     loadStats();
     syncFromServer();
+    initProfilePanel();
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
     try { initNotes(); } catch(e) {}
@@ -224,9 +203,6 @@
       } catch(e) { console.log('[RetroMynd] Save error:', e.message); }
     }, 1500);
   }
-
-  // ═══ LOGOUT ═══
-  window.doLogout = function() { if (auth) auth.logout(); };
 
   // ═══ DATE ═══
   function updateDate() {
@@ -423,12 +399,77 @@
     const rlNew=$('rlNew'); if(rlNew) rlNew.onclick=initRetroLesson;
   }
 
+  // ═══ RETROLESSON FULLSCREEN ═══
+  window.openLesson = function() {
+    const panel = $('lessonPanel');
+    const overlay = $('lessonOverlay');
+    const iframe = $('lessonIframe');
+    if (panel) panel.classList.add('open');
+    if (overlay) overlay.classList.add('open');
+    if (iframe && !iframe.src.includes('blob:')) {
+      const dataEl = $('lessonData');
+      if (dataEl) {
+        try {
+          const html = atob(dataEl.textContent.trim());
+          const blob = new Blob([html], { type: 'text/html' });
+          iframe.src = URL.createObjectURL(blob);
+        } catch(e) { console.log('Lesson load error:', e); }
+      }
+    }
+  };
+  window.closeLesson = function() {
+    const panel = $('lessonPanel');
+    const overlay = $('lessonOverlay');
+    if (panel) panel.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  };
+
+  // ═══ THEME ═══
+  window.setTheme = function(theme) {
+    if (theme === 'system') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    localStorage.setItem('rms_theme', theme);
+    document.querySelectorAll('.theme-toggle-opt').forEach(opt => {
+      opt.classList.toggle('active', opt.dataset.themeVal === theme);
+    });
+    // Generate stars for dark mode
+    if (document.documentElement.getAttribute('data-theme') === 'dark') generateStars();
+  };
+
+  function generateStars() {
+    const container = $('starsContainer');
+    if (!container || container.children.length > 0) return;
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+      star.style.setProperty('--bright', (0.4 + Math.random() * 0.6));
+      star.style.setProperty('--scale', (1.1 + Math.random() * 0.5));
+      star.style.animationDelay = Math.random() * 3 + 's';
+      container.appendChild(star);
+    }
+  }
+
   // ═══ INIT ═══
   function init() {
-    const splash = $('splash');
-    if (splash && splash.style.display !== 'none' && !splash.classList.contains('hide')) return;
-    if (auth && auth.isAuthenticated()) showHub();
-    else showLogin();
+    // Restore theme
+    const savedTheme = localStorage.getItem('rms_theme') || 'light';
+    window.setTheme(savedTheme);
+
+    // Auth guard already handles redirect to login.html
+    // If we're here, user is authenticated
+    if (auth && auth.isAuthenticated()) {
+      showHub();
+    } else {
+      // Fallback: redirect to login
+      window.location.href = '/login.html';
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
