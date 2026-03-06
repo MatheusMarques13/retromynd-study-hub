@@ -1,14 +1,11 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
-// Fluxo: Splash → Login → Hub (offline-first)
+// Fluxo: Splash → Login → Hub (Vercel + Supabase)
 // =============================================================================
 
 (function() {
   'use strict';
   const $ = id => document.getElementById(id);
-
-  // ═══ CHECK BACKEND ═══
-  if (api && api.checkHealth) api.checkHealth();
 
   // ═══ SPLASH → LOGIN/HUB ═══
   window.goFromSplash = function() {
@@ -25,20 +22,20 @@
   function showLogin() {
     const login = $('loginScreen');
     const hub = $('hub');
-    if (login) { login.style.display = 'flex'; login.classList.add('show'); }
     if (hub) hub.style.display = 'none';
 
-    // Se não existe loginScreen no HTML, criar um
-    if (!login) createLoginScreen();
-
+    if (login) {
+      login.style.display = 'flex';
+      login.classList.add('show');
+    } else {
+      createLoginScreen();
+    }
     loadSavedUsers();
   }
   window.showLogin = showLogin;
 
   function createLoginScreen() {
-    const existing = $('loginScreen');
-    if (existing) return;
-
+    if ($('loginScreen')) return;
     const div = document.createElement('div');
     div.id = 'loginScreen';
     div.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:20px;';
@@ -46,24 +43,24 @@
       <div class="nb" style="max-width:420px;width:100%;">
         <div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
         <div class="nb-header">
-          <h2 style="text-align:center;width:100;">Entrar no RetroMynd</h2>
+          <h2 style="text-align:center;width:100%;">Entrar no RetroMynd</h2>
         </div>
         <div class="nb-body" style="padding-top:20px;padding-bottom:30px;">
           <div id="loginSaved" style="margin-bottom:16px;"></div>
 
-          <div id="loginFormToggle" style="margin-bottom:14px;display:flex;gap:8px;">
+          <div style="margin-bottom:14px;display:flex;gap:8px;">
             <button class="postit-btn tm-btn on" id="ltLogin" onclick="window.switchLoginMode('login')" style="flex:1;padding:8px;font-size:15px;">Login</button>
             <button class="postit-btn tm-btn" id="ltReg" onclick="window.switchLoginMode('register')" style="flex:1;padding:8px;font-size:15px;">Cadastrar</button>
           </div>
 
           <div id="loginNameRow" style="display:none;margin-bottom:10px;">
-            <input id="loginName" type="text" placeholder="Seu nome" class="goal-input-row" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;">
+            <input id="loginName" type="text" placeholder="Seu nome" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;">
           </div>
           <div style="margin-bottom:10px;">
             <input id="loginEmail" type="email" placeholder="Email" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;">
           </div>
           <div style="margin-bottom:14px;">
-            <input id="loginPass" type="password" placeholder="Senha" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')window.doLoginAction()">
+            <input id="loginPass" type="password" placeholder="Senha (mín. 6 caracteres)" style="width:100%;font-family:'Kalam',cursive;font-size:16px;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')window.doLoginAction()">
           </div>
 
           <button id="loginActionBtn" class="postit-btn" onclick="window.doLoginAction()" style="width:100%;padding:12px;font-size:17px;background:var(--pink);color:#fff;border-radius:8px;cursor:pointer;font-weight:700;">Entrar</button>
@@ -71,7 +68,7 @@
           <div id="loginErr" style="text-align:center;color:var(--pink);font-size:14px;margin-top:10px;min-height:20px;"></div>
 
           <div style="text-align:center;margin-top:16px;">
-            <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text-light);letter-spacing:1px;">FUNCIONA OFFLINE TAMBEM</span>
+            <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text-light);letter-spacing:1px;">POWERED BY SUPABASE</span>
           </div>
         </div>
       </div>
@@ -86,7 +83,6 @@
     const ltLogin = $('ltLogin');
     const ltReg = $('ltReg');
     const btn = $('loginActionBtn');
-
     if (mode === 'register') {
       if (nameRow) nameRow.style.display = 'block';
       if (ltLogin) ltLogin.classList.remove('on');
@@ -102,9 +98,10 @@
 
   window.doLoginAction = async function() {
     const err = $('loginErr');
+    const btn = $('loginActionBtn');
     try {
-      if (err) err.style.color = 'var(--blue)';
-      if (err) err.textContent = loginMode === 'login' ? 'Entrando...' : 'Cadastrando...';
+      if (err) { err.style.color = 'var(--blue)'; err.textContent = loginMode === 'login' ? 'Entrando...' : 'Cadastrando...'; }
+      if (btn) btn.disabled = true;
 
       if (loginMode === 'register') {
         const name = ($('loginName') || {}).value || '';
@@ -116,9 +113,12 @@
         const pass = ($('loginPass') || {}).value || '';
         await auth.login(email, pass);
       }
+      if (err) err.textContent = '';
       showHub();
     } catch(e) {
-      if (err) { err.style.color = 'var(--pink)'; err.textContent = e.message; }
+      if (err) { err.style.color = 'var(--pink)'; err.textContent = e.message || 'Erro ao conectar'; }
+    } finally {
+      if (btn) btn.disabled = false;
     }
   };
 
@@ -149,7 +149,7 @@
   function showHub() {
     const login = $('loginScreen');
     const hub = $('hub');
-    if (login) { login.style.display = 'none'; }
+    if (login) login.style.display = 'none';
     if (hub) { hub.style.display = 'block'; hub.classList.add('show'); }
 
     const user = auth ? auth.getUser() : null;
@@ -160,6 +160,7 @@
 
     updateDate();
     loadStats();
+    syncFromServer();
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
     try { initNotes(); } catch(e) {}
@@ -168,13 +169,68 @@
   }
   window.showHub = showHub;
 
-  // ═══ PROFILE ═══
+  // ═══ SYNC FROM SUPABASE ═══
+  async function syncFromServer() {
+    if (!auth || !auth.isAuthenticated()) return;
+    try {
+      const [goals, notes, timer, streak] = await Promise.allSettled([
+        auth.loadData('goals'),
+        auth.loadData('notes'),
+        auth.loadData('timer'),
+        auth.loadData('streak')
+      ]);
+      if (goals.status === 'fulfilled' && goals.value.data) {
+        const d = goals.value.data;
+        if (d.items) localStorage.setItem('rms_goals', JSON.stringify(d.items));
+      }
+      if (notes.status === 'fulfilled' && notes.value.data) {
+        const d = notes.value.data;
+        if (d.notes) localStorage.setItem('rms_notes', JSON.stringify(d.notes));
+      }
+      if (timer.status === 'fulfilled' && timer.value.data) {
+        const d = timer.value.data;
+        if (d.pomodoros != null) localStorage.setItem('rms_pomodoros', d.pomodoros);
+      }
+      if (streak.status === 'fulfilled' && streak.value.data) {
+        const d = streak.value.data;
+        if (d.days) localStorage.setItem('rms_streak_days', JSON.stringify(d.days || {}));
+        if (d.current != null) localStorage.setItem('rms_streak', d.current);
+      }
+      loadStats();
+      try { renderGoals(); } catch(e) {}
+      try { renderNotesList(); } catch(e) {}
+      try { initStreak(); } catch(e) {}
+    } catch(e) { console.log('[RetroMynd] Sync error (using local data):', e.message); }
+  }
+
+  // ═══ SAVE TO SUPABASE (debounced) ═══
+  let saveTimeout = null;
+  function saveToServer(type) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(async () => {
+      if (!auth || !auth.isAuthenticated()) return;
+      try {
+        if (type === 'goals') {
+          await auth.saveData('goals', { items: getGoals(), history: [] });
+        } else if (type === 'notes') {
+          await auth.saveData('notes', { notes: getNotes() });
+        } else if (type === 'timer') {
+          await auth.saveData('timer', { pomodoros: parseInt(localStorage.getItem('rms_pomodoros') || '0'), totalMinutes: 0 });
+        } else if (type === 'streak') {
+          const days = JSON.parse(localStorage.getItem('rms_streak_days') || '{}');
+          const current = parseInt(localStorage.getItem('rms_streak') || '0');
+          await auth.saveData('streak', { current, best: current, days });
+        }
+      } catch(e) { console.log('[RetroMynd] Save error:', e.message); }
+    }, 1500);
+  }
+
+  // ═══ LOGOUT ═══
   window.doLogout = function() { if (auth) auth.logout(); };
 
   // ═══ DATE ═══
   function updateDate() {
-    const el = $('dateD');
-    if (!el) return;
+    const el = $('dateD'); if (!el) return;
     const d = new Date();
     const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
     const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -183,15 +239,17 @@
 
   // ═══ STATS ═══
   function loadStats() {
-    const goals = JSON.parse(localStorage.getItem('rms_goals') || '[]');
-    const notes = JSON.parse(localStorage.getItem('rms_notes') || '[]');
+    const goals = getGoals();
+    const notes = getNotes();
     const streak = parseInt(localStorage.getItem('rms_streak') || '0');
     const pomos = parseInt(localStorage.getItem('rms_pomodoros') || '0');
-    const doneGoals = goals.filter(g => g.done).length;
+    const today = new Date().toDateString();
+    const todayGoals = goals.filter(g => new Date(g.date).toDateString() === today);
+    const doneGoals = todayGoals.filter(g => g.done).length;
 
     const sS = $('sS'); if (sS) sS.textContent = streak;
     const sN = $('sN'); if (sN) sN.textContent = notes.length;
-    const sG = $('sG'); if (sG) sG.textContent = `${doneGoals}/${goals.length}`;
+    const sG = $('sG'); if (sG) sG.textContent = `${doneGoals}/${todayGoals.length}`;
     const sP = $('sP'); if (sP) sP.textContent = pomos;
   }
   window.loadStats = loadStats;
@@ -200,19 +258,14 @@
   let pomTimer = null, pomSec = 25 * 60, pomRunning = false, pomMode = 25;
 
   function initPomodoro() {
-    const modes = document.querySelectorAll('.tm-btn[data-min]');
-    modes.forEach(btn => {
+    document.querySelectorAll('.tm-btn[data-min]').forEach(btn => {
       btn.onclick = () => {
-        pomMode = parseInt(btn.dataset.min);
-        pomSec = pomMode * 60;
-        pomRunning = false;
-        clearInterval(pomTimer);
-        updateTimerDisplay();
-        modes.forEach(b => b.classList.remove('on'));
+        pomMode = parseInt(btn.dataset.min); pomSec = pomMode * 60;
+        pomRunning = false; clearInterval(pomTimer); updateTimerDisplay();
+        document.querySelectorAll('.tm-btn[data-min]').forEach(b => b.classList.remove('on'));
         btn.classList.add('on');
         const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
-        const tL = $('tL');
-        if (tL) tL.textContent = pomMode <= 15 ? 'BREAK TIME' : 'FOCUS MODE';
+        const tL = $('tL'); if (tL) tL.textContent = pomMode <= 15 ? 'BREAK TIME' : 'FOCUS MODE';
       };
     });
     const tB = $('tB'); if (tB) tB.onclick = toggleTimer;
@@ -234,7 +287,8 @@
           const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
           if (pomMode >= 25) {
             const p = parseInt(localStorage.getItem('rms_pomodoros') || '0') + 1;
-            localStorage.setItem('rms_pomodoros', p); loadStats();
+            localStorage.setItem('rms_pomodoros', p);
+            loadStats(); saveToServer('timer');
           }
         }
         updateTimerDisplay();
@@ -261,7 +315,7 @@
     renderGoals();
   }
   function getGoals() { return JSON.parse(localStorage.getItem('rms_goals') || '[]'); }
-  function saveGoals(g) { localStorage.setItem('rms_goals', JSON.stringify(g)); loadStats(); }
+  function saveGoals(g) { localStorage.setItem('rms_goals', JSON.stringify(g)); loadStats(); saveToServer('goals'); }
 
   function addGoal() {
     const input = $('goalInput'); if (!input || !input.value.trim()) return;
@@ -285,12 +339,13 @@
   }
   window.toggleGoal = function(id) { const g=getGoals(),f=g.find(x=>x.id===id); if(f)f.done=!f.done; saveGoals(g); renderGoals(); };
   window.deleteGoal = function(id) { saveGoals(getGoals().filter(x=>x.id!==id)); renderGoals(); };
+  window.renderGoals = renderGoals;
 
   // ═══ NOTES ═══
   let currentNote = null;
   function initNotes() { renderNotesList(); }
   function getNotes() { return JSON.parse(localStorage.getItem('rms_notes') || '[]'); }
-  function saveNotes(n) { localStorage.setItem('rms_notes', JSON.stringify(n)); loadStats(); }
+  function saveNotes(n) { localStorage.setItem('rms_notes', JSON.stringify(n)); loadStats(); saveToServer('notes'); }
 
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
@@ -307,6 +362,7 @@
       `).join('')}
     </div>`;
   }
+  window.renderNotesList = renderNotesList;
 
   window.createNote = function() {
     const notes = getNotes();
@@ -345,7 +401,11 @@
     let streak=0;
     for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(data[d.toISOString().split('T')[0]])streak++;else break;}
     localStorage.setItem('rms_streak',streak);
-    if(btn) btn.onclick=()=>{data[new Date().toISOString().split('T')[0]]=true;localStorage.setItem('rms_streak_days',JSON.stringify(data));initStreak();loadStats();};
+    if(btn) btn.onclick=()=>{
+      data[new Date().toISOString().split('T')[0]]=true;
+      localStorage.setItem('rms_streak_days',JSON.stringify(data));
+      initStreak(); loadStats(); saveToServer('streak');
+    };
   }
 
   // ═══ RETROLESSON ═══
@@ -366,18 +426,11 @@
   // ═══ INIT ═══
   function init() {
     const splash = $('splash');
-    // Se splash tá visível, espera o click
-    if (splash && splash.style.display !== 'none' && !splash.classList.contains('hide')) {
-      return; // goFromSplash vai cuidar
-    }
-    // Sem splash = decide direto
+    if (splash && splash.style.display !== 'none' && !splash.classList.contains('hide')) return;
     if (auth && auth.isAuthenticated()) showHub();
     else showLogin();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
