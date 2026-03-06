@@ -1,11 +1,119 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
 // Fluxo: login.html → Hub (Vercel + Supabase)
+// PERSISTENCE: Server-first. Load from server on boot, fallback to localStorage.
 // =============================================================================
 
 (function() {
   'use strict';
   const $ = id => document.getElementById(id);
+
+  // ═══ PERSISTENCE LAYER ═══
+  // All data goes through here. Saves to localStorage immediately + queues server save.
+  const store = {
+    _dirty: new Set(),
+    _saving: false,
+
+    get(key, fallback) {
+      try {
+        const raw = localStorage.getItem('rms_' + key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch { return fallback; }
+    },
+
+    set(key, value, sync = true) {
+      localStorage.setItem('rms_' + key, JSON.stringify(value));
+      if (sync) {
+        this._dirty.add(key);
+        this._debouncedFlush();
+      }
+    },
+
+    getRaw(key, fallback) {
+      const v = localStorage.getItem('rms_' + key);
+      return v != null ? v : fallback;
+    },
+
+    setRaw(key, value, sync = true) {
+      localStorage.setItem('rms_' + key, String(value));
+      if (sync) {
+        this._dirty.add(key);
+        this._debouncedFlush();
+      }
+    },
+
+    _flushTimer: null,
+    _debouncedFlush() {
+      clearTimeout(this._flushTimer);
+      this._flushTimer = setTimeout(() => this.flush(), 2000);
+    },
+
+    // Maps localStorage keys to server data_type + payload builder
+    _serverMap: {
+      goals:        () => ({ type: 'goals',  data: { items: store.get('goals', []), history: [] } }),
+      notes:        () => ({ type: 'notes',  data: { notes: store.get('notes', []) } }),
+      pomodoros:    () => ({ type: 'timer',  data: { pomodoros: parseInt(store.getRaw('pomodoros', '0')), totalMinutes: 0 } }),
+      streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
+      streak_days:  () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
+    },
+
+    async flush() {
+      if (this._saving || !auth || !auth.isAuthenticated() || this._dirty.size === 0) return;
+      this._saving = true;
+      // Collect unique server save operations
+      const ops = new Map();
+      for (const key of this._dirty) {
+        const mapper = this._serverMap[key];
+        if (mapper) {
+          const { type, data } = mapper();
+          ops.set(type, data); // dedup by type (streak_days + streak = one save)
+        }
+      }
+      this._dirty.clear();
+      for (const [type, data] of ops) {
+        try {
+          await auth.saveData(type, data);
+          console.log('[RetroMynd] Saved', type);
+        } catch (e) {
+          console.warn('[RetroMynd] Save failed:', type, e.message);
+          // Re-mark as dirty so next flush retries
+          this._dirty.add(type);
+        }
+      }
+      this._saving = false;
+      // If new dirty items appeared during save, flush again
+      if (this._dirty.size > 0) setTimeout(() => this.flush(), 1000);
+    },
+
+    // Force immediate flush (used on beforeunload)
+    flushSync() {
+      if (!auth || !auth.isAuthenticated() || this._dirty.size === 0) return;
+      const ops = new Map();
+      for (const key of this._dirty) {
+        const mapper = this._serverMap[key];
+        if (mapper) {
+          const { type, data } = mapper();
+          ops.set(type, data);
+        }
+      }
+      this._dirty.clear();
+      for (const [type, data] of ops) {
+        try {
+          const token = localStorage.getItem('token');
+          // Use sendBeacon for reliable unload saves
+          const blob = new Blob([JSON.stringify({ data_type: type, data })], { type: 'application/json' });
+          navigator.sendBeacon('/api/data/save?token=' + token, blob);
+        } catch (e) { /* best effort */ }
+      }
+    }
+  };
+  window._store = store;
+
+  // Save on tab close / navigate away
+  window.addEventListener('beforeunload', () => store.flushSync());
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') store.flush();
+  });
 
   // ═══ PROFILE PANEL ═══
   function initProfilePanel() {
@@ -21,11 +129,12 @@
     if (closeBtn) closeBtn.onclick = () => closeProfile();
     if (overlay) overlay.onclick = () => closeProfile();
     if (logoutBtn) logoutBtn.onclick = () => {
-      if (auth) {
+      store.flush(); // save before logout
+      setTimeout(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('rms_user');
         window.location.href = '/login.html';
-      }
+      }, 500);
     };
 
     const avatars = ['💖','🎮','🧠','🔥','⭐','🌙','🎵','🦊','🐱','🌸','💜','🎯','🍀','🌈','✨','🎪'];
@@ -65,8 +174,8 @@
 
       const goals = getGoals();
       const notes = getNotes();
-      const streak = parseInt(localStorage.getItem('rms_streak') || '0');
-      const pomos = parseInt(localStorage.getItem('rms_pomodoros') || '0');
+      const streak = parseInt(store.getRaw('streak', '0'));
+      const pomos = parseInt(store.getRaw('pomodoros', '0'));
       if (ppStats) ppStats.innerHTML = `
         <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--pink)">${streak}</div><div class="pp-stat-lbl">Streak</div></div>
         <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--blue)">${notes.length}</div><div class="pp-stat-lbl">Notas</div></div>
@@ -112,7 +221,7 @@
   }
 
   // ═══ SHOW HUB ═══
-  function showHub() {
+  async function showHub() {
     const hub = $('hub');
     if (hub) { hub.style.display = 'block'; hub.classList.add('show'); }
     const user = auth ? auth.getUser() : null;
@@ -122,7 +231,13 @@
       if (headerName) headerName.textContent = user.name || user.email || 'Estudante';
       if (headerAvatar) headerAvatar.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
     }
-    updateDate(); loadStats(); syncFromServer(); initProfilePanel();
+    updateDate();
+    initProfilePanel();
+
+    // CRITICAL: Sync from server FIRST, then render everything
+    await syncFromServer();
+
+    loadStats();
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
     try { initNotes(); } catch(e) {}
@@ -132,56 +247,54 @@
   window.showHub = showHub;
 
   // ═══ SYNC FROM SUPABASE ═══
-  // load.js returns: { goals: { data: {...}, updated_at }, notes: { data: {...}, updated_at }, ... }
-  // When calling loadData('goals'), it returns the FULL object (filtered by type query)
   async function syncFromServer() {
     if (!auth || !auth.isAuthenticated()) return;
     try {
-      // Load all data at once (no type filter) for efficiency
       const allData = await auth.loadData('');
-      // allData = { goals: {data, updated_at}, notes: {data, updated_at}, ... }
+      if (!allData || typeof allData !== 'object') {
+        console.log('[RetroMynd] No server data yet');
+        return;
+      }
 
-      if (allData && allData.goals && allData.goals.data) {
+      // Goals
+      if (allData.goals && allData.goals.data) {
         const d = allData.goals.data;
-        if (d.items) localStorage.setItem('rms_goals', JSON.stringify(d.items));
-      }
-      if (allData && allData.notes && allData.notes.data) {
-        const d = allData.notes.data;
-        if (d.notes) localStorage.setItem('rms_notes', JSON.stringify(d.notes));
-      }
-      if (allData && allData.timer && allData.timer.data) {
-        const d = allData.timer.data;
-        if (d.pomodoros != null) localStorage.setItem('rms_pomodoros', d.pomodoros);
-      }
-      if (allData && allData.streak && allData.streak.data) {
-        const d = allData.streak.data;
-        if (d.days) localStorage.setItem('rms_streak_days', JSON.stringify(d.days || {}));
-        if (d.current != null) localStorage.setItem('rms_streak', d.current);
-      }
-      loadStats();
-      try { renderGoals(); } catch(e) {}
-      try { renderNotesList(); } catch(e) {}
-      try { initStreak(); } catch(e) {}
-    } catch(e) { console.log('[RetroMynd] Sync error:', e.message); }
-  }
-
-  // ═══ SAVE TO SUPABASE (debounced) ═══
-  let saveTimeout = null;
-  function saveToServer(type) {
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(async () => {
-      if (!auth || !auth.isAuthenticated()) return;
-      try {
-        if (type === 'goals') await auth.saveData('goals', { items: getGoals(), history: [] });
-        else if (type === 'notes') await auth.saveData('notes', { notes: getNotes() });
-        else if (type === 'timer') await auth.saveData('timer', { pomodoros: parseInt(localStorage.getItem('rms_pomodoros') || '0'), totalMinutes: 0 });
-        else if (type === 'streak') {
-          const days = JSON.parse(localStorage.getItem('rms_streak_days') || '{}');
-          const current = parseInt(localStorage.getItem('rms_streak') || '0');
-          await auth.saveData('streak', { current, best: current, days });
+        if (d.items && Array.isArray(d.items)) {
+          store.set('goals', d.items, false); // false = don't re-sync to server
         }
-      } catch(e) { console.log('[RetroMynd] Save error:', e.message); }
-    }, 1500);
+      }
+
+      // Notes
+      if (allData.notes && allData.notes.data) {
+        const d = allData.notes.data;
+        if (d.notes && Array.isArray(d.notes)) {
+          store.set('notes', d.notes, false);
+        }
+      }
+
+      // Timer/Pomodoros
+      if (allData.timer && allData.timer.data) {
+        const d = allData.timer.data;
+        if (d.pomodoros != null) {
+          store.setRaw('pomodoros', d.pomodoros, false);
+        }
+      }
+
+      // Streak
+      if (allData.streak && allData.streak.data) {
+        const d = allData.streak.data;
+        if (d.days && typeof d.days === 'object') {
+          store.set('streak_days', d.days, false);
+        }
+        if (d.current != null) {
+          store.setRaw('streak', d.current, false);
+        }
+      }
+
+      console.log('[RetroMynd] Synced from server ✓');
+    } catch(e) {
+      console.warn('[RetroMynd] Sync error (using local data):', e.message);
+    }
   }
 
   // ═══ DATE ═══
@@ -196,8 +309,8 @@
   // ═══ STATS ═══
   function loadStats() {
     const goals = getGoals(), notes = getNotes();
-    const streak = parseInt(localStorage.getItem('rms_streak') || '0');
-    const pomos = parseInt(localStorage.getItem('rms_pomodoros') || '0');
+    const streak = parseInt(store.getRaw('streak', '0'));
+    const pomos = parseInt(store.getRaw('pomodoros', '0'));
     const today = new Date().toDateString();
     const todayGoals = goals.filter(g => new Date(g.date).toDateString() === today);
     const doneGoals = todayGoals.filter(g => g.done).length;
@@ -240,8 +353,9 @@
           clearInterval(pomTimer); pomRunning = false; pomSec = 0;
           const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
           if (pomMode >= 25) {
-            const p = parseInt(localStorage.getItem('rms_pomodoros') || '0') + 1;
-            localStorage.setItem('rms_pomodoros', p); loadStats(); saveToServer('timer');
+            const p = parseInt(store.getRaw('pomodoros', '0')) + 1;
+            store.setRaw('pomodoros', p);
+            loadStats();
           }
         }
         updateTimerDisplay();
@@ -267,8 +381,8 @@
     if (input) input.onkeydown = e => { if (e.key === 'Enter') addGoal(); };
     renderGoals();
   }
-  function getGoals() { return JSON.parse(localStorage.getItem('rms_goals') || '[]'); }
-  function saveGoals(g) { localStorage.setItem('rms_goals', JSON.stringify(g)); loadStats(); saveToServer('goals'); }
+  function getGoals() { return store.get('goals', []); }
+  function saveGoals(g) { store.set('goals', g); loadStats(); }
 
   function addGoal() {
     const input = $('goalInput'); if (!input || !input.value.trim()) return;
@@ -300,8 +414,8 @@
   let selectedPostitColor = 'postit-yellow';
 
   function initNotes() { renderNotesList(); }
-  function getNotes() { return JSON.parse(localStorage.getItem('rms_notes') || '[]'); }
-  function saveNotes(n) { localStorage.setItem('rms_notes', JSON.stringify(n)); loadStats(); saveToServer('notes'); }
+  function getNotes() { return store.get('notes', []); }
+  function saveNotes(n) { store.set('notes', n); loadStats(); }
 
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
@@ -333,7 +447,6 @@
     if (!note.postits) note.postits = [];
     currentNote = note;
     selectedPostitColor = 'postit-yellow';
-    const app = $('notesApp'); if(!app) return;
     renderNoteEditor();
   };
 
@@ -433,7 +546,7 @@
   // ═══ STREAK ═══
   function initStreak() {
     const container = $('skD'), btn = $('skBtn'); if(!container) return;
-    const data = JSON.parse(localStorage.getItem('rms_streak_days')||'{}');
+    const data = store.get('streak_days', {});
     const today = new Date(), dias = ['D','S','T','Q','Q','S','S'];
     let html = '';
     for (let i=6;i>=0;i--) {
@@ -444,11 +557,12 @@
     container.innerHTML = html;
     let streak=0;
     for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(data[d.toISOString().split('T')[0]])streak++;else break;}
-    localStorage.setItem('rms_streak',streak);
+    store.setRaw('streak', streak, false);
     if(btn) btn.onclick=()=>{
       data[new Date().toISOString().split('T')[0]]=true;
-      localStorage.setItem('rms_streak_days',JSON.stringify(data));
-      initStreak(); loadStats(); saveToServer('streak');
+      store.set('streak_days', data);
+      store.setRaw('streak', 0); // will be recalculated
+      initStreak(); loadStats();
     };
   }
 
@@ -482,7 +596,7 @@
     if (overlay) overlay.classList.remove('open');
   };
 
-  // ═══ THEME (light / system / dark / retro) ═══
+  // ═══ THEME (light / system / dark) ═══
   window.setTheme = function(theme) {
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
