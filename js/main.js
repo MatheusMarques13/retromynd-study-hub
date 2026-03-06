@@ -9,7 +9,6 @@
   const $ = id => document.getElementById(id);
 
   // ═══ PERSISTENCE LAYER ═══
-  // All data goes through here. Saves to localStorage immediately + queues server save.
   const store = {
     _dirty: new Set(),
     _saving: false,
@@ -48,7 +47,6 @@
       this._flushTimer = setTimeout(() => this.flush(), 2000);
     },
 
-    // Maps localStorage keys to server data_type + payload builder
     _serverMap: {
       goals:        () => ({ type: 'goals',  data: { items: store.get('goals', []), history: [] } }),
       notes:        () => ({ type: 'notes',  data: { notes: store.get('notes', []) } }),
@@ -60,13 +58,12 @@
     async flush() {
       if (this._saving || !auth || !auth.isAuthenticated() || this._dirty.size === 0) return;
       this._saving = true;
-      // Collect unique server save operations
       const ops = new Map();
       for (const key of this._dirty) {
         const mapper = this._serverMap[key];
         if (mapper) {
           const { type, data } = mapper();
-          ops.set(type, data); // dedup by type (streak_days + streak = one save)
+          ops.set(type, data);
         }
       }
       this._dirty.clear();
@@ -76,16 +73,13 @@
           console.log('[RetroMynd] Saved', type);
         } catch (e) {
           console.warn('[RetroMynd] Save failed:', type, e.message);
-          // Re-mark as dirty so next flush retries
           this._dirty.add(type);
         }
       }
       this._saving = false;
-      // If new dirty items appeared during save, flush again
       if (this._dirty.size > 0) setTimeout(() => this.flush(), 1000);
     },
 
-    // Force immediate flush (used on beforeunload)
     flushSync() {
       if (!auth || !auth.isAuthenticated() || this._dirty.size === 0) return;
       const ops = new Map();
@@ -100,7 +94,6 @@
       for (const [type, data] of ops) {
         try {
           const token = localStorage.getItem('token');
-          // Use sendBeacon for reliable unload saves
           const blob = new Blob([JSON.stringify({ data_type: type, data })], { type: 'application/json' });
           navigator.sendBeacon('/api/data/save?token=' + token, blob);
         } catch (e) { /* best effort */ }
@@ -109,7 +102,6 @@
   };
   window._store = store;
 
-  // Save on tab close / navigate away
   window.addEventListener('beforeunload', () => store.flushSync());
   window.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') store.flush();
@@ -129,7 +121,7 @@
     if (closeBtn) closeBtn.onclick = () => closeProfile();
     if (overlay) overlay.onclick = () => closeProfile();
     if (logoutBtn) logoutBtn.onclick = () => {
-      store.flush(); // save before logout
+      store.flush();
       setTimeout(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('rms_user');
@@ -234,7 +226,6 @@
     updateDate();
     initProfilePanel();
 
-    // CRITICAL: Sync from server FIRST, then render everything
     await syncFromServer();
 
     loadStats();
@@ -251,46 +242,25 @@
     if (!auth || !auth.isAuthenticated()) return;
     try {
       const allData = await auth.loadData('');
-      if (!allData || typeof allData !== 'object') {
-        console.log('[RetroMynd] No server data yet');
-        return;
-      }
+      if (!allData || typeof allData !== 'object') return;
 
-      // Goals
       if (allData.goals && allData.goals.data) {
         const d = allData.goals.data;
-        if (d.items && Array.isArray(d.items)) {
-          store.set('goals', d.items, false); // false = don't re-sync to server
-        }
+        if (d.items && Array.isArray(d.items)) store.set('goals', d.items, false);
       }
-
-      // Notes
       if (allData.notes && allData.notes.data) {
         const d = allData.notes.data;
-        if (d.notes && Array.isArray(d.notes)) {
-          store.set('notes', d.notes, false);
-        }
+        if (d.notes && Array.isArray(d.notes)) store.set('notes', d.notes, false);
       }
-
-      // Timer/Pomodoros
       if (allData.timer && allData.timer.data) {
         const d = allData.timer.data;
-        if (d.pomodoros != null) {
-          store.setRaw('pomodoros', d.pomodoros, false);
-        }
+        if (d.pomodoros != null) store.setRaw('pomodoros', d.pomodoros, false);
       }
-
-      // Streak
       if (allData.streak && allData.streak.data) {
         const d = allData.streak.data;
-        if (d.days && typeof d.days === 'object') {
-          store.set('streak_days', d.days, false);
-        }
-        if (d.current != null) {
-          store.setRaw('streak', d.current, false);
-        }
+        if (d.days && typeof d.days === 'object') store.set('streak_days', d.days, false);
+        if (d.current != null) store.setRaw('streak', d.current, false);
       }
-
       console.log('[RetroMynd] Synced from server ✓');
     } catch(e) {
       console.warn('[RetroMynd] Sync error (using local data):', e.message);
@@ -311,8 +281,8 @@
     const goals = getGoals(), notes = getNotes();
     const streak = parseInt(store.getRaw('streak', '0'));
     const pomos = parseInt(store.getRaw('pomodoros', '0'));
-    const today = new Date().toDateString();
-    const todayGoals = goals.filter(g => new Date(g.date).toDateString() === today);
+    const todayKey = localDateKey(new Date());
+    const todayGoals = goals.filter(g => localDateKey(new Date(g.date)) === todayKey);
     const doneGoals = todayGoals.filter(g => g.done).length;
     const sS = $('sS'); if (sS) sS.textContent = streak;
     const sN = $('sN'); if (sN) sN.textContent = notes.length;
@@ -320,6 +290,11 @@
     const sP = $('sP'); if (sP) sP.textContent = pomos;
   }
   window.loadStats = loadStats;
+
+  // Helper: local date key "YYYY-MM-DD"
+  function localDateKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
 
   // ═══ POMODORO ═══
   let pomTimer = null, pomSec = 25 * 60, pomRunning = false, pomMode = 25;
@@ -374,13 +349,52 @@
     const tD = $('tD'); if (tD) tD.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  // ═══ GOALS ═══
+  // ═══ GOALS (with Hoje/Historico tabs, filters, pagination) ═══
+  let goalTab = 'today'; // 'today' | 'history'
+  let goalFilter = 'a';  // 'a' = all, 'c' = done, 'e' = expired, 'p' = pending
+  let goalPage = 1;
+  const GOALS_PER_PAGE = 8;
+
   function initGoals() {
     const addBtn = $('goalAddBtn'); const input = $('goalInput');
     if (addBtn) addBtn.onclick = addGoal;
     if (input) input.onkeydown = e => { if (e.key === 'Enter') addGoal(); };
-    renderGoals();
+
+    // Tab buttons
+    const gtC = $('gtC'), gtH = $('gtH');
+    if (gtC) gtC.onclick = () => { goalTab = 'today'; goalPage = 1; renderGoalTabs(); };
+    if (gtH) gtH.onclick = () => { goalTab = 'history'; goalPage = 1; renderGoalTabs(); };
+
+    // Filter buttons
+    document.querySelectorAll('#goalFilters .goal-filter').forEach(btn => {
+      btn.onclick = () => {
+        goalFilter = btn.dataset.f;
+        goalPage = 1;
+        document.querySelectorAll('#goalFilters .goal-filter').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        renderHistory();
+      };
+    });
+
+    // Pagination
+    const pgPrev = $('pgPrev'), pgNext = $('pgNext');
+    if (pgPrev) pgPrev.onclick = () => { if (goalPage > 1) { goalPage--; renderGoals(); } };
+    if (pgNext) pgNext.onclick = () => { goalPage++; renderGoals(); };
+
+    renderGoalTabs();
   }
+
+  function renderGoalTabs() {
+    const gtC = $('gtC'), gtH = $('gtH');
+    const gvC = $('gvC'), gvH = $('gvH');
+    if (gtC) gtC.classList.toggle('on', goalTab === 'today');
+    if (gtH) gtH.classList.toggle('on', goalTab === 'history');
+    if (gvC) gvC.style.display = goalTab === 'today' ? '' : 'none';
+    if (gvH) gvH.style.display = goalTab === 'history' ? '' : 'none';
+    if (goalTab === 'today') renderGoals();
+    else renderHistory();
+  }
+
   function getGoals() { return store.get('goals', []); }
   function saveGoals(g) { store.set('goals', g); loadStats(); }
 
@@ -393,19 +407,132 @@
 
   function renderGoals() {
     const container = $('goalContainer'); if (!container) return;
-    const today = new Date().toDateString();
-    const goals = getGoals().filter(g => new Date(g.date).toDateString() === today);
-    if (!goals.length) { container.innerHTML = '<div class="goal-empty">Nenhuma meta hoje</div>'; return; }
-    container.innerHTML = goals.map(g => `
+    const todayKey = localDateKey(new Date());
+    const goals = getGoals().filter(g => localDateKey(new Date(g.date)) === todayKey);
+    if (!goals.length) {
+      container.innerHTML = '<div class="goal-empty">Nenhuma meta hoje ✏️</div>';
+      const pager = $('goalPager'); if (pager) pager.style.display = 'none';
+      return;
+    }
+
+    // Pagination
+    const total = goals.length;
+    const totalPages = Math.ceil(total / GOALS_PER_PAGE);
+    if (goalPage > totalPages) goalPage = totalPages;
+    const start = (goalPage - 1) * GOALS_PER_PAGE;
+    const pageGoals = goals.slice(start, start + GOALS_PER_PAGE);
+
+    container.innerHTML = pageGoals.map(g => `
       <div class="goal-row ${g.done?'done':''}">
         <div class="gchk" onclick="window.toggleGoal(${g.id})">${g.done?'✓':''}</div>
         <span class="glabel" onclick="window.toggleGoal(${g.id})">${g.text}</span>
         <span class="gx" onclick="window.deleteGoal(${g.id})">×</span>
       </div>
     `).join('');
+
+    // Pager
+    const pager = $('goalPager');
+    if (pager) {
+      pager.style.display = totalPages > 1 ? '' : 'none';
+      const pgInfo = $('pgInfo'); if (pgInfo) pgInfo.textContent = `${goalPage}/${totalPages}`;
+      const pgPrev = $('pgPrev'); if (pgPrev) pgPrev.disabled = goalPage <= 1;
+      const pgNext = $('pgNext'); if (pgNext) pgNext.disabled = goalPage >= totalPages;
+    }
   }
-  window.toggleGoal = function(id) { const g=getGoals(),f=g.find(x=>x.id===id); if(f)f.done=!f.done; saveGoals(g); renderGoals(); };
-  window.deleteGoal = function(id) { saveGoals(getGoals().filter(x=>x.id!==id)); renderGoals(); };
+
+  // ═══ HISTORY VIEW ═══
+  function renderHistory() {
+    const container = $('histContainer'); if (!container) return;
+    const summaryEl = $('histSummary');
+    const allGoals = getGoals();
+    const todayKey = localDateKey(new Date());
+
+    // Group goals by date (excluding today)
+    const byDate = {};
+    allGoals.forEach(g => {
+      const key = localDateKey(new Date(g.date));
+      if (key === todayKey) return; // today is in the other tab
+      if (!byDate[key]) byDate[key] = [];
+      byDate[key].push(g);
+    });
+
+    // Also include today's goals in history if they exist (for completeness)
+    const todayGoals = allGoals.filter(g => localDateKey(new Date(g.date)) === todayKey);
+    if (todayGoals.length > 0) byDate[todayKey] = todayGoals;
+
+    const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+    // Stats
+    const totalAll = allGoals.length;
+    const doneAll = allGoals.filter(g => g.done).length;
+    const pendingAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) === todayKey).length;
+    const expiredAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) < todayKey).length;
+
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div class="hist-stat"><div class="hist-stat-num green">${doneAll}</div><div class="hist-stat-lbl">Concluídas</div></div>
+        <div class="hist-stat"><div class="hist-stat-num red">${expiredAll}</div><div class="hist-stat-lbl">Expiradas</div></div>
+        <div class="hist-stat"><div class="hist-stat-num blue">${pendingAll}</div><div class="hist-stat-lbl">Pendentes</div></div>
+      `;
+    }
+
+    if (sortedDates.length === 0) {
+      container.innerHTML = '<div class="hist-empty">Nenhuma meta registrada ainda</div>';
+      return;
+    }
+
+    let html = '';
+    const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+    sortedDates.forEach(dateKey => {
+      let goals = byDate[dateKey];
+      const isToday = dateKey === todayKey;
+
+      // Apply filter
+      if (goalFilter === 'c') goals = goals.filter(g => g.done);
+      else if (goalFilter === 'e') goals = goals.filter(g => !g.done && dateKey < todayKey);
+      else if (goalFilter === 'p') goals = goals.filter(g => !g.done && dateKey >= todayKey);
+
+      if (goals.length === 0) return;
+
+      const d = new Date(dateKey + 'T12:00:00');
+      const dayName = diasSemana[d.getDay()];
+      const dateLabel = `${dayName}, ${d.getDate()}/${d.getMonth()+1}`;
+      const done = goals.filter(g => g.done).length;
+      const pct = goals.length > 0 ? Math.round(done / goals.length * 100) : 0;
+
+      html += `<div class="hist-section">`;
+      html += `<div class="hist-date-header">`;
+      html += `<span class="hist-date-label ${isToday ? 'today' : ''}">${isToday ? '📌 HOJE' : dateLabel}</span>`;
+      if (isToday) html += `<span class="hist-date-live">● LIVE</span>`;
+      html += `<span class="hist-date-stats">${done}/${goals.length} (${pct}%)</span>`;
+      html += `</div>`;
+      html += `<div class="hist-bar"><div class="hist-bar-fill" style="width:${pct}%"></div></div>`;
+
+      goals.forEach(g => {
+        const isDone = g.done;
+        const isExpired = !isDone && dateKey < todayKey;
+        const cls = isDone ? 'done' : (isExpired ? 'expired' : '');
+        const chkCls = isDone ? 'ok' : (isExpired ? 'fail' : 'pend');
+        const chkIcon = isDone ? '✓' : (isExpired ? '✗' : '●');
+        const badgeCls = isDone ? 'ok' : (isExpired ? 'exp' : 'live');
+        const badgeText = isDone ? 'DONE' : (isExpired ? 'EXPIRED' : 'ACTIVE');
+
+        html += `<div class="hist-row ${cls}">`;
+        html += `<div class="hchk ${chkCls}">${chkIcon}</div>`;
+        html += `<span class="hlabel">${g.text}</span>`;
+        html += `<span class="hbadge ${badgeCls}">${badgeText}</span>`;
+        html += `</div>`;
+      });
+
+      html += `</div>`;
+    });
+
+    container.innerHTML = html || '<div class="hist-empty">Nenhuma meta com esse filtro</div>';
+  }
+
+  window.toggleGoal = function(id) { const g=getGoals(),f=g.find(x=>x.id===id); if(f)f.done=!f.done; saveGoals(g); renderGoals(); if(goalTab==='history') renderHistory(); };
+  window.deleteGoal = function(id) { saveGoals(getGoals().filter(x=>x.id!==id)); renderGoals(); if(goalTab==='history') renderHistory(); };
   window.renderGoals = renderGoals;
 
   // ═══ NOTES (with Post-its) ═══
@@ -551,17 +678,17 @@
     let html = '';
     for (let i=6;i>=0;i--) {
       const d=new Date(today); d.setDate(d.getDate()-i);
-      const key=d.toISOString().split('T')[0], isT=i===0, ok=data[key];
+      const key=localDateKey(d), isT=i===0, ok=data[key];
       html += `<div class="sd ${ok?'ok':''} ${isT?'now':''}">${dias[d.getDay()]}</div>`;
     }
     container.innerHTML = html;
     let streak=0;
-    for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(data[d.toISOString().split('T')[0]])streak++;else break;}
+    for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(data[localDateKey(d)])streak++;else break;}
     store.setRaw('streak', streak, false);
     if(btn) btn.onclick=()=>{
-      data[new Date().toISOString().split('T')[0]]=true;
+      data[localDateKey(new Date())]=true;
       store.set('streak_days', data);
-      store.setRaw('streak', 0); // will be recalculated
+      store.setRaw('streak', 0);
       initStreak(); loadStats();
     };
   }
@@ -596,7 +723,7 @@
     if (overlay) overlay.classList.remove('open');
   };
 
-  // ═══ THEME (light / system / dark) ═══
+  // ═══ THEME ═══
   window.setTheme = function(theme) {
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
