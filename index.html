@@ -182,7 +182,7 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 @media(max-width:768px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.hub-header{flex-direction:column;gap:12px;text-align:center}.qlinks{grid-template-columns:1fr}.splash-title{font-size:38px}.hist-summary{grid-template-columns:1fr}.notes-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}}
 
 #loginScreen{position:fixed;inset:0;z-index:950;background:linear-gradient(160deg,#E3F2FD 0%,#EEF4FB 40%,#FFF0F5 100%);display:none;flex-direction:column;align-items:center;justify-content:center;animation:fadeUp .4s ease}
-#loginScreen.show{display:flex}
+
 .login-box{background:var(--paper);border:1px solid #E5E0DA;border-radius:12px;box-shadow:var(--shadow-hover);padding:40px 36px;max-width:380px;width:90%;text-align:center;position:relative;background-image:repeating-linear-gradient(var(--paper) 0px,var(--paper) 31px,var(--paper-line) 31px,var(--paper-line) 32px)}
 .login-box::before{content:'';position:absolute;top:0;left:40px;width:2px;height:100%;background:var(--paper-margin);opacity:.5;border-radius:0 0 12px 12px}
 .login-heart{font-size:36px;margin-bottom:8px}
@@ -368,24 +368,6 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 </head>
 <body><div class="stars-container" id="starsContainer"></div><div class="moon"></div>
 
-<!-- ============ SCREEN 2: LOGIN ============ -->
-<div id="loginScreen" style="display:none">
-<div class="login-box">
-<div class="login-heart">&#128150;</div>
-<div class="login-title">Study Hub</div>
-<div class="login-sub">LOGIN</div>
-<div id="loginSaved"></div>
-<div id="loginForm">
-<input type="email" class="login-input" id="loginEmail" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')document.getElementById('loginName').focus()">
-<input type="text" class="login-name-input" id="loginName" placeholder="Seu nome (ex: Matheus)" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
-<input type="password" class="login-name-input" id="loginPass" placeholder="Senha" onkeydown="if(event.key==='Enter')window.doLogin()">
-<div style="display:flex;gap:8px;margin-top:12px">
-<button class="login-btn" onclick="window.doLogin()" style="flex:1">Entrar &#10084;</button>
-<button class="login-btn" onclick="window.doRegister()" style="flex:1;background:var(--blue);box-shadow:0 4px 16px rgba(109,189,232,.3)">Cadastrar &#9889;</button>
-</div>
-<div class="login-error" id="loginErr"></div>
-<div style="margin-top:12px;font-size:13px;color:var(--text-light)">Powered by RetroMynd API ⚡</div>
-</div>
 </div>
 </div>
 
