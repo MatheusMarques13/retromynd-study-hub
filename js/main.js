@@ -132,27 +132,29 @@
   window.showHub = showHub;
 
   // ═══ SYNC FROM SUPABASE ═══
+  // load.js returns: { goals: { data: {...}, updated_at }, notes: { data: {...}, updated_at }, ... }
+  // When calling loadData('goals'), it returns the FULL object (filtered by type query)
   async function syncFromServer() {
     if (!auth || !auth.isAuthenticated()) return;
     try {
-      const [goals, notes, timer, streak] = await Promise.allSettled([
-        auth.loadData('goals'), auth.loadData('notes'),
-        auth.loadData('timer'), auth.loadData('streak')
-      ]);
-      if (goals.status === 'fulfilled' && goals.value.data) {
-        const d = goals.value.data;
+      // Load all data at once (no type filter) for efficiency
+      const allData = await auth.loadData('');
+      // allData = { goals: {data, updated_at}, notes: {data, updated_at}, ... }
+
+      if (allData && allData.goals && allData.goals.data) {
+        const d = allData.goals.data;
         if (d.items) localStorage.setItem('rms_goals', JSON.stringify(d.items));
       }
-      if (notes.status === 'fulfilled' && notes.value.data) {
-        const d = notes.value.data;
+      if (allData && allData.notes && allData.notes.data) {
+        const d = allData.notes.data;
         if (d.notes) localStorage.setItem('rms_notes', JSON.stringify(d.notes));
       }
-      if (timer.status === 'fulfilled' && timer.value.data) {
-        const d = timer.value.data;
+      if (allData && allData.timer && allData.timer.data) {
+        const d = allData.timer.data;
         if (d.pomodoros != null) localStorage.setItem('rms_pomodoros', d.pomodoros);
       }
-      if (streak.status === 'fulfilled' && streak.value.data) {
-        const d = streak.value.data;
+      if (allData && allData.streak && allData.streak.data) {
+        const d = allData.streak.data;
         if (d.days) localStorage.setItem('rms_streak_days', JSON.stringify(d.days || {}));
         if (d.current != null) localStorage.setItem('rms_streak', d.current);
       }
@@ -380,10 +382,6 @@
 
   window.selectPostitColor = function(color) {
     selectedPostitColor = color;
-    document.querySelectorAll('.postit-color-pick').forEach(el => {
-      el.classList.toggle('active', el.style.background.includes(color.replace('postit-','')));
-    });
-    // Re-render to update active state cleanly
     renderNoteEditor();
     const input = $('postitInput'); if (input) input.focus();
   };
@@ -484,7 +482,7 @@
     if (overlay) overlay.classList.remove('open');
   };
 
-  // ═══ THEME ═══
+  // ═══ THEME (light / system / dark / retro) ═══
   window.setTheme = function(theme) {
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -496,7 +494,8 @@
     document.querySelectorAll('.theme-toggle-opt').forEach(opt => {
       opt.classList.toggle('active', opt.dataset.themeVal === theme);
     });
-    if (document.documentElement.getAttribute('data-theme') === 'dark') generateStars();
+    const effectiveTheme = document.documentElement.getAttribute('data-theme');
+    if (effectiveTheme === 'dark' || effectiveTheme === 'retro') generateStars();
   };
 
   function generateStars() {

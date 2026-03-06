@@ -23,7 +23,8 @@ const auth = {
   },
 
   async loadData(dataType) {
-    return api.get(`/api/data/load?type=${dataType}`);
+    const param = dataType ? `?type=${dataType}` : '';
+    return api.get(`/api/data/load${param}`);
   },
 
   async saveData(dataType, data) {
