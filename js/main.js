@@ -28,7 +28,6 @@
       }
     };
 
-    // Avatar picker
     const avatars = ['💖','🎮','🧠','🔥','⭐','🌙','🎵','🦊','🐱','🌸','💜','🎯','🍀','🌈','✨','🎪'];
     if (avatarGrid) {
       avatarGrid.innerHTML = avatars.map(a => `<span class="pp-avatar-opt" onclick="window.pickAvatar('${a}')">${a}</span>`).join('');
@@ -37,7 +36,6 @@
       if (avatarGrid) avatarGrid.classList.toggle('open');
     };
 
-    // Name/bio save on blur
     const ppName = $('ppName');
     const ppBio = $('ppBio');
     if (ppName) ppName.onblur = () => saveProfile();
@@ -50,7 +48,6 @@
     if (panel) panel.classList.add('open');
     if (overlay) overlay.classList.add('open');
 
-    // Load user data
     const user = auth ? auth.getUser() : null;
     if (user) {
       const ppName = $('ppName');
@@ -66,7 +63,6 @@
       if (ppAvatarBig) ppAvatarBig.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
       if (ppSince) ppSince.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR') : 'Hoje';
 
-      // Stats
       const goals = getGoals();
       const notes = getNotes();
       const streak = parseInt(localStorage.getItem('rms_streak') || '0');
@@ -95,8 +91,6 @@
     localStorage.setItem('rms_avatar', emoji);
     const grid = $('ppAvatarGrid');
     if (grid) grid.classList.remove('open');
-
-    // Update user object
     const user = auth ? auth.getUser() : null;
     if (user) { user.avatar = emoji; localStorage.setItem('rms_user', JSON.stringify(user)); }
   };
@@ -107,27 +101,20 @@
     const name = ppName ? ppName.value : '';
     const bio = ppBio ? ppBio.value : '';
     localStorage.setItem('rms_bio', bio);
-
     const user = auth ? auth.getUser() : null;
     if (user) {
-      user.name = name;
-      user.bio = bio;
+      user.name = name; user.bio = bio;
       localStorage.setItem('rms_user', JSON.stringify(user));
       const headerName = $('headerName');
       if (headerName) headerName.textContent = name || user.email || 'Estudante';
     }
-
-    // Save to server
-    if (auth && auth.updateProfile) {
-      auth.updateProfile({ name, bio }).catch(() => {});
-    }
+    if (auth && auth.updateProfile) auth.updateProfile({ name, bio }).catch(() => {});
   }
 
   // ═══ SHOW HUB ═══
   function showHub() {
     const hub = $('hub');
     if (hub) { hub.style.display = 'block'; hub.classList.add('show'); }
-
     const user = auth ? auth.getUser() : null;
     if (user) {
       const headerName = $('headerName');
@@ -135,11 +122,7 @@
       if (headerName) headerName.textContent = user.name || user.email || 'Estudante';
       if (headerAvatar) headerAvatar.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
     }
-
-    updateDate();
-    loadStats();
-    syncFromServer();
-    initProfilePanel();
+    updateDate(); loadStats(); syncFromServer(); initProfilePanel();
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
     try { initNotes(); } catch(e) {}
@@ -153,10 +136,8 @@
     if (!auth || !auth.isAuthenticated()) return;
     try {
       const [goals, notes, timer, streak] = await Promise.allSettled([
-        auth.loadData('goals'),
-        auth.loadData('notes'),
-        auth.loadData('timer'),
-        auth.loadData('streak')
+        auth.loadData('goals'), auth.loadData('notes'),
+        auth.loadData('timer'), auth.loadData('streak')
       ]);
       if (goals.status === 'fulfilled' && goals.value.data) {
         const d = goals.value.data;
@@ -179,7 +160,7 @@
       try { renderGoals(); } catch(e) {}
       try { renderNotesList(); } catch(e) {}
       try { initStreak(); } catch(e) {}
-    } catch(e) { console.log('[RetroMynd] Sync error (using local data):', e.message); }
+    } catch(e) { console.log('[RetroMynd] Sync error:', e.message); }
   }
 
   // ═══ SAVE TO SUPABASE (debounced) ═══
@@ -189,13 +170,10 @@
     saveTimeout = setTimeout(async () => {
       if (!auth || !auth.isAuthenticated()) return;
       try {
-        if (type === 'goals') {
-          await auth.saveData('goals', { items: getGoals(), history: [] });
-        } else if (type === 'notes') {
-          await auth.saveData('notes', { notes: getNotes() });
-        } else if (type === 'timer') {
-          await auth.saveData('timer', { pomodoros: parseInt(localStorage.getItem('rms_pomodoros') || '0'), totalMinutes: 0 });
-        } else if (type === 'streak') {
+        if (type === 'goals') await auth.saveData('goals', { items: getGoals(), history: [] });
+        else if (type === 'notes') await auth.saveData('notes', { notes: getNotes() });
+        else if (type === 'timer') await auth.saveData('timer', { pomodoros: parseInt(localStorage.getItem('rms_pomodoros') || '0'), totalMinutes: 0 });
+        else if (type === 'streak') {
           const days = JSON.parse(localStorage.getItem('rms_streak_days') || '{}');
           const current = parseInt(localStorage.getItem('rms_streak') || '0');
           await auth.saveData('streak', { current, best: current, days });
@@ -215,14 +193,12 @@
 
   // ═══ STATS ═══
   function loadStats() {
-    const goals = getGoals();
-    const notes = getNotes();
+    const goals = getGoals(), notes = getNotes();
     const streak = parseInt(localStorage.getItem('rms_streak') || '0');
     const pomos = parseInt(localStorage.getItem('rms_pomodoros') || '0');
     const today = new Date().toDateString();
     const todayGoals = goals.filter(g => new Date(g.date).toDateString() === today);
     const doneGoals = todayGoals.filter(g => g.done).length;
-
     const sS = $('sS'); if (sS) sS.textContent = streak;
     const sN = $('sN'); if (sN) sN.textContent = notes.length;
     const sG = $('sG'); if (sG) sG.textContent = `${doneGoals}/${todayGoals.length}`;
@@ -263,8 +239,7 @@
           const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
           if (pomMode >= 25) {
             const p = parseInt(localStorage.getItem('rms_pomodoros') || '0') + 1;
-            localStorage.setItem('rms_pomodoros', p);
-            loadStats(); saveToServer('timer');
+            localStorage.setItem('rms_pomodoros', p); loadStats(); saveToServer('timer');
           }
         }
         updateTimerDisplay();
@@ -317,8 +292,11 @@
   window.deleteGoal = function(id) { saveGoals(getGoals().filter(x=>x.id!==id)); renderGoals(); };
   window.renderGoals = renderGoals;
 
-  // ═══ NOTES ═══
+  // ═══ NOTES (with Post-its) ═══
   let currentNote = null;
+  const postitColors = ['postit-yellow','postit-pink','postit-mint','postit-peach','postit-lilac','postit-sky'];
+  let selectedPostitColor = 'postit-yellow';
+
   function initNotes() { renderNotesList(); }
   function getNotes() { return JSON.parse(localStorage.getItem('rms_notes') || '[]'); }
   function saveNotes(n) { localStorage.setItem('rms_notes', JSON.stringify(n)); loadStats(); saveToServer('notes'); }
@@ -326,41 +304,133 @@
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
     const notes = getNotes();
-    const colors = ['postit-yellow','postit-pink','postit-mint','postit-peach','postit-lilac','postit-sky'];
+    const colors = postitColors;
     app.innerHTML = `<div class="notes-grid">
       <div class="note-add-card" onclick="window.createNote()"><span>+</span><small>Nova nota</small></div>
-      ${notes.map((n,i) => `
+      ${notes.map((n,i) => {
+        const postitCount = (n.postits && n.postits.length) ? ` • ${n.postits.length} post-it${n.postits.length>1?'s':''}` : '';
+        return `
         <div class="note-card" style="background:var(--${n.color||colors[i%colors.length]});--rot:${(Math.random()*4-2).toFixed(1)}deg" onclick="window.openNote(${n.id})">
           <div class="note-card-del" onclick="event.stopPropagation();window.deleteNote(${n.id})">×</div>
           <div class="note-card-title">${n.title||'Sem título'}</div>
-          <div class="note-card-preview">${n.content||''}</div>
-        </div>
-      `).join('')}
+          <div class="note-card-preview">${n.content||''}${postitCount}</div>
+        </div>`;
+      }).join('')}
     </div>`;
   }
   window.renderNotesList = renderNotesList;
 
   window.createNote = function() {
     const notes = getNotes();
-    const note = { id: Date.now(), title: '', content: '', color: 'postit-yellow', date: new Date().toISOString() };
+    const note = { id: Date.now(), title: '', content: '', color: 'postit-yellow', postits: [], date: new Date().toISOString() };
     notes.push(note); saveNotes(notes); window.openNote(note.id);
   };
+
   window.openNote = function(id) {
     const notes = getNotes(), note = notes.find(n=>n.id===id); if(!note) return;
+    if (!note.postits) note.postits = [];
     currentNote = note;
+    selectedPostitColor = 'postit-yellow';
     const app = $('notesApp'); if(!app) return;
+    renderNoteEditor();
+  };
+
+  function renderNoteEditor() {
+    const app = $('notesApp'); if (!app || !currentNote) return;
+    const note = currentNote;
+    const postitsHtml = note.postits.map((p, i) => `
+      <div class="note-postit" style="background:var(--${p.color || 'postit-yellow'})">
+        ${p.text}
+        <span class="note-postit-del" onclick="window.deletePostit(${i})">×</span>
+      </div>
+    `).join('');
+
+    const colorPickerHtml = postitColors.map(c =>
+      `<div class="postit-color-pick ${c===selectedPostitColor?'active':''}" style="background:var(--${c})" onclick="window.selectPostitColor('${c}')"></div>`
+    ).join('');
+
+    const noteColorHtml = postitColors.map(c =>
+      `<div class="note-color-dot ${c===note.color?'active':''}" style="background:var(--${c})" onclick="window.changeNoteColor('${c}')"></div>`
+    ).join('');
+
     app.innerHTML = `<div class="note-editor">
-      <div class="note-editor-header"><button class="note-back" onclick="window.closeNote()">← Voltar</button></div>
+      <div class="note-editor-header">
+        <button class="note-back" onclick="window.closeNote()">← Voltar</button>
+        ${noteColorHtml}
+      </div>
       <input class="note-title-input" id="noteTitle" value="${note.title}" placeholder="Título..." oninput="window.saveCurrentNote()">
       <textarea class="note-textarea" id="noteContent" placeholder="Escreva aqui..." oninput="window.saveCurrentNote()">${note.content}</textarea>
+
+      <div class="px-div"></div>
+
+      <div class="note-postits" id="notePostits">${postitsHtml}</div>
+
+      <div class="postit-add-row">
+        <input class="postit-add-input" id="postitInput" placeholder="Adicionar post-it..." onkeydown="if(event.key==='Enter')window.addPostit()">
+        ${colorPickerHtml}
+        <button class="postit-add-btn" onclick="window.addPostit()">+ Post-it</button>
+      </div>
+
+      <div class="note-meta">
+        <span>Criada: ${new Date(note.date).toLocaleDateString('pt-BR')}</span>
+        <span>${note.postits.length} post-it${note.postits.length!==1?'s':''}</span>
+      </div>
     </div>`;
+  }
+
+  window.selectPostitColor = function(color) {
+    selectedPostitColor = color;
+    document.querySelectorAll('.postit-color-pick').forEach(el => {
+      el.classList.toggle('active', el.style.background.includes(color.replace('postit-','')));
+    });
+    // Re-render to update active state cleanly
+    renderNoteEditor();
+    const input = $('postitInput'); if (input) input.focus();
   };
-  window.closeNote = function() { currentNote=null; renderNotesList(); };
+
+  window.addPostit = function() {
+    const input = $('postitInput'); if (!input || !input.value.trim() || !currentNote) return;
+    const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
+    if (!n.postits) n.postits = [];
+    n.postits.push({ text: input.value.trim(), color: selectedPostitColor, date: new Date().toISOString() });
+    currentNote = n;
+    saveNotes(notes);
+    renderNoteEditor();
+    setTimeout(() => { const inp = $('postitInput'); if (inp) inp.focus(); }, 50);
+  };
+
+  window.deletePostit = function(index) {
+    if (!currentNote) return;
+    const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
+    if (!n.postits) return;
+    n.postits.splice(index, 1);
+    currentNote = n;
+    saveNotes(notes);
+    renderNoteEditor();
+  };
+
+  window.changeNoteColor = function(color) {
+    if (!currentNote) return;
+    const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
+    n.color = color;
+    currentNote = n;
+    saveNotes(notes);
+    renderNoteEditor();
+  };
+
+  window.closeNote = function() { currentNote = null; renderNotesList(); };
+
   window.saveCurrentNote = function() {
-    if(!currentNote) return; const notes=getNotes(),n=notes.find(x=>x.id===currentNote.id); if(!n) return;
-    const t=$('noteTitle'),c=$('noteContent'); if(t)n.title=t.value; if(c)n.content=c.value; saveNotes(notes);
+    if (!currentNote) return;
+    const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
+    const t = $('noteTitle'), c = $('noteContent');
+    if (t) n.title = t.value;
+    if (c) n.content = c.value;
+    currentNote = n;
+    saveNotes(notes);
   };
-  window.deleteNote = function(id) { saveNotes(getNotes().filter(n=>n.id!==id)); renderNotesList(); };
+
+  window.deleteNote = function(id) { saveNotes(getNotes().filter(n => n.id !== id)); if (currentNote && currentNote.id === id) currentNote = null; renderNotesList(); };
 
   // ═══ STREAK ═══
   function initStreak() {
@@ -399,27 +469,17 @@
     const rlNew=$('rlNew'); if(rlNew) rlNew.onclick=initRetroLesson;
   }
 
-  // ═══ RETROLESSON FULLSCREEN ═══
   window.openLesson = function() {
-    const panel = $('lessonPanel');
-    const overlay = $('lessonOverlay');
-    const iframe = $('lessonIframe');
+    const panel = $('lessonPanel'), overlay = $('lessonOverlay'), iframe = $('lessonIframe');
     if (panel) panel.classList.add('open');
     if (overlay) overlay.classList.add('open');
     if (iframe && !iframe.src.includes('blob:')) {
       const dataEl = $('lessonData');
-      if (dataEl) {
-        try {
-          const html = atob(dataEl.textContent.trim());
-          const blob = new Blob([html], { type: 'text/html' });
-          iframe.src = URL.createObjectURL(blob);
-        } catch(e) { console.log('Lesson load error:', e); }
-      }
+      if (dataEl) { try { const html = atob(dataEl.textContent.trim()); iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' })); } catch(e) {} }
     }
   };
   window.closeLesson = function() {
-    const panel = $('lessonPanel');
-    const overlay = $('lessonOverlay');
+    const panel = $('lessonPanel'), overlay = $('lessonOverlay');
     if (panel) panel.classList.remove('open');
     if (overlay) overlay.classList.remove('open');
   };
@@ -436,7 +496,6 @@
     document.querySelectorAll('.theme-toggle-opt').forEach(opt => {
       opt.classList.toggle('active', opt.dataset.themeVal === theme);
     });
-    // Generate stars for dark mode
     if (document.documentElement.getAttribute('data-theme') === 'dark') generateStars();
   };
 
@@ -458,18 +517,10 @@
 
   // ═══ INIT ═══
   function init() {
-    // Restore theme
     const savedTheme = localStorage.getItem('rms_theme') || 'light';
     window.setTheme(savedTheme);
-
-    // Auth guard already handles redirect to login.html
-    // If we're here, user is authenticated
-    if (auth && auth.isAuthenticated()) {
-      showHub();
-    } else {
-      // Fallback: redirect to login
-      window.location.href = '/login.html';
-    }
+    if (auth && auth.isAuthenticated()) showHub();
+    else window.location.href = '/login.html';
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
