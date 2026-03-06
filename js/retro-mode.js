@@ -1,56 +1,37 @@
-// Dark Mode + Stars + Moon
-const THEME_KEY = 'rms_theme';
+// Retro Mode - Injects retro toggle button + loads retro CSS
+(function() {
+  // Inject retro theme CSS
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = '/css/retro-theme.css';
+  document.head.appendChild(link);
 
-function initRetroMode() {
-  const saved = localStorage.getItem(THEME_KEY) || 'light';
-  applyTheme(saved);
-  updateToggle(saved);
-  generateStars();
-}
+  // Inject retro button into toggle after DOM is ready
+  function injectRetroButton() {
+    const toggle = document.getElementById('themeToggle');
+    if (!toggle) return;
+    // Check if already exists
+    if (toggle.querySelector('[data-theme-val="retro"]')) return;
+    const btn = document.createElement('div');
+    btn.className = 'theme-toggle-opt';
+    btn.setAttribute('data-theme-val', 'retro');
+    btn.title = 'Retro';
+    btn.onclick = () => window.setTheme('retro');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><path d="M14 12h4"/><path d="M6 16h4"/><path d="M14 16h4"/></svg>';
+    toggle.appendChild(btn);
 
-function setTheme(theme) {
-  localStorage.setItem(THEME_KEY, theme);
-  applyTheme(theme);
-  updateToggle(theme);
-}
+    // Re-apply active state
+    const saved = localStorage.getItem('rms_theme');
+    if (saved) {
+      toggle.querySelectorAll('.theme-toggle-opt').forEach(opt => {
+        opt.classList.toggle('active', opt.getAttribute('data-theme-val') === saved);
+      });
+    }
+  }
 
-function applyTheme(theme) {
-  if (theme === 'system') {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectRetroButton);
   } else {
-    document.documentElement.setAttribute('data-theme', theme);
+    injectRetroButton();
   }
-}
-
-function updateToggle(theme) {
-  document.querySelectorAll('.theme-toggle-opt').forEach(opt => {
-    opt.classList.toggle('active', opt.dataset.themeVal === theme);
-  });
-}
-
-function generateStars() {
-  const container = document.getElementById('starsContainer');
-  if (!container) return;
-  
-  for (let i = 0; i < 60; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.top = Math.random() * 100 + '%';
-    star.style.setProperty('--dur', (2 + Math.random() * 3) + 's');
-    star.style.setProperty('--bright', (0.4 + Math.random() * 0.6));
-    star.style.setProperty('--scale', (1.1 + Math.random() * 0.4));
-    star.style.animationDelay = Math.random() * 3 + 's';
-    container.appendChild(star);
-  }
-}
-
-window.setTheme = setTheme;
-window.initRetroMode = initRetroMode;
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initRetroMode);
-} else {
-  initRetroMode();
-}
+})();
