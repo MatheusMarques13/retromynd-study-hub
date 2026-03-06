@@ -1,5 +1,5 @@
 const { getSupabase } = require('../_lib/supabase');
-const { getUserFromReq, cors } = require('../_lib/auth');
+const { getUserFromReq, verifyToken, cors } = require('../_lib/auth');
 
 module.exports = async (req, res) => {
   cors(res);
@@ -7,9 +7,13 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const tokenUser = getUserFromReq(req);
+    // Support token from Authorization header OR query param (sendBeacon fallback)
+    let tokenUser = getUserFromReq(req);
+    if (!tokenUser && req.query.token) {
+      tokenUser = verifyToken(req.query.token);
+    }
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
+      return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 
     const { data_type, data } = req.body || {};
@@ -20,10 +24,10 @@ module.exports = async (req, res) => {
       'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle'
     ];
     if (!data_type || !validTypes.includes(data_type)) {
-      return res.status(400).json({ error: 'data_type inv\u00e1lido. Use: ' + validTypes.join(', ') });
+      return res.status(400).json({ error: 'data_type inválido. Use: ' + validTypes.join(', ') });
     }
     if (data === undefined || data === null) {
-      return res.status(400).json({ error: 'Campo data \u00e9 obrigat\u00f3rio' });
+      return res.status(400).json({ error: 'Campo data é obrigatório' });
     }
 
     const supabase = getSupabase();
