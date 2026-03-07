@@ -1,6 +1,7 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
-// PERSISTENCE: Server-first. Load from server on boot, fallback to localStorage.
+// PERSISTENCE: Local-first. Save to localStorage immediately, sync to server async.
+// Server NEVER overwrites local data that has more items.
 // =============================================================================
 
 (function() {
@@ -14,6 +15,9 @@
     _retryCount: 0,
     _maxRetries: 5,
     _lastSyncOk: false,
+    _lastFlushOk: true,
+    _localModifiedAt: 0,
+    _serverConfirmedAt: 0,
 
     get(key, fallback) {
       try {
@@ -26,6 +30,7 @@
       localStorage.setItem('rms_' + key, JSON.stringify(value));
       if (sync) {
         this._dirty.add(key);
+        this._localModifiedAt = Date.now();
         this._debouncedFlush();
       }
     },
@@ -39,6 +44,7 @@
       localStorage.setItem('rms_' + key, String(value));
       if (sync) {
         this._dirty.add(key);
+        this._localModifiedAt = Date.now();
         this._debouncedFlush();
       }
     },
@@ -82,6 +88,7 @@
           await auth.saveData(type, data);
           console.log('[RetroMynd] ☁️ Saved:', type);
           this._retryCount = 0;
+          this._serverConfirmedAt = Date.now();
         } catch (e) {
           allOk = false;
           console.warn('[RetroMynd] ❌ Save failed:', type, e.message);
@@ -98,6 +105,7 @@
       }
 
       this._saving = false;
+      this._lastFlushOk = allOk;
       this._lastSyncOk = allOk;
 
       if (allOk && ops.size > 0) {
@@ -267,212 +275,174 @@
     }
     updateDate();
     initProfilePanel();
-    await syncFromServer();
-    loadStats();
+    // INIT FIRST so UI renders with local data immediately
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
     try { initNotes(); } catch(e) {}
     try { initStreak(); } catch(e) {}
     try { initRetroLesson(); } catch(e) {}
+    loadStats();
+    // THEN sync in background - will re-render if server has newer data
+    syncFromServer();
   }
   window.showHub = showHub;
 
-  // ═══ SMART MERGE HELPER ═══
-  // Merges server array with local array by ID, keeping items from both sides.
-  // If an item exists in both, the one with the most recent update wins.
-  // Items only in local (not yet synced) are preserved and marked for re-sync.
-  function mergeArrayById(serverArr, localArr, idField) {
-    idField = idField || 'id';
-    const serverMap = new Map();
-    serverArr.forEach(item => serverMap.set(item[idField], item));
-
-    const merged = [...serverArr];
-    let hasLocalOnly = false;
-
-    localArr.forEach(localItem => {
-      const id = localItem[idField];
-      if (!serverMap.has(id)) {
-        // Item exists locally but NOT on server — keep it (unsaved data)
-        merged.push(localItem);
-        hasLocalOnly = true;
-        console.log('[RetroMynd] 🔄 Keeping local-only item:', id);
-      } else {
-        // Item exists in both — server wins for synced data,
-        // but check if local has a newer 'done' state (for goals)
-        const serverItem = serverMap.get(id);
-        if (localItem.done !== undefined && serverItem.done !== undefined) {
-          if (localItem.done && !serverItem.done) {
-            // Local marked as done but server didn't catch it — keep local state
-            const idx = merged.findIndex(m => m[idField] === id);
-            if (idx !== -1) { merged[idx] = localItem; hasLocalOnly = true; }
-          }
-        }
-      }
-    });
-
-    return { merged, hasLocalOnly };
-  }
-
-  // ═══ SYNC FROM SUPABASE (with retry + timeout) ═══
+  // ═══ SYNC FROM SUPABASE ═══
   async function syncFromServer(attempt) {
     attempt = attempt || 1;
     const maxAttempts = 3;
 
-    if (!auth || !auth.isAuthenticated()) {
-      console.warn('[RetroMynd] Not authenticated, skipping sync');
-      return;
-    }
+    if (!auth || !auth.isAuthenticated()) return;
 
     try {
       if (attempt === 1) showSaveStatus('warn', 'Sincronizando...');
-      else showSaveStatus('warn', `Tentativa ${attempt}/${maxAttempts}...`);
 
       const token = localStorage.getItem('token');
-      console.log(`[RetroMynd] Sync attempt ${attempt}/${maxAttempts}, token: ${token ? 'YES' : 'NO'}`);
-
-      // Fetch with timeout (15s)
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
 
       const resp = await fetch('/api/data/load', {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         signal: controller.signal
       });
-
       clearTimeout(timeout);
-      console.log('[RetroMynd] Load response status:', resp.status);
 
       if (!resp.ok) {
-        const errBody = await resp.text();
-        console.error('[RetroMynd] Load error body:', errBody);
-
-        if (resp.status === 401) {
-          showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
-          return;
-        }
-        throw new Error(`HTTP ${resp.status}: ${errBody.substring(0, 100)}`);
+        if (resp.status === 401) { showSaveStatus('error', 'Sessão expirada!'); return; }
+        throw new Error(`HTTP ${resp.status}`);
       }
 
       const allData = await resp.json();
-      console.log('[RetroMynd] Server data keys:', Object.keys(allData));
-
-      if (!allData || typeof allData !== 'object') {
-        showSaveStatus('warn', 'Sem dados na nuvem ainda');
-        return;
-      }
+      if (!allData || typeof allData !== 'object') { showSaveStatus('ok', 'Conectado ✓'); return; }
 
       let loaded = 0;
       let needsResync = false;
 
-      // ═══ GOALS: Smart merge instead of overwrite ═══
-      if (allData.goals && allData.goals.data) {
+      // =============================================
+      // GOALS SYNC: LOCAL ALWAYS WINS if it has more
+      // =============================================
+      const localGoals = store.get('goals', []);
+      if (allData.goals && allData.goals.data && Array.isArray(allData.goals.data)) {
         const serverGoals = allData.goals.data;
-        if (Array.isArray(serverGoals)) {
-          const localGoals = store.get('goals', []);
-          const { merged, hasLocalOnly } = mergeArrayById(serverGoals, localGoals, 'id');
-          store.set('goals', merged, false);
-          if (hasLocalOnly) {
-            // Local has items server doesn't know about — push them up
-            needsResync = true;
-            store._dirty.add('goals');
-            console.log('[RetroMynd] 🔄 Goals: local-only items found, will re-sync to server');
-          }
-          if (merged.length > 0) loaded++;
-        }
-      }
-
-      // ═══ NOTES: Smart merge instead of overwrite ═══
-      if (allData.notes && allData.notes.data) {
-        const serverNotes = allData.notes.data;
-        if (Array.isArray(serverNotes)) {
-          const localNotes = store.get('notes', []);
-          const { merged, hasLocalOnly } = mergeArrayById(serverNotes, localNotes, 'id');
-          if (merged.length > 0) {
-            store.set('notes', merged, false);
-            if (hasLocalOnly) {
+        if (localGoals.length === 0 && serverGoals.length > 0) {
+          // Local empty, server has data -> use server
+          store.set('goals', serverGoals, false);
+          loaded++;
+          console.log('[RetroMynd] Goals: server -> local (' + serverGoals.length + ')');
+        } else if (localGoals.length > 0 && serverGoals.length === 0) {
+          // Local has data, server empty -> push local to server
+          needsResync = true;
+          store._dirty.add('goals');
+          console.log('[RetroMynd] Goals: local -> server (' + localGoals.length + ')');
+        } else if (localGoals.length > 0 && serverGoals.length > 0) {
+          // Both have data -> merge by ID, keeping ALL unique items
+          const allIds = new Map();
+          serverGoals.forEach(g => allIds.set(g.id, g));
+          localGoals.forEach(g => {
+            if (!allIds.has(g.id)) {
+              allIds.set(g.id, g); // local-only item
               needsResync = true;
-              store._dirty.add('notes');
-              console.log('[RetroMynd] 🔄 Notes: local-only items found, will re-sync to server');
+            } else {
+              // If local has done=true and server has done=false, keep local
+              const sv = allIds.get(g.id);
+              if (g.done && !sv.done) { allIds.set(g.id, g); needsResync = true; }
             }
-            loaded++;
-          }
+          });
+          const merged = Array.from(allIds.values());
+          store.set('goals', merged, false);
+          if (needsResync) store._dirty.add('goals');
+          loaded++;
+          console.log('[RetroMynd] Goals: merged (' + merged.length + ')');
         }
+        // If both empty, do nothing
+      } else if (localGoals.length > 0) {
+        // Server has NO goals key at all, but local has data -> push to server
+        needsResync = true;
+        store._dirty.add('goals');
+        console.log('[RetroMynd] Goals: no server key, pushing local (' + localGoals.length + ')');
       }
 
-      if (allData.timer && allData.timer.data) {
-        const d = allData.timer.data;
-        if (d.pomodoros != null && d.pomodoros > 0) {
-          // Keep the higher value between local and server
-          const localPomos = parseInt(store.getRaw('pomodoros', '0'));
-          const serverPomos = d.pomodoros;
-          if (serverPomos >= localPomos) {
-            store.setRaw('pomodoros', serverPomos, false);
-          } else {
-            // Local is higher — keep local and re-sync
-            needsResync = true;
-            store._dirty.add('pomodoros');
-          }
+      // =============================================
+      // NOTES SYNC: Same logic
+      // =============================================
+      const localNotes = store.get('notes', []);
+      if (allData.notes && allData.notes.data && Array.isArray(allData.notes.data)) {
+        const serverNotes = allData.notes.data;
+        if (localNotes.length === 0 && serverNotes.length > 0) {
+          store.set('notes', serverNotes, false);
+          loaded++;
+        } else if (localNotes.length > 0 && serverNotes.length === 0) {
+          needsResync = true;
+          store._dirty.add('notes');
+        } else if (localNotes.length > 0 && serverNotes.length > 0) {
+          const allIds = new Map();
+          serverNotes.forEach(n => allIds.set(n.id, n));
+          let notesNeedSync = false;
+          localNotes.forEach(n => {
+            if (!allIds.has(n.id)) { allIds.set(n.id, n); notesNeedSync = true; }
+          });
+          store.set('notes', Array.from(allIds.values()), false);
+          if (notesNeedSync) { needsResync = true; store._dirty.add('notes'); }
           loaded++;
         }
+      } else if (localNotes.length > 0) {
+        needsResync = true;
+        store._dirty.add('notes');
       }
 
+      // TIMER
+      if (allData.timer && allData.timer.data) {
+        const d = allData.timer.data;
+        if (d.pomodoros != null) {
+          const localP = parseInt(store.getRaw('pomodoros', '0'));
+          if (d.pomodoros > localP) { store.setRaw('pomodoros', d.pomodoros, false); loaded++; }
+          else if (localP > d.pomodoros) { needsResync = true; store._dirty.add('pomodoros'); }
+        }
+      }
+
+      // STREAK
       if (allData.streak && allData.streak.data) {
         const d = allData.streak.data;
         if (d.days && typeof d.days === 'object') {
-          // Merge streak days: union of server + local
           const localDays = store.get('streak_days', {});
-          const mergedDays = { ...d.days, ...localDays };
-          const serverKeys = Object.keys(d.days).sort().join(',');
-          const mergedKeys = Object.keys(mergedDays).sort().join(',');
-          store.set('streak_days', mergedDays, false);
-          if (mergedKeys !== serverKeys) {
-            needsResync = true;
-            store._dirty.add('streak_days');
+          const merged = { ...d.days, ...localDays };
+          store.set('streak_days', merged, false);
+          if (Object.keys(merged).length > Object.keys(d.days).length) {
+            needsResync = true; store._dirty.add('streak_days');
           }
-          if (Object.keys(mergedDays).length > 0) loaded++;
+          if (Object.keys(merged).length > 0) loaded++;
         }
         if (d.current != null) store.setRaw('streak', d.current, false);
       }
 
       store._lastSyncOk = true;
-      console.log(`[RetroMynd] Synced ${loaded} data types ✓`);
-      if (loaded > 0) showSaveStatus('ok', `Dados carregados da nuvem ✓`);
-      else showSaveStatus('ok', 'Conectado à nuvem ✓');
+      if (loaded > 0) showSaveStatus('ok', 'Dados sincronizados ✓');
+      else showSaveStatus('ok', 'Conectado ✓');
 
-      // Re-sync local-only data back to server
+      // Re-render UI with synced data
+      if (loaded > 0) {
+        loadStats();
+        try { renderGoals(); } catch(e) {}
+        try { renderNotesList(); } catch(e) {}
+      }
+
+      // Push local-only data to server
       if (needsResync) {
-        console.log('[RetroMynd] 🔄 Re-syncing local-only data to server...');
-        setTimeout(() => store.flush(), 500);
+        console.log('[RetroMynd] Re-syncing local data to server...');
+        setTimeout(() => store.flush(), 300);
       }
 
     } catch(e) {
-      console.error(`[RetroMynd] Sync error (attempt ${attempt}):`, e.name, e.message);
-
-      // Retry on network/timeout errors
+      console.error('[RetroMynd] Sync error:', e.name, e.message);
       if (attempt < maxAttempts && (e.name === 'AbortError' || e.name === 'TypeError' || e.message.includes('500'))) {
-        const delay = 1000 * attempt;
-        console.log(`[RetroMynd] Retrying in ${delay}ms...`);
-        showSaveStatus('warn', `Reconectando... (${attempt}/${maxAttempts})`);
-        await new Promise(r => setTimeout(r, delay));
+        await new Promise(r => setTimeout(r, 1000 * attempt));
         return syncFromServer(attempt + 1);
       }
-
       store._lastSyncOk = false;
-
-      // Specific error messages
-      if (e.name === 'AbortError') {
-        showSaveStatus('error', 'Timeout — servidor demorou demais. Dados locais OK.');
-      } else if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token'))) {
-        showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
-      } else if (e.name === 'TypeError') {
-        showSaveStatus('error', 'Sem internet — usando dados locais');
-      } else {
-        showSaveStatus('error', `Erro sync: ${e.message.substring(0, 80)}`);
-      }
+      if (e.name === 'AbortError') showSaveStatus('error', 'Timeout. Dados locais OK.');
+      else if (e.name === 'TypeError') showSaveStatus('error', 'Sem internet — dados locais OK');
+      else showSaveStatus('error', 'Erro sync: ' + e.message.substring(0, 60));
     }
   }
 
@@ -590,13 +560,20 @@
     if (gtH) gtH.classList.toggle('on', goalTab === 'history');
     if (gvC) gvC.style.display = goalTab === 'today' ? '' : 'none';
     if (gvH) gvH.style.display = goalTab === 'history' ? '' : 'none';
-    // FIX: Reset page to 1 when switching tabs
     goalPage = 1;
     if (goalTab === 'today') renderGoals(); else renderHistory();
   }
 
   function getGoals() { return store.get('goals', []); }
-  function saveGoals(g) { store.set('goals', g); loadStats(); store.flushNow(); }
+
+  function saveGoals(g) {
+    store.set('goals', g);
+    loadStats();
+    // Fire and forget - flush will retry on failure
+    store.flushNow().catch(function() {
+      console.warn('[RetroMynd] Goals flush failed, will retry');
+    });
+  }
 
   function addGoal() {
     const input = $('goalInput'); if (!input || !input.value.trim()) return;
@@ -703,7 +680,7 @@
 
   function initNotes() { renderNotesList(); }
   function getNotes() { return store.get('notes', []); }
-  function saveNotes(n) { store.set('notes', n); loadStats(); store.flushNow(); }
+  function saveNotes(n) { store.set('notes', n); loadStats(); store.flushNow().catch(function(){}); }
 
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
@@ -790,6 +767,7 @@
     store.set('notes', notes, false);
     localStorage.setItem('rms_notes', JSON.stringify(notes));
     store._dirty.add('notes');
+    store._localModifiedAt = Date.now();
     clearTimeout(_noteTypingTimer);
     _noteTypingTimer = setTimeout(() => store.flushNow(), 3000);
   };
