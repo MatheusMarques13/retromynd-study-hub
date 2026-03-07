@@ -331,11 +331,12 @@
 
       let loaded = 0;
 
+      // FIX: Sync goals even if empty array
       if (allData.goals && allData.goals.data) {
         const d = allData.goals.data;
-        if (Array.isArray(d) && d.length > 0) {
+        if (Array.isArray(d)) {
           store.set('goals', d, false);
-          loaded++;
+          if (d.length > 0) loaded++;
         }
       }
 
