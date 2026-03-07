@@ -7,6 +7,12 @@
     return;
   }
 
+  // Load wood background CSS
+  const woodCSS = document.createElement('link');
+  woodCSS.rel = 'stylesheet';
+  woodCSS.href = '/css/wood-bg.css';
+  document.head.appendChild(woodCSS);
+
   // Carregar scripts
   const scripts = ['js/api.js','js/auth.js','js/retro-mode.js','js/main.js','js/emoji-manager.js'];
   function loadScript(src){

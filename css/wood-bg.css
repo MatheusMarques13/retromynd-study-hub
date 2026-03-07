@@ -1,0 +1,143 @@
+/* ================================================
+   WOOD NOTEBOOK COVER BACKGROUND
+   Capa de caderno amadeirada com rachaduras sutis
+   ================================================ */
+
+/* Base wood texture via layered gradients */
+body {
+  background:
+    /* Subtle wood grain lines */
+    repeating-linear-gradient(
+      2deg,
+      transparent,
+      transparent 18px,
+      rgba(139, 90, 43, 0.04) 18px,
+      rgba(139, 90, 43, 0.04) 19px
+    ),
+    repeating-linear-gradient(
+      -1deg,
+      transparent,
+      transparent 32px,
+      rgba(101, 67, 33, 0.03) 32px,
+      rgba(101, 67, 33, 0.03) 33px
+    ),
+    /* Wider grain bands */
+    repeating-linear-gradient(
+      1.5deg,
+      transparent,
+      transparent 60px,
+      rgba(139, 90, 43, 0.025) 60px,
+      rgba(160, 110, 60, 0.025) 62px
+    ),
+    /* Base warm wood color */
+    linear-gradient(165deg, #F5E6D3 0%, #EDD9C0 25%, #E8D0B3 50%, #ECDCC8 75%, #F0E2D0 100%) !important;
+  background-attachment: fixed !important;
+}
+
+/* Wood crack overlay - pseudo element on body::before */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* Crack 1 - long diagonal */
+    linear-gradient(38deg,
+      transparent 22%, rgba(101,67,33,0.06) 22.2%, rgba(101,67,33,0.04) 22.4%, transparent 22.6%,
+      transparent 48%, rgba(120,80,40,0.05) 48.1%, rgba(120,80,40,0.03) 48.3%, transparent 48.5%,
+      transparent 73%, rgba(101,67,33,0.05) 73.1%, rgba(101,67,33,0.03) 73.3%, transparent 73.5%
+    ),
+    /* Crack 2 - subtle vertical */
+    linear-gradient(85deg,
+      transparent 35%, rgba(90,60,30,0.04) 35.1%, transparent 35.3%,
+      transparent 67%, rgba(90,60,30,0.035) 67.1%, transparent 67.3%
+    ),
+    /* Crack 3 - short curved lines (simulated) */
+    linear-gradient(155deg,
+      transparent 15%, rgba(80,50,20,0.04) 15.1%, transparent 15.25%,
+      transparent 55%, rgba(80,50,20,0.035) 55.1%, transparent 55.2%,
+      transparent 82%, rgba(100,65,30,0.04) 82.05%, transparent 82.2%
+    ),
+    /* Knot mark - radial */
+    radial-gradient(ellipse 40px 35px at 85% 30%, rgba(120,75,35,0.06) 0%, rgba(120,75,35,0.02) 60%, transparent 100%),
+    radial-gradient(ellipse 25px 20px at 12% 70%, rgba(110,70,30,0.05) 0%, rgba(110,70,30,0.01) 60%, transparent 100%),
+    /* Subtle ring marks (wood rings) */
+    radial-gradient(ellipse 300px 250px at 50% 50%, transparent 55%, rgba(139,90,43,0.015) 56%, transparent 57%),
+    radial-gradient(ellipse 200px 180px at 30% 40%, transparent 50%, rgba(139,90,43,0.012) 51%, transparent 52%);
+}
+
+/* Vignette edges (worn notebook cover) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(101,67,33,0.08) 100%);
+}
+
+/* Make hub content sit above the background */
+#hub, .hub-header, .hub-grid, [class*="section"], [class*="card"] {
+  position: relative;
+  z-index: 1;
+}
+
+/* ================================================
+   DARK THEME WOOD - darker walnut/mahogany
+   ================================================ */
+[data-theme="dark"] body,
+body[data-theme="dark"] {
+  background:
+    repeating-linear-gradient(
+      2deg,
+      transparent,
+      transparent 18px,
+      rgba(60, 35, 15, 0.08) 18px,
+      rgba(60, 35, 15, 0.08) 19px
+    ),
+    repeating-linear-gradient(
+      -1deg,
+      transparent,
+      transparent 32px,
+      rgba(50, 30, 12, 0.06) 32px,
+      rgba(50, 30, 12, 0.06) 33px
+    ),
+    repeating-linear-gradient(
+      1.5deg,
+      transparent,
+      transparent 60px,
+      rgba(70, 40, 18, 0.05) 60px,
+      rgba(70, 40, 18, 0.05) 62px
+    ),
+    linear-gradient(165deg, #2C1E14 0%, #261A10 25%, #22170E 50%, #281C12 75%, #2E2016 100%) !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme="dark"] body::before,
+body[data-theme="dark"]::before {
+  background:
+    linear-gradient(38deg,
+      transparent 22%, rgba(200,170,130,0.04) 22.2%, transparent 22.6%,
+      transparent 48%, rgba(200,170,130,0.03) 48.1%, transparent 48.5%,
+      transparent 73%, rgba(200,170,130,0.035) 73.1%, transparent 73.5%
+    ),
+    linear-gradient(85deg,
+      transparent 35%, rgba(180,150,110,0.03) 35.1%, transparent 35.3%,
+      transparent 67%, rgba(180,150,110,0.025) 67.1%, transparent 67.3%
+    ),
+    linear-gradient(155deg,
+      transparent 15%, rgba(160,130,90,0.03) 15.1%, transparent 15.25%,
+      transparent 55%, rgba(160,130,90,0.025) 55.1%, transparent 55.2%,
+      transparent 82%, rgba(170,140,100,0.03) 82.05%, transparent 82.2%
+    ),
+    radial-gradient(ellipse 40px 35px at 85% 30%, rgba(80,55,25,0.08) 0%, transparent 100%),
+    radial-gradient(ellipse 25px 20px at 12% 70%, rgba(70,45,20,0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 300px 250px at 50% 50%, transparent 55%, rgba(60,35,15,0.025) 56%, transparent 57%),
+    radial-gradient(ellipse 200px 180px at 30% 40%, transparent 50%, rgba(60,35,15,0.02) 51%, transparent 52%) !important;
+}
+
+[data-theme="dark"] body::after,
+body[data-theme="dark"]::after {
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.15) 100%) !important;
+}
