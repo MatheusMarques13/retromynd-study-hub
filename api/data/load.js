@@ -9,22 +9,24 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inválido ou expirado' });
+      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
     }
 
     const supabase = getSupabase();
-    const dataType = req.query.type;
 
-    let query = supabase
-      .from('user_data')
-      .select('data_type, data, updated_at')
-      .eq('user_id', tokenUser.id);
-
-    if (dataType) {
-      query = query.eq('data_type', dataType);
+    // Debug mode: show table columns
+    if (req.query.debug === '1') {
+      const { data, error } = await supabase.from('user_data').select('*').limit(1);
+      if (error) return res.status(500).json({ error: error.message });
+      const columns = data && data.length > 0 ? Object.keys(data[0]) : 'table empty or no rows';
+      return res.status(200).json({ columns, sample: data });
     }
 
-    const { data, error } = await query;
+    // Use select(*) and map dynamically
+    const { data, error } = await supabase
+      .from('user_data')
+      .select('*')
+      .eq('user_id', tokenUser.id);
 
     if (error) {
       console.error('Load Supabase error:', JSON.stringify(error));
@@ -35,11 +37,13 @@ module.exports = async (req, res) => {
     }
 
     // Transform to key-value object
+    // Try multiple possible column names for data_type
     const result = {};
     (data || []).forEach(row => {
-      result[row.data_type] = {
-        data: row.data,
-        updated_at: row.updated_at
+      const type = row.data_type || row.type || row.datatype || row.kind || 'unknown';
+      result[type] = {
+        data: row.data || row.content || row.value,
+        updated_at: row.updated_at || row.updatedat || row.modified_at
       };
     });
 
