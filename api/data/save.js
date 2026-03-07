@@ -7,94 +7,85 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    // Support token from Authorization header OR query param (sendBeacon fallback)
     let tokenUser = getUserFromReq(req);
     if (!tokenUser && req.query.token) {
       tokenUser = verifyToken(req.query.token);
     }
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inválido ou expirado' });
+      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
     }
 
     let body = req.body;
     if (typeof body === 'string') {
       try { body = JSON.parse(body); } catch (e) {
-        return res.status(400).json({ error: 'JSON inválido no body' });
+        return res.status(400).json({ error: 'JSON inv\u00e1lido no body' });
       }
     }
 
     const { data_type, data } = body || {};
-
-    const validTypes = ['goals', 'notes', 'timer', 'streak', 'hub_state', 'quiz', 'lessons', 'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle'];
-    if (!data_type || !validTypes.includes(data_type)) {
-      return res.status(400).json({ error: 'data_type inválido. Use: ' + validTypes.join(', ') });
+    if (!data_type) {
+      return res.status(400).json({ error: 'data_type \u00e9 obrigat\u00f3rio' });
     }
     if (data === undefined || data === null) {
-      return res.status(400).json({ error: 'Campo data é obrigatório' });
+      return res.status(400).json({ error: 'Campo data \u00e9 obrigat\u00f3rio' });
     }
 
     const supabase = getSupabase();
 
-    // Table schema: id (uuid = user id), hub_data (jsonb), lesson_data (jsonb), preferences (jsonb), updated_at
-    // Hub types go into hub_data, lesson types go into lesson_data
+    // Schema: id (uuid = user id), hub_data (jsonb), lesson_data (jsonb), preferences (jsonb), updated_at
     const hubTypes = ['goals', 'notes', 'timer', 'streak', 'hub_state', 'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle'];
     const lessonTypes = ['quiz', 'lessons'];
 
-    // First get existing row
-    const { data: existing } = await supabase
+    // Get existing row
+    const { data: existing, error: fetchErr } = await supabase
       .from('user_data')
       .select('id, hub_data, lesson_data, preferences')
       .eq('id', tokenUser.id)
       .maybeSingle();
 
-    let result;
+    if (fetchErr) {
+      console.error('Save fetch error:', JSON.stringify(fetchErr));
+      return res.status(500).json({ error: 'Erro ao buscar dados', detail: fetchErr.message });
+    }
+
     const now = new Date().toISOString();
+    const currentHub = (existing && existing.hub_data) || {};
+    const currentLesson = (existing && existing.lesson_data) || {};
+    const currentPrefs = (existing && existing.preferences) || {};
 
-    if (existing) {
-      // Update existing row — merge into the right JSONB column
-      const updates = { updated_at: now };
-
-      if (hubTypes.includes(data_type)) {
-        const current = existing.hub_data || {};
-        current[data_type] = data;
-        updates.hub_data = current;
-      } else if (lessonTypes.includes(data_type)) {
-        const current = existing.lesson_data || {};
-        current[data_type] = data;
-        updates.lesson_data = current;
-      }
-
-      result = await supabase
-        .from('user_data')
-        .update(updates)
-        .eq('id', tokenUser.id)
-        .select()
-        .single();
+    if (hubTypes.includes(data_type)) {
+      currentHub[data_type] = data;
+    } else if (lessonTypes.includes(data_type)) {
+      currentLesson[data_type] = data;
+    } else if (data_type === 'preferences') {
+      Object.assign(currentPrefs, data);
     } else {
-      // Insert new row
-      const row = { id: tokenUser.id, hub_data: {}, lesson_data: {}, preferences: {}, updated_at: now };
-
-      if (hubTypes.includes(data_type)) {
-        row.hub_data[data_type] = data;
-      } else if (lessonTypes.includes(data_type)) {
-        row.lesson_data[data_type] = data;
-      }
-
-      result = await supabase
-        .from('user_data')
-        .insert(row)
-        .select()
-        .single();
+      currentHub[data_type] = data;
     }
 
-    if (result.error) {
-      console.error('Save error:', JSON.stringify(result.error));
-      return res.status(500).json({ error: 'Erro ao salvar dados', detail: result.error.message });
+    const row = {
+      id: tokenUser.id,
+      hub_data: currentHub,
+      lesson_data: currentLesson,
+      preferences: currentPrefs,
+      updated_at: now
+    };
+
+    // Upsert: insert if not exists, update if exists
+    const { data: result, error: upsertErr } = await supabase
+      .from('user_data')
+      .upsert(row, { onConflict: 'id' })
+      .select('updated_at')
+      .single();
+
+    if (upsertErr) {
+      console.error('Save upsert error:', JSON.stringify(upsertErr));
+      return res.status(500).json({ error: 'Erro ao salvar', detail: upsertErr.message });
     }
 
-    return res.status(200).json({ success: true, updated_at: result.data.updated_at });
+    return res.status(200).json({ success: true, updated_at: result.updated_at });
   } catch (err) {
-    console.error('Save error:', err.message);
-    return res.status(500).json({ error: 'Erro interno do servidor', detail: err.message });
+    console.error('Save catch error:', err.message, err.stack);
+    return res.status(500).json({ error: 'Erro interno', detail: err.message });
   }
 };
