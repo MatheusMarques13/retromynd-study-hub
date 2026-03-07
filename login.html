@@ -12,82 +12,58 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .pixel{font-family:'Press Start 2P',monospace}
-
-/* STARS */
 .stars{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 .star{position:absolute;width:4px;height:4px;border-radius:1px;opacity:.15;animation:blink var(--dur,3s) ease-in-out infinite var(--delay,0s)}
 .star:nth-child(odd){background:var(--pink)}
 .star:nth-child(even){background:var(--blue)}
 @keyframes blink{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.35;transform:scale(var(--scale,1.2))}}
-
-/* PIXEL HEART */
 .pixel-heart{width:70px;height:70px;display:grid;grid-template-columns:repeat(9,1fr);gap:1px;margin-bottom:20px;animation:hb 2s ease-in-out infinite}
 .ph{width:100%;aspect-ratio:1;border-radius:1px}
 .ph.p{background:var(--pink)}.ph.t{background:transparent}.ph.w{background:rgba(255,255,255,.6)}
 @keyframes hb{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}60%{transform:scale(1)}}
-
-/* CARD */
 .login-card{position:relative;z-index:1;width:100%;max-width:420px;background:var(--paper);border:1px solid #E5E0DA;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;animation:fadeUp .5s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
 .card-holes{position:absolute;top:0;left:0;width:32px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;z-index:2;pointer-events:none}
 .hole{width:14px;height:14px;border-radius:50%;background:var(--bg);border:1px solid #D4CFC9;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
-
 .card-header{padding:20px 22px 10px 52px;position:relative}
 .card-header::before{content:'';position:absolute;top:0;left:40px;width:2px;height:100%;background:var(--paper-margin);opacity:.5}
 .card-header h1{font-family:'Pacifico',cursive;font-size:28px;color:var(--pink);text-shadow:1px 1px 0 #F0C0D4}
 .card-header p{font-size:14px;color:var(--text-light);margin-top:2px}
-
 .card-body{padding:10px 22px 28px 52px;position:relative;background-image:repeating-linear-gradient(var(--paper) 0px,var(--paper) calc(var(--line-h) - 1px),var(--paper-line) calc(var(--line-h) - 1px),var(--paper-line) var(--line-h));background-size:100% var(--line-h)}
 .card-body::before{content:'';position:absolute;top:0;left:40px;width:2px;height:100%;background:var(--paper-margin);opacity:.5}
-
-/* SAVED USER */
 .saved-user{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--lavender-soft);border-radius:8px;margin-bottom:14px;cursor:pointer;transition:all .2s;border:2px solid transparent}
 .saved-user:hover{border-color:var(--lavender);transform:translateY(-1px);box-shadow:var(--shadow-hover)}
 .saved-avatar{width:40px;height:40px;border-radius:50%;background:var(--pink-soft);display:flex;align-items:center;justify-content:center;font-size:18px}
 .saved-name{font-size:16px;font-weight:700;color:var(--text)}
 .saved-email{font-size:13px;color:var(--text-light)}
 .saved-or{text-align:center;font-size:13px;color:var(--text-light);margin-bottom:12px}
-
-/* TABS */
 .tabs{display:flex;gap:6px;margin-bottom:14px}
 .tab{flex:1;font-family:'Kalam','Caveat',cursive;font-size:15px;font-weight:600;padding:8px;border:none;border-radius:4px;cursor:pointer;transition:all .15s;background:#FFF9C4;color:var(--text-mid)}
 .tab:hover{transform:translateY(-1px)}
 .tab.on{background:var(--pink);color:#fff;box-shadow:0 2px 8px rgba(255,107,157,.3)}
-
-/* INPUTS */
 .field{margin-bottom:10px}
 .field input{width:100%;font-family:'Kalam','Caveat',cursive;font-size:16px;font-weight:500;padding:10px 14px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;transition:border .2s,box-shadow .2s}
 .field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(109,189,232,.15)}
 .field input::placeholder{color:var(--text-light)}
 .field-name{display:none}
 .field-name.show{display:block}
-
-/* BUTTON */
 .login-btn{width:100%;font-family:'Kalam','Caveat',cursive;font-size:17px;font-weight:700;padding:12px;border:none;border-radius:8px;background:var(--pink);color:#fff;cursor:pointer;box-shadow:0 3px 12px rgba(255,107,157,.3);transition:all .2s;margin-top:4px}
 .login-btn:hover{background:var(--pink-hover);transform:translateY(-2px);box-shadow:0 5px 20px rgba(255,107,157,.4)}
 .login-btn:active{transform:translateY(1px)}
 .login-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-
-/* ERROR/STATUS */
 .msg{text-align:center;font-size:14px;min-height:20px;margin-top:10px;transition:all .2s}
 .msg.err{color:var(--pink)}
 .msg.info{color:var(--blue)}
-
-/* FOOTER */
 .card-footer{text-align:center;padding:12px;border-top:1px dashed var(--paper-line)}
 .card-footer span{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text-light);letter-spacing:1.5px}
-
-/* BRAND */
 .brand{position:relative;z-index:1;margin-bottom:6px}
 .brand span{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--blue);letter-spacing:3px;opacity:.5}
-
-/* LYRIC */
 .lyric{position:relative;z-index:1;font-size:13px;color:var(--text-light);font-style:italic;letter-spacing:.5px;margin-bottom:24px;text-align:center}
-
-/* BOTTOM */
 .bottom-text{position:fixed;bottom:20px;font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text-light);letter-spacing:2px;opacity:.3;z-index:1}
-
+.diag-box{margin-top:14px;padding:12px;background:#f8f8f0;border:1px dashed var(--paper-line);border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:var(--text-mid);white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;display:none}
+.diag-box.show{display:block}
+.diag-link{text-align:center;margin-top:10px}
+.diag-link a{font-size:12px;color:var(--blue-deep);text-decoration:underline;cursor:pointer}
 @media(max-width:480px){
   body{padding:16px}
   .login-card{max-width:100%}
@@ -97,13 +73,9 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
 </head>
 <body>
 
-<!-- STARS -->
 <div class="stars" id="stars"></div>
-
-<!-- BRAND -->
 <div class="brand"><span>RETROMYND</span></div>
 
-<!-- PIXEL HEART -->
 <div class="pixel-heart">
   <div class="ph t"></div><div class="ph p"></div><div class="ph p"></div><div class="ph t"></div><div class="ph t"></div><div class="ph t"></div><div class="ph p"></div><div class="ph p"></div><div class="ph t"></div>
   <div class="ph p"></div><div class="ph w"></div><div class="ph p"></div><div class="ph p"></div><div class="ph t"></div><div class="ph p"></div><div class="ph p"></div><div class="ph p"></div><div class="ph p"></div>
@@ -115,10 +87,8 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
   <div class="ph t"></div><div class="ph t"></div><div class="ph t"></div><div class="ph t"></div><div class="ph p"></div><div class="ph t"></div><div class="ph t"></div><div class="ph t"></div><div class="ph t"></div>
 </div>
 
-<!-- LYRIC -->
 <div class="lyric">"long story short, I survived"</div>
 
-<!-- LOGIN CARD -->
 <div class="login-card">
   <div class="card-holes">
     <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
@@ -130,35 +100,32 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
   </div>
 
   <div class="card-body">
-    <!-- Saved user quick login -->
     <div id="savedUser"></div>
 
-    <!-- Tabs -->
     <div class="tabs">
       <button class="tab on" id="tabLogin" onclick="switchMode('login')">Login</button>
       <button class="tab" id="tabRegister" onclick="switchMode('register')">Cadastrar</button>
     </div>
 
-    <!-- Name field (register only) -->
     <div class="field field-name" id="nameField">
       <input type="text" id="inputName" placeholder="Seu nome" autocomplete="name">
     </div>
 
-    <!-- Email -->
     <div class="field">
       <input type="email" id="inputEmail" placeholder="Email" autocomplete="email">
     </div>
 
-    <!-- Password -->
     <div class="field">
       <input type="password" id="inputPass" placeholder="Senha (mín. 6 caracteres)" autocomplete="current-password">
     </div>
 
-    <!-- Submit -->
     <button class="login-btn" id="submitBtn" onclick="doSubmit()">Entrar</button>
 
-    <!-- Message -->
     <div class="msg" id="msg"></div>
+
+    <!-- DIAGNOSTIC BOX -->
+    <div class="diag-box" id="diagBox"></div>
+    <div class="diag-link"><a onclick="runDiag()">🔧 Diagnóstico</a></div>
   </div>
 
   <div class="card-footer">
@@ -169,7 +136,7 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
 <div class="bottom-text">RETROMYND © 2026 • MATHEUS MARQUES</div>
 
 <script>
-// ====== STARS ======
+// Stars
 (function(){
   const c=document.getElementById('stars');
   for(let i=0;i<50;i++){
@@ -184,16 +151,14 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
   }
 })();
 
-// ====== AUTH CHECK ======
+// Auth check
 (function(){
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('rms_user');
   if(token && user){
-    // Already logged in → go to hub
     window.location.href = '/index.html';
     return;
   }
-  // Show saved user if exists
   if(user){
     try{
       const u = JSON.parse(user);
@@ -215,12 +180,9 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
 })();
 
 function quickLogin(){
-  if(localStorage.getItem('token')){
-    window.location.href = '/index.html';
-  }
+  if(localStorage.getItem('token')) window.location.href = '/index.html';
 }
 
-// ====== MODE SWITCH ======
 let mode = 'login';
 
 function switchMode(m){
@@ -230,7 +192,6 @@ function switchMode(m){
   const nf = document.getElementById('nameField');
   const btn = document.getElementById('submitBtn');
   const msg = document.getElementById('msg');
-
   if(m==='register'){
     tl.classList.remove('on'); tr.classList.add('on');
     nf.classList.add('show');
@@ -243,15 +204,14 @@ function switchMode(m){
   if(msg) msg.textContent = '';
 }
 
-// ====== SUBMIT ======
 async function doSubmit(){
   const btn = document.getElementById('submitBtn');
   const msg = document.getElementById('msg');
+  const diag = document.getElementById('diagBox');
   const email = document.getElementById('inputEmail').value.trim();
   const pass = document.getElementById('inputPass').value;
   const name = document.getElementById('inputName').value.trim();
 
-  // Validate
   if(!email || !pass){
     msg.className='msg err'; msg.textContent='Preencha email e senha'; return;
   }
@@ -264,39 +224,133 @@ async function doSubmit(){
 
   btn.disabled = true;
   msg.className='msg info';
-  msg.textContent = mode==='login' ? 'Entrando...' : 'Cadastrando...';
+  msg.textContent = mode==='login' ? 'Conectando ao servidor...' : 'Cadastrando...';
+  diag.classList.remove('show');
 
   try{
     const endpoint = mode==='login' ? '/api/auth/login' : '/api/auth/register';
     const body = mode==='login' ? {email, password:pass} : {email, password:pass, name};
 
+    const t0 = Date.now();
     const res = await fetch(endpoint, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify(body)
     });
+    const elapsed = Date.now() - t0;
 
-    const data = await res.json();
-
-    if(!res.ok){
-      throw new Error(data.error || data.message || 'Erro no servidor');
+    let data;
+    const rawText = await res.text();
+    try {
+      data = JSON.parse(rawText);
+    } catch(parseErr) {
+      // Server returned non-JSON (HTML error page, etc)
+      diag.textContent = `Status: ${res.status}\nTempo: ${elapsed}ms\nResposta (não é JSON):\n${rawText.substring(0, 500)}`;
+      diag.classList.add('show');
+      throw new Error(`Servidor retornou status ${res.status} (não-JSON). Veja detalhes abaixo.`);
     }
 
-    // Save auth
+    if(!res.ok){
+      diag.textContent = `Status: ${res.status}\nTempo: ${elapsed}ms\nResposta:\n${JSON.stringify(data, null, 2)}`;
+      diag.classList.add('show');
+      throw new Error(data.error || data.message || `Erro ${res.status}`);
+    }
+
+    // Success!
     localStorage.setItem('token', data.token);
     localStorage.setItem('rms_user', JSON.stringify(data.user));
 
     msg.className='msg info';
-    msg.textContent = 'Entrando no hub...';
+    msg.textContent = `✅ Login OK! (${elapsed}ms) Entrando...`;
 
-    // Redirect to hub
     setTimeout(()=>{ window.location.href = '/index.html'; }, 400);
 
   } catch(e){
     msg.className='msg err';
-    msg.textContent = e.message || 'Erro ao conectar';
+    // Distinguish network errors from server errors
+    if(e.name === 'TypeError' && e.message.includes('fetch')){
+      msg.textContent = '❌ Sem conexão com o servidor. Verifique sua internet.';
+      diag.textContent = `Erro de rede (fetch failed):\n${e.message}\n\nIsso significa que o navegador não conseguiu se conectar ao servidor Vercel.`;
+      diag.classList.add('show');
+    } else {
+      msg.textContent = e.message || 'Erro ao conectar';
+    }
     btn.disabled = false;
   }
+}
+
+// DIAGNOSTIC
+async function runDiag(){
+  const diag = document.getElementById('diagBox');
+  diag.classList.add('show');
+  diag.textContent = '🔧 Rodando diagnóstico...\n\n';
+
+  let log = '';
+  function add(text){ log += text + '\n'; diag.textContent = log; }
+
+  add('=== RetroMynd Diagnostic ===');
+  add('Time: ' + new Date().toLocaleString());
+  add('URL: ' + window.location.href);
+  add('');
+
+  // 1. Token
+  const token = localStorage.getItem('token');
+  add('Token: ' + (token ? 'exists (' + token.length + ' chars)' : 'NONE'));
+  add('User: ' + (localStorage.getItem('rms_user') ? 'exists' : 'NONE'));
+  add('');
+
+  // 2. Health
+  add('--- Health Check ---');
+  try {
+    const t0 = Date.now();
+    const r = await fetch('/api/health');
+    const ms = Date.now() - t0;
+    const d = await r.json();
+    add('Status: ' + r.status + ' (' + ms + 'ms)');
+    Object.entries(d).forEach(([k,v]) => add('  ' + k + ': ' + v));
+  } catch(e){
+    add('FAILED: ' + e.message);
+  }
+  add('');
+
+  // 3. Login endpoint (OPTIONS preflight)
+  add('--- Login Preflight ---');
+  try {
+    const t0 = Date.now();
+    const r = await fetch('/api/auth/login', {method:'OPTIONS'});
+    const ms = Date.now() - t0;
+    add('OPTIONS: ' + r.status + ' (' + ms + 'ms)');
+  } catch(e){
+    add('OPTIONS FAILED: ' + e.message);
+  }
+  add('');
+
+  // 4. Login test with bad creds
+  add('--- Login Test (bad creds) ---');
+  try {
+    const t0 = Date.now();
+    const r = await fetch('/api/auth/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email:'test@diag.com', password:'wrong123'})
+    });
+    const ms = Date.now() - t0;
+    const d = await r.text();
+    add('Status: ' + r.status + ' (' + ms + 'ms)');
+    add('Response: ' + d.substring(0, 200));
+  } catch(e){
+    add('FAILED: ' + e.message);
+  }
+  add('');
+
+  // 5. LocalStorage keys
+  add('--- localStorage ---');
+  const keys = [];
+  for(let i=0; i<localStorage.length; i++) keys.push(localStorage.key(i));
+  add('Keys: ' + (keys.join(', ') || '(empty)'));
+
+  add('');
+  add('=== Done ===');
 }
 
 // Enter key
