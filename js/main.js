@@ -511,6 +511,8 @@
     if (gtH) gtH.classList.toggle('on', goalTab === 'history');
     if (gvC) gvC.style.display = goalTab === 'today' ? '' : 'none';
     if (gvH) gvH.style.display = goalTab === 'history' ? '' : 'none';
+    // FIX: Reset page to 1 when switching tabs
+    goalPage = 1;
     if (goalTab === 'today') renderGoals(); else renderHistory();
   }
 
