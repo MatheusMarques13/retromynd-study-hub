@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetroMynd Diagnostic</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:#0d1117;color:#c9d1d9;padding:20px;font-size:14px}
+h1{color:#f5c518;font-size:18px;margin-bottom:16px;text-align:center}
+.test{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px 16px;margin-bottom:10px}
+.test-name{font-weight:bold;color:#8b949e;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.test-result{font-size:15px;word-break:break-all}
+.ok{color:#3fb950}.fail{color:#f85149}.warn{color:#d29922}.info{color:#58a6ff}
+.loading{color:#8b949e;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.actions{text-align:center;margin-top:20px}
+.btn{font-family:'Courier New',monospace;font-size:14px;padding:10px 24px;border:2px solid #f5c518;background:transparent;color:#f5c518;border-radius:6px;cursor:pointer;margin:4px}
+.btn:active{background:#f5c518;color:#000}
+.subtitle{color:#8b949e;text-align:center;font-size:12px;margin-bottom:20px}
+</style>
+</head>
+<body>
+<h1>🔧 RetroMynd Diagnostic</h1>
+<p class="subtitle">Testando todos os componentes...</p>
+
+<div id="tests"></div>
+
+<div class="actions">
+  <button class="btn" onclick="runAll()">🔄 Rodar de novo</button>
+  <button class="btn" onclick="copyResults()">📋 Copiar resultados</button>
+</div>
+
+<script>
+const container = document.getElementById('tests');
+const results = [];
+
+function addTest(name, status, detail) {
+  results.push({name, status, detail});
+  const div = document.createElement('div');
+  div.className = 'test';
+  const cls = status === 'OK' ? 'ok' : status === 'FAIL' ? 'fail' : status === 'WARN' ? 'warn' : 'info';
+  div.innerHTML = `<div class="test-name">${name}</div><div class="test-result ${cls}">[${status}] ${detail}</div>`;
+  container.appendChild(div);
+}
+
+function clearTests() {
+  container.innerHTML = '';
+  results.length = 0;
+}
+
+async function runAll() {
+  clearTests();
+
+  // 1. Token
+  const token = localStorage.getItem('token');
+  if (token) {
+    addTest('1. JWT Token', 'OK', 'Existe (' + token.length + ' chars) → ' + token.substring(0, 30) + '...');
+    // Decode JWT payload
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = new Date(payload.exp * 1000);
+      const now = new Date();
+      const expired = now > exp;
+      addTest('1b. Token Expiration', expired ? 'FAIL' : 'OK',
+        'Expira: ' + exp.toLocaleString() + (expired ? ' ⚠️ EXPIRADO!' : ' ✅ Válido'));
+      addTest('1c. Token Payload', 'INFO', 'user_id: ' + (payload.id || payload.sub || 'N/A') + ', email: ' + (payload.email || 'N/A'));
+    } catch(e) {
+      addTest('1b. Token Decode', 'FAIL', 'Não conseguiu decodar: ' + e.message);
+    }
+  } else {
+    addTest('1. JWT Token', 'FAIL', 'NÃO EXISTE no localStorage — precisa logar');
+  }
+
+  // 2. User data
+  const user = localStorage.getItem('rms_user');
+  addTest('2. User Data', user ? 'OK' : 'WARN', user ? JSON.stringify(JSON.parse(user)).substring(0, 150) : 'Não encontrado');
+
+  // 3. Scripts loaded
+  addTest('3a. window.api', typeof window.api !== 'undefined' ? 'OK' : 'FAIL',
+    typeof window.api !== 'undefined' ? 'Carregado ✅' : 'NÃO CARREGADO — api.js não foi loaded!');
+  addTest('3b. window.auth', typeof window.auth !== 'undefined' ? 'OK' : 'FAIL',
+    typeof window.auth !== 'undefined' ? 'Carregado ✅' : 'NÃO CARREGADO — auth.js não foi loaded!');
+
+  // 4. Health endpoint
+  try {
+    const t0 = Date.now();
+    const hRes = await fetch('/api/health');
+    const hTime = Date.now() - t0;
+    const hData = await hRes.json();
+    addTest('4. /api/health', hRes.ok ? 'OK' : 'FAIL',
+      hRes.status + ' (' + hTime + 'ms) → ' + JSON.stringify(hData).substring(0, 200));
+  } catch(e) {
+    addTest('4. /api/health', 'FAIL', 'Erro: ' + e.message);
+  }
+
+  // 5. Load endpoint WITHOUT token
+  try {
+    const r = await fetch('/api/data/load');
+    const d = await r.json();
+    addTest('5. /api/data/load (sem token)', r.status === 401 ? 'OK' : 'WARN',
+      'Status ' + r.status + ' → ' + JSON.stringify(d).substring(0, 150));
+  } catch(e) {
+    addTest('5. /api/data/load (sem token)', 'FAIL', 'Erro: ' + e.message);
+  }
+
+  // 6. Load endpoint WITH token
+  if (token) {
+    try {
+      const t0 = Date.now();
+      const r = await fetch('/api/data/load', {
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      });
+      const rTime = Date.now() - t0;
+      const d = await r.json();
+      addTest('6. /api/data/load (COM token)', r.ok ? 'OK' : 'FAIL',
+        'Status ' + r.status + ' (' + rTime + 'ms) → ' + JSON.stringify(d).substring(0, 300));
+    } catch(e) {
+      addTest('6. /api/data/load (COM token)', 'FAIL', 'Erro: ' + e.message);
+    }
+  } else {
+    addTest('6. /api/data/load (COM token)', 'FAIL', 'Sem token para testar');
+  }
+
+  // 7. Test api.get if available
+  if (typeof window.api !== 'undefined') {
+    try {
+      const d = await window.api.get('/api/data/load');
+      addTest('7. api.get("/api/data/load")', 'OK', JSON.stringify(d).substring(0, 300));
+    } catch(e) {
+      addTest('7. api.get("/api/data/load")', 'FAIL', e.message);
+    }
+  } else {
+    addTest('7. api.get test', 'FAIL', 'window.api não existe — scripts não carregados');
+  }
+
+  // 8. Save endpoint test (dry run)
+  if (token) {
+    try {
+      const r = await fetch('/api/data/save', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data_type: '_diag_test', data: { test: true, ts: Date.now() } })
+      });
+      const d = await r.json();
+      addTest('8. /api/data/save (test write)', r.ok ? 'OK' : 'FAIL',
+        'Status ' + r.status + ' → ' + JSON.stringify(d).substring(0, 150));
+    } catch(e) {
+      addTest('8. /api/data/save', 'FAIL', 'Erro: ' + e.message);
+    }
+  }
+
+  // 9. All localStorage keys
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+  addTest('9. localStorage keys', 'INFO', keys.join(', ') || '(vazio)');
+
+  // 10. Summary
+  const fails = results.filter(r => r.status === 'FAIL').length;
+  addTest('RESUMO', fails === 0 ? 'OK' : 'FAIL',
+    fails === 0 ? '✅ Todos os testes passaram!' : '❌ ' + fails + ' teste(s) falharam — veja acima');
+}
+
+function copyResults() {
+  const text = results.map(r => `[${r.status}] ${r.name}: ${r.detail}`).join('\n');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('Copiado!')).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  alert('Copiado!');
+}
+
+// Auto-run
+runAll();
+</script>
+</body>
+</html>
