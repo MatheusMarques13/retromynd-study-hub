@@ -275,14 +275,12 @@
     }
     updateDate();
     initProfilePanel();
-    // INIT FIRST so UI renders with local data immediately
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
     try { initNotes(); } catch(e) {}
     try { initStreak(); } catch(e) {}
     try { initRetroLesson(); } catch(e) {}
     loadStats();
-    // THEN sync in background - will re-render if server has newer data
     syncFromServer();
   }
   window.showHub = showHub;
@@ -316,59 +314,69 @@
       const allData = await resp.json();
       if (!allData || typeof allData !== 'object') { showSaveStatus('ok', 'Conectado ✓'); return; }
 
+      console.log('[RetroMynd] Server data keys:', Object.keys(allData));
+
       let loaded = 0;
       let needsResync = false;
 
+      // SAFETY: snapshot local data BEFORE sync to prevent race conditions
+      const localGoalsBeforeSync = store.get('goals', []);
+      const localNotesBeforeSync = store.get('notes', []);
+
       // =============================================
-      // GOALS SYNC: LOCAL ALWAYS WINS if it has more
+      // GOALS SYNC: MERGE strategy - never lose data
       // =============================================
-      const localGoals = store.get('goals', []);
       if (allData.goals && allData.goals.data && Array.isArray(allData.goals.data)) {
         const serverGoals = allData.goals.data;
+        // Re-read local RIGHT NOW (not cached) to catch any writes during fetch
+        const localGoals = store.get('goals', []);
+
         if (localGoals.length === 0 && serverGoals.length > 0) {
-          // Local empty, server has data -> use server
           store.set('goals', serverGoals, false);
           loaded++;
           console.log('[RetroMynd] Goals: server -> local (' + serverGoals.length + ')');
         } else if (localGoals.length > 0 && serverGoals.length === 0) {
-          // Local has data, server empty -> push local to server
           needsResync = true;
           store._dirty.add('goals');
           console.log('[RetroMynd] Goals: local -> server (' + localGoals.length + ')');
         } else if (localGoals.length > 0 && serverGoals.length > 0) {
-          // Both have data -> merge by ID, keeping ALL unique items
+          // ALWAYS MERGE by ID - keep ALL unique items from both sides
           const allIds = new Map();
+          // Server first as base
           serverGoals.forEach(g => allIds.set(g.id, g));
+          // Local overwrites server (local wins for existing IDs)
           localGoals.forEach(g => {
-            if (!allIds.has(g.id)) {
-              allIds.set(g.id, g); // local-only item
+            const existing = allIds.get(g.id);
+            if (!existing) {
+              allIds.set(g.id, g);
               needsResync = true;
             } else {
-              // If local has done=true and server has done=false, keep local
-              const sv = allIds.get(g.id);
-              if (g.done && !sv.done) { allIds.set(g.id, g); needsResync = true; }
+              // Local wins if: done status changed, or text changed
+              if (g.done !== existing.done || g.text !== existing.text) {
+                allIds.set(g.id, g);
+                needsResync = true;
+              }
             }
           });
           const merged = Array.from(allIds.values());
           store.set('goals', merged, false);
           if (needsResync) store._dirty.add('goals');
           loaded++;
-          console.log('[RetroMynd] Goals: merged (' + merged.length + ')');
+          console.log('[RetroMynd] Goals: merged (' + merged.length + ' from L:' + localGoals.length + ' S:' + serverGoals.length + ')');
         }
-        // If both empty, do nothing
-      } else if (localGoals.length > 0) {
-        // Server has NO goals key at all, but local has data -> push to server
+      } else if (localGoalsBeforeSync.length > 0) {
         needsResync = true;
         store._dirty.add('goals');
-        console.log('[RetroMynd] Goals: no server key, pushing local (' + localGoals.length + ')');
+        console.log('[RetroMynd] Goals: no server key, pushing local (' + localGoalsBeforeSync.length + ')');
       }
 
       // =============================================
-      // NOTES SYNC: Same logic
+      // NOTES SYNC: Same merge logic
       // =============================================
-      const localNotes = store.get('notes', []);
       if (allData.notes && allData.notes.data && Array.isArray(allData.notes.data)) {
         const serverNotes = allData.notes.data;
+        const localNotes = store.get('notes', []);
+
         if (localNotes.length === 0 && serverNotes.length > 0) {
           store.set('notes', serverNotes, false);
           loaded++;
@@ -381,12 +389,19 @@
           let notesNeedSync = false;
           localNotes.forEach(n => {
             if (!allIds.has(n.id)) { allIds.set(n.id, n); notesNeedSync = true; }
+            else {
+              // Local wins for content changes
+              const sv = allIds.get(n.id);
+              if (n.title !== sv.title || n.content !== sv.content || JSON.stringify(n.postits) !== JSON.stringify(sv.postits)) {
+                allIds.set(n.id, n); notesNeedSync = true;
+              }
+            }
           });
           store.set('notes', Array.from(allIds.values()), false);
           if (notesNeedSync) { needsResync = true; store._dirty.add('notes'); }
           loaded++;
         }
-      } else if (localNotes.length > 0) {
+      } else if (localNotesBeforeSync.length > 0) {
         needsResync = true;
         store._dirty.add('notes');
       }
@@ -417,6 +432,7 @@
       }
 
       store._lastSyncOk = true;
+      console.log('[RetroMynd] Synced ' + loaded + ' data types ✓');
       if (loaded > 0) showSaveStatus('ok', 'Dados sincronizados ✓');
       else showSaveStatus('ok', 'Conectado ✓');
 
@@ -569,7 +585,6 @@
   function saveGoals(g) {
     store.set('goals', g);
     loadStats();
-    // Fire and forget - flush will retry on failure
     store.flushNow().catch(function() {
       console.warn('[RetroMynd] Goals flush failed, will retry');
     });
