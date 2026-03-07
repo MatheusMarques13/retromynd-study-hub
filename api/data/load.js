@@ -9,50 +9,45 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
+      return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 
     const supabase = getSupabase();
 
-    // Debug mode: show table columns
-    if (req.query.debug === '1') {
-      const { data, error } = await supabase.from('user_data').select('*').limit(1);
-      if (error) return res.status(500).json({ error: error.message });
-      const columns = data && data.length > 0 ? Object.keys(data[0]) : 'table empty or no rows';
-      return res.status(200).json({ columns, sample: data });
-    }
-
-    // Use select(*) and map dynamically
+    // Table schema: id (uuid, = user id), hub_data (jsonb), lesson_data (jsonb), preferences (jsonb), updated_at
     const { data, error } = await supabase
       .from('user_data')
       .select('*')
-      .eq('user_id', tokenUser.id);
+      .eq('id', tokenUser.id)
+      .maybeSingle();
 
     if (error) {
       console.error('Load Supabase error:', JSON.stringify(error));
-      return res.status(500).json({ 
-        error: 'Erro ao carregar dados',
-        detail: error.message || error.code || JSON.stringify(error)
-      });
+      return res.status(500).json({ error: 'Erro ao carregar dados', detail: error.message });
     }
 
-    // Transform to key-value object
-    // Try multiple possible column names for data_type
+    if (!data) {
+      // No data yet for this user — return empty
+      return res.status(200).json({});
+    }
+
+    // Map from DB columns to what the frontend expects
     const result = {};
-    (data || []).forEach(row => {
-      const type = row.data_type || row.type || row.datatype || row.kind || 'unknown';
-      result[type] = {
-        data: row.data || row.content || row.value,
-        updated_at: row.updated_at || row.updatedat || row.modified_at
-      };
-    });
+    const hubData = data.hub_data || {};
+
+    // hub_data contains: goals, notes, timer, streak
+    if (hubData.goals) result.goals = { data: hubData.goals, updated_at: data.updated_at };
+    if (hubData.notes) result.notes = { data: hubData.notes, updated_at: data.updated_at };
+    if (hubData.timer) result.timer = { data: hubData.timer, updated_at: data.updated_at };
+    if (hubData.streak) result.streak = { data: hubData.streak, updated_at: data.updated_at };
+
+    // Also pass lesson_data and preferences if they exist
+    if (data.lesson_data) result.lessons = { data: data.lesson_data, updated_at: data.updated_at };
+    if (data.preferences) result.preferences = { data: data.preferences, updated_at: data.updated_at };
 
     return res.status(200).json(result);
   } catch (err) {
-    console.error('Load catch error:', err.message, err.stack);
-    return res.status(500).json({ 
-      error: 'Erro interno do servidor',
-      detail: err.message
-    });
+    console.error('Load catch error:', err.message);
+    return res.status(500).json({ error: 'Erro interno do servidor', detail: err.message });
   }
 };

@@ -12,11 +12,11 @@ module.exports = async (req, res) => {
     timestamp: new Date().toISOString()
   };
 
-  // Test Supabase connection if env vars exist
   if (checks.supabase_url === 'ok' && checks.supabase_key === 'ok') {
     try {
       const { getSupabase } = require('./_lib/supabase');
       const supabase = getSupabase();
+      // Schema: id (uuid), hub_data (jsonb), lesson_data (jsonb), preferences (jsonb), updated_at
       const { error } = await supabase.from('user_data').select('id').limit(1);
       checks.supabase_connection = error ? 'FAIL: ' + error.message : 'ok';
     } catch (e) {
