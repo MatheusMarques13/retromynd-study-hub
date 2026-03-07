@@ -20,7 +20,6 @@ module.exports = async (req, res) => {
       .select('data_type, data, updated_at')
       .eq('user_id', tokenUser.id);
 
-    // Optional: filter by type
     if (dataType) {
       query = query.eq('data_type', dataType);
     }
@@ -28,8 +27,11 @@ module.exports = async (req, res) => {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Load error:', error);
-      return res.status(500).json({ error: 'Erro ao carregar dados' });
+      console.error('Load Supabase error:', JSON.stringify(error));
+      return res.status(500).json({ 
+        error: 'Erro ao carregar dados',
+        detail: error.message || error.code || JSON.stringify(error)
+      });
     }
 
     // Transform to key-value object
@@ -43,7 +45,10 @@ module.exports = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (err) {
-    console.error('Load error:', err);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Load catch error:', err.message, err.stack);
+    return res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      detail: err.message
+    });
   }
 };
