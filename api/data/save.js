@@ -16,7 +16,15 @@ module.exports = async (req, res) => {
       return res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 
-    const { data_type, data } = req.body || {};
+    // Handle both JSON body and sendBeacon body
+    let body = req.body;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch (e) {
+        return res.status(400).json({ error: 'JSON inválido no body' });
+      }
+    }
+
+    const { data_type, data } = body || {};
 
     const validTypes = [
       'goals', 'notes', 'timer', 'streak', 'hub_state',
@@ -43,7 +51,7 @@ module.exports = async (req, res) => {
     if (existing) {
       result = await supabase
         .from('user_data')
-        .update({ data })
+        .update({ data, updated_at: new Date().toISOString() })
         .eq('id', existing.id)
         .select()
         .single();

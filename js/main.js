@@ -1,6 +1,5 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
-// Fluxo: login.html → Hub (Vercel + Supabase)
 // PERSISTENCE: Server-first. Load from server on boot, fallback to localStorage.
 // =============================================================================
 
@@ -12,6 +11,9 @@
   const store = {
     _dirty: new Set(),
     _saving: false,
+    _retryCount: 0,
+    _maxRetries: 5,
+    _lastSyncOk: false,
 
     get(key, fallback) {
       try {
@@ -44,7 +46,13 @@
     _flushTimer: null,
     _debouncedFlush() {
       clearTimeout(this._flushTimer);
-      this._flushTimer = setTimeout(() => this.flush(), 2000);
+      this._flushTimer = setTimeout(() => this.flush(), 1500);
+    },
+
+    // Flush immediately (no debounce)
+    flushNow() {
+      clearTimeout(this._flushTimer);
+      return this.flush();
     },
 
     _serverMap: {
@@ -59,7 +67,8 @@
       if (this._saving || !auth || !auth.isAuthenticated() || this._dirty.size === 0) return;
       this._saving = true;
       const ops = new Map();
-      for (const key of this._dirty) {
+      const dirtyKeys = [...this._dirty];
+      for (const key of dirtyKeys) {
         const mapper = this._serverMap[key];
         if (mapper) {
           const { type, data } = mapper();
@@ -67,17 +76,50 @@
         }
       }
       this._dirty.clear();
+
+      let allOk = true;
       for (const [type, data] of ops) {
         try {
           await auth.saveData(type, data);
-          console.log('[RetroMynd] Saved', type);
+          console.log('[RetroMynd] ☁️ Saved:', type);
+          this._retryCount = 0;
         } catch (e) {
-          console.warn('[RetroMynd] Save failed:', type, e.message);
-          this._dirty.add(type);
+          allOk = false;
+          console.warn('[RetroMynd] ❌ Save failed:', type, e.message);
+          // Re-mark dirty keys for this type
+          for (const key of dirtyKeys) {
+            const mapper = this._serverMap[key];
+            if (mapper && mapper().type === type) this._dirty.add(key);
+          }
+
+          // If 401, token is bad - try to warn user
+          if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token') || e.message.toLowerCase().includes('expirado'))) {
+            console.error('[RetroMynd] 🔑 Token expired/invalid - data NOT saved to cloud!');
+            showSaveStatus('error', 'Sessão expirada! Faça login novamente para salvar.');
+            break;
+          }
         }
       }
+
       this._saving = false;
-      if (this._dirty.size > 0) setTimeout(() => this.flush(), 1000);
+      this._lastSyncOk = allOk;
+
+      if (allOk && ops.size > 0) {
+        showSaveStatus('ok', 'Salvo na nuvem ✓');
+      }
+
+      // Retry if still dirty
+      if (this._dirty.size > 0) {
+        this._retryCount++;
+        if (this._retryCount <= this._maxRetries) {
+          const delay = Math.min(2000 * Math.pow(2, this._retryCount - 1), 30000);
+          console.log(`[RetroMynd] Retry ${this._retryCount}/${this._maxRetries} in ${delay}ms`);
+          setTimeout(() => this.flush(), delay);
+        } else {
+          console.error('[RetroMynd] Max retries reached. Data in localStorage only.');
+          showSaveStatus('error', 'Falha ao salvar na nuvem. Dados salvos localmente.');
+        }
+      }
     },
 
     flushSync() {
@@ -94,18 +136,58 @@
       for (const [type, data] of ops) {
         try {
           const token = localStorage.getItem('token');
+          if (!token) continue;
+          // sendBeacon for reliable unload saves
           const blob = new Blob([JSON.stringify({ data_type: type, data })], { type: 'application/json' });
-          navigator.sendBeacon('/api/data/save?token=' + token, blob);
+          const sent = navigator.sendBeacon('/api/data/save?token=' + encodeURIComponent(token), blob);
+          if (!sent) console.warn('[RetroMynd] sendBeacon failed for', type);
         } catch (e) { /* best effort */ }
       }
     }
   };
   window._store = store;
 
+  // Save on tab close / navigate away
   window.addEventListener('beforeunload', () => store.flushSync());
   window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') store.flush();
+    if (document.visibilityState === 'hidden') store.flushNow();
   });
+
+  // Also save periodically every 30s if dirty
+  setInterval(() => {
+    if (store._dirty.size > 0) store.flush();
+  }, 30000);
+
+  // ═══ SAVE STATUS INDICATOR ═══
+  function showSaveStatus(type, msg) {
+    let el = $('saveStatus');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'saveStatus';
+      el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-family:Kalam,cursive;font-size:14px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(10px);pointer-events:none;';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    if (type === 'ok') {
+      el.style.background = '#D1FAE5';
+      el.style.color = '#059669';
+    } else if (type === 'error') {
+      el.style.background = '#FEE2E2';
+      el.style.color = '#DC2626';
+      el.style.pointerEvents = 'auto';
+    } else {
+      el.style.background = '#FEF3C7';
+      el.style.color = '#D97706';
+    }
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+    }, type === 'error' ? 8000 : 3000);
+  }
+  window.showSaveStatus = showSaveStatus;
 
   // ═══ PROFILE PANEL ═══
   function initProfilePanel() {
@@ -121,12 +203,17 @@
     if (closeBtn) closeBtn.onclick = () => closeProfile();
     if (overlay) overlay.onclick = () => closeProfile();
     if (logoutBtn) logoutBtn.onclick = () => {
-      store.flush();
-      setTimeout(() => {
+      // Force save before logout
+      showSaveStatus('warn', 'Salvando antes de sair...');
+      store.flushNow().then(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('rms_user');
         window.location.href = '/login.html';
-      }, 500);
+      }).catch(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('rms_user');
+        window.location.href = '/login.html';
+      });
     };
 
     const avatars = ['💖','🎮','🧠','🔥','⭐','🌙','🎵','🦊','🐱','🌸','💜','🎯','🍀','🌈','✨','🎪'];
@@ -241,29 +328,70 @@
   async function syncFromServer() {
     if (!auth || !auth.isAuthenticated()) return;
     try {
+      showSaveStatus('warn', 'Sincronizando...');
       const allData = await auth.loadData('');
-      if (!allData || typeof allData !== 'object') return;
 
+      if (!allData || typeof allData !== 'object') {
+        console.log('[RetroMynd] No server data yet, keeping localStorage');
+        showSaveStatus('warn', 'Sem dados na nuvem ainda');
+        return;
+      }
+
+      let loaded = 0;
+
+      // Goals
       if (allData.goals && allData.goals.data) {
         const d = allData.goals.data;
-        if (d.items && Array.isArray(d.items)) store.set('goals', d.items, false);
+        if (d.items && Array.isArray(d.items) && d.items.length > 0) {
+          store.set('goals', d.items, false);
+          loaded++;
+        }
       }
+
+      // Notes
       if (allData.notes && allData.notes.data) {
         const d = allData.notes.data;
-        if (d.notes && Array.isArray(d.notes)) store.set('notes', d.notes, false);
+        if (d.notes && Array.isArray(d.notes) && d.notes.length > 0) {
+          store.set('notes', d.notes, false);
+          loaded++;
+        }
       }
+
+      // Timer/Pomodoros
       if (allData.timer && allData.timer.data) {
         const d = allData.timer.data;
-        if (d.pomodoros != null) store.setRaw('pomodoros', d.pomodoros, false);
+        if (d.pomodoros != null && d.pomodoros > 0) {
+          store.setRaw('pomodoros', d.pomodoros, false);
+          loaded++;
+        }
       }
+
+      // Streak
       if (allData.streak && allData.streak.data) {
         const d = allData.streak.data;
-        if (d.days && typeof d.days === 'object') store.set('streak_days', d.days, false);
-        if (d.current != null) store.setRaw('streak', d.current, false);
+        if (d.days && typeof d.days === 'object' && Object.keys(d.days).length > 0) {
+          store.set('streak_days', d.days, false);
+          loaded++;
+        }
+        if (d.current != null) {
+          store.setRaw('streak', d.current, false);
+        }
       }
-      console.log('[RetroMynd] Synced from server ✓');
+
+      store._lastSyncOk = true;
+      console.log(`[RetroMynd] Synced ${loaded} data types from server ✓`);
+      if (loaded > 0) showSaveStatus('ok', `Dados carregados da nuvem ✓`);
+      else showSaveStatus('warn', 'Nuvem vazia — usando dados locais');
     } catch(e) {
-      console.warn('[RetroMynd] Sync error (using local data):', e.message);
+      store._lastSyncOk = false;
+      console.warn('[RetroMynd] Sync error:', e.message);
+
+      if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token'))) {
+        showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
+        // Don't redirect immediately - let user see their local data
+      } else {
+        showSaveStatus('error', 'Erro de conexão — usando dados locais');
+      }
     }
   }
 
@@ -291,7 +419,6 @@
   }
   window.loadStats = loadStats;
 
-  // Helper: local date key "YYYY-MM-DD"
   function localDateKey(d) {
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
@@ -331,6 +458,7 @@
             const p = parseInt(store.getRaw('pomodoros', '0')) + 1;
             store.setRaw('pomodoros', p);
             loadStats();
+            store.flushNow(); // Save pomodoro immediately
           }
         }
         updateTimerDisplay();
@@ -350,8 +478,8 @@
   }
 
   // ═══ GOALS (with Hoje/Historico tabs, filters, pagination) ═══
-  let goalTab = 'today'; // 'today' | 'history'
-  let goalFilter = 'a';  // 'a' = all, 'c' = done, 'e' = expired, 'p' = pending
+  let goalTab = 'today';
+  let goalFilter = 'a';
   let goalPage = 1;
   const GOALS_PER_PAGE = 8;
 
@@ -360,12 +488,10 @@
     if (addBtn) addBtn.onclick = addGoal;
     if (input) input.onkeydown = e => { if (e.key === 'Enter') addGoal(); };
 
-    // Tab buttons
     const gtC = $('gtC'), gtH = $('gtH');
     if (gtC) gtC.onclick = () => { goalTab = 'today'; goalPage = 1; renderGoalTabs(); };
     if (gtH) gtH.onclick = () => { goalTab = 'history'; goalPage = 1; renderGoalTabs(); };
 
-    // Filter buttons
     document.querySelectorAll('#goalFilters .goal-filter').forEach(btn => {
       btn.onclick = () => {
         goalFilter = btn.dataset.f;
@@ -376,7 +502,6 @@
       };
     });
 
-    // Pagination
     const pgPrev = $('pgPrev'), pgNext = $('pgNext');
     if (pgPrev) pgPrev.onclick = () => { if (goalPage > 1) { goalPage--; renderGoals(); } };
     if (pgNext) pgNext.onclick = () => { goalPage++; renderGoals(); };
@@ -396,7 +521,12 @@
   }
 
   function getGoals() { return store.get('goals', []); }
-  function saveGoals(g) { store.set('goals', g); loadStats(); }
+  function saveGoals(g) {
+    store.set('goals', g);
+    loadStats();
+    // Force immediate cloud save for goals (critical data)
+    store.flushNow();
+  }
 
   function addGoal() {
     const input = $('goalInput'); if (!input || !input.value.trim()) return;
@@ -415,7 +545,6 @@
       return;
     }
 
-    // Pagination
     const total = goals.length;
     const totalPages = Math.ceil(total / GOALS_PER_PAGE);
     if (goalPage > totalPages) goalPage = totalPages;
@@ -430,7 +559,6 @@
       </div>
     `).join('');
 
-    // Pager
     const pager = $('goalPager');
     if (pager) {
       pager.style.display = totalPages > 1 ? '' : 'none';
@@ -447,22 +575,15 @@
     const allGoals = getGoals();
     const todayKey = localDateKey(new Date());
 
-    // Group goals by date (excluding today)
     const byDate = {};
     allGoals.forEach(g => {
       const key = localDateKey(new Date(g.date));
-      if (key === todayKey) return; // today is in the other tab
       if (!byDate[key]) byDate[key] = [];
       byDate[key].push(g);
     });
 
-    // Also include today's goals in history if they exist (for completeness)
-    const todayGoals = allGoals.filter(g => localDateKey(new Date(g.date)) === todayKey);
-    if (todayGoals.length > 0) byDate[todayKey] = todayGoals;
-
     const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
 
-    // Stats
     const totalAll = allGoals.length;
     const doneAll = allGoals.filter(g => g.done).length;
     const pendingAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) === todayKey).length;
@@ -488,7 +609,6 @@
       let goals = byDate[dateKey];
       const isToday = dateKey === todayKey;
 
-      // Apply filter
       if (goalFilter === 'c') goals = goals.filter(g => g.done);
       else if (goalFilter === 'e') goals = goals.filter(g => !g.done && dateKey < todayKey);
       else if (goalFilter === 'p') goals = goals.filter(g => !g.done && dateKey >= todayKey);
@@ -542,7 +662,11 @@
 
   function initNotes() { renderNotesList(); }
   function getNotes() { return store.get('notes', []); }
-  function saveNotes(n) { store.set('notes', n); loadStats(); }
+  function saveNotes(n) {
+    store.set('notes', n);
+    loadStats();
+    store.flushNow(); // Immediate cloud save for notes too
+  }
 
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
@@ -658,6 +782,8 @@
 
   window.closeNote = function() { currentNote = null; renderNotesList(); };
 
+  // Debounced save for note typing (don't spam server on every keystroke)
+  let _noteTypingTimer = null;
   window.saveCurrentNote = function() {
     if (!currentNote) return;
     const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
@@ -665,7 +791,12 @@
     if (t) n.title = t.value;
     if (c) n.content = c.value;
     currentNote = n;
-    saveNotes(notes);
+    // Save to localStorage immediately but debounce cloud save
+    store.set('notes', notes, false);
+    localStorage.setItem('rms_notes', JSON.stringify(notes));
+    store._dirty.add('notes');
+    clearTimeout(_noteTypingTimer);
+    _noteTypingTimer = setTimeout(() => store.flushNow(), 3000);
   };
 
   window.deleteNote = function(id) { saveNotes(getNotes().filter(n => n.id !== id)); if (currentNote && currentNote.id === id) currentNote = null; renderNotesList(); };
@@ -690,6 +821,7 @@
       store.set('streak_days', data);
       store.setRaw('streak', 0);
       initStreak(); loadStats();
+      store.flushNow(); // Save streak immediately
     };
   }
 
