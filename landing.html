@@ -109,20 +109,21 @@ body {
   display: flex; flex-direction: column; gap: 2px;
 }
 .brand-name {
-  font-family: 'Source Serif 4', 'Georgia', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
-  letter-spacing: -0.5px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 .brand-sub {
   font-family: 'Source Code Pro', monospace;
-  font-size: 0.55rem;
-  font-weight: 500;
+  font-size: 0.5rem;
+  font-weight: 400;
   color: var(--text-dim);
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-transform: lowercase;
 }
 
 .quote-box {
@@ -260,13 +261,126 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-[data-mode="light"] {
-  --bg-overlay: rgba(255,255,255,0.08);
+/* Landing retro toggle - COMFY glass style */
+.bottom-group-left .retro-toggle {
+  font-family: 'Source Code Pro', monospace !important;
+  font-size: 0.6rem !important;
+  font-weight: 600 !important;
+  padding: 8px 20px !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 24px !important;
+  background: var(--glass) !important;
+  color: var(--text-dim) !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(16px) !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  transition: all 0.25s ease !important;
+  margin-left: 0 !important;
+}
+.bottom-group-left .retro-toggle:hover {
+  background: var(--glass-hover) !important;
+  color: #fff !important;
+  border-color: rgba(255,255,255,0.3) !important;
+}
+
+/* ═══ LANDING RETRO OVERRIDES ═══ */
+body.retro-dark .bg-overlay,
+body.retro-light .bg-overlay {
+  background: rgba(0,0,0,0.5) !important;
+}
+
+body.retro-dark .clock,
+body.retro-light .clock {
+  font-family: VT323, monospace !important;
+  color: var(--rgold, #f5c518) !important;
+  text-shadow: 0 0 30px rgba(245,197,24,.4), 0 4px 30px rgba(0,0,0,.5) !important;
+}
+
+body.retro-dark .greeting,
+body.retro-light .greeting {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rpixel, #e8f0ff) !important;
+}
+
+body.retro-dark .brand-name,
+body.retro-light .brand-name {
+  font-family: VT323, monospace !important;
+  color: var(--rgold, #f5c518) !important;
+  text-shadow: 0 0 20px rgba(245,197,24,.4) !important;
+}
+
+body.retro-dark .brand-sub,
+body.retro-light .brand-sub {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rdim, #7a8faa) !important;
+}
+
+body.retro-dark .quote-box,
+body.retro-light .quote-box {
+  font-family: 'Space Mono', monospace !important;
+  font-style: normal !important;
+}
+
+body.retro-dark .enter-btn,
+body.retro-light .enter-btn {
+  font-family: 'Space Mono', monospace !important;
+  background: transparent !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  color: var(--rpixel, #e8f0ff) !important;
+}
+
+body.retro-dark .enter-btn:hover,
+body.retro-light .enter-btn:hover {
+  border-color: var(--rgold, #f5c518) !important;
+  color: var(--rgold, #f5c518) !important;
+  box-shadow: 0 0 12px rgba(245,197,24,.4), 4px 4px 0 rgba(245,197,24,.3) !important;
+  transform: none !important;
+}
+
+body.retro-dark .glass-pill,
+body.retro-light .glass-pill {
+  background: transparent !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+body.retro-dark .pill-opt,
+body.retro-light .pill-opt {
+  border-radius: 0 !important;
+  color: var(--rdim, #7a8faa) !important;
+}
+
+body.retro-dark .pill-opt.active,
+body.retro-light .pill-opt.active {
+  background: var(--rgold, #f5c518) !important;
+  color: #000 !important;
+  box-shadow: 0 0 8px rgba(245,197,24,.4) !important;
+}
+
+body.retro-dark .pill-opt:hover,
+body.retro-light .pill-opt:hover {
+  color: var(--rgold, #f5c518) !important;
+  background: rgba(245,197,24,.1) !important;
+}
+
+body.retro-dark .theme-label,
+body.retro-light .theme-label {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rdim, #7a8faa) !important;
+}
+
+body.retro-dark .bottom-group-left .retro-toggle,
+body.retro-light .bottom-group-left .retro-toggle {
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
 }
 
 @media (max-width: 600px) {
   .top-bar { padding: 1.2rem 1.2rem; }
-  .brand-name { font-size: 1.4rem; }
   .quote-box { font-size: 0.85rem; max-width: 180px; }
   .greeting { font-size: 1.2rem; }
   .clock { letter-spacing: -2px; }
@@ -275,7 +389,7 @@ body {
 }
 </style>
 </head>
-<body data-mode="dark" data-scene="auto">
+<body data-scene="auto">
 
 <!-- Background Scenes -->
 <div class="bg-scene scene-day" id="sceneDay"></div>
@@ -289,7 +403,7 @@ body {
 <!-- Top Bar -->
 <div class="top-bar">
   <div class="brand">
-    <div class="brand-name">RetroMynd</div>
+    <div class="brand-name">RETROMYND</div>
     <div class="brand-sub">study hub</div>
   </div>
   <div class="quote-box" id="quoteBox"></div>
@@ -307,16 +421,10 @@ body {
 
 <!-- Bottom Bar -->
 <div class="bottom-bar">
+  <!-- Left: RETRO/COMFY toggle -->
   <div class="bottom-group-left">
-    <div class="glass-pill" id="modePill">
-      <button class="pill-opt" data-mode="light" title="Light" onclick="setMode('light')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      </button>
-      <button class="pill-opt active" data-mode="dark" title="Dark" onclick="setMode('dark')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
-    <div class="theme-label">APARÊNCIA</div>
+    <button class="retro-toggle" onclick="toggleRetroMode()">RETRO</button>
+    <div class="theme-label">ESTILO</div>
   </div>
 
   <div class="bottom-group">
@@ -382,7 +490,13 @@ function updateGreeting() {
   if (h >= 5 && h < 12) period = 'Bom dia';
   else if (h >= 12 && h < 18) period = 'Boa tarde';
 
-  const name = localStorage.getItem('rmUserName') || '';
+  let name = localStorage.getItem('rmUserName') || '';
+  if (!name) {
+    try {
+      const rmsUser = JSON.parse(localStorage.getItem('rms_user') || '{}');
+      name = rmsUser.name || '';
+    } catch(e) {}
+  }
   const nameStr = name ? ', ' + name.split(' ')[0] : '';
   document.getElementById('greeting').innerHTML = period + nameStr + '!<br>Ready for ' + day + '? You\'ve got this!';
 }
@@ -443,18 +557,6 @@ function createRain() {
 applyScene(currentScene);
 setInterval(() => { if (currentScene === 'auto') applyScene('auto'); }, 300000);
 
-let currentMode = localStorage.getItem('landingMode') || 'dark';
-
-function setMode(mode) {
-  currentMode = mode;
-  localStorage.setItem('landingMode', mode);
-  document.body.setAttribute('data-mode', mode);
-  document.querySelectorAll('#modePill .pill-opt').forEach(b => {
-    b.classList.toggle('active', b.dataset.mode === mode);
-  });
-}
-setMode(currentMode);
-
 (function() {
   const token = localStorage.getItem('token');
   const session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
@@ -464,5 +566,6 @@ setMode(currentMode);
   }
 })();
 </script>
+<script src="/js/retro-mode.js"></script>
 </body>
 </html>
