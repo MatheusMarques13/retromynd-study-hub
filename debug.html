@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Save - RetroMynd</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Kalam', cursive; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #fff; }
+    .container { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; color: #333; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    h1 { margin-bottom: 20px; color: #667eea; }
+    .status { padding: 15px; border-radius: 10px; margin: 15px 0; }
+    .loading { background: #fef3c7; color: #d97706; }
+    .success { background: #d1fae5; color: #059669; }
+    .error { background: #fee2e2; color: #dc2626; }
+    pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 10px; overflow-x: auto; font-size: 12px; margin-top: 10px; }
+    button { background: #667eea; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-family: 'Kalam', cursive; font-size: 16px; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #5568d3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Debug Save</h1>
+    <div id="status" class="status loading">Carregando...</div>
+    <pre id="output"></pre>
+    <button onclick="location.reload()">Recarregar</button>
+    <button onclick="location.href='/'">Voltar ao Hub</button>
+  </div>
+
+  <script>
+    (async function() {
+      const status = document.getElementById('status');
+      const output = document.getElementById('output');
+
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          status.className = 'status error';
+          status.textContent = '❌ Token não encontrado! Faça login primeiro.';
+          output.textContent = 'localStorage.getItem("token") retornou null';
+          return;
+        }
+
+        status.textContent = '⏳ Testando save...';
+
+        const response = await fetch('/api/data/test-save?token=' + encodeURIComponent(token));
+        const data = await response.json();
+
+        if (data.error) {
+          status.className = 'status error';
+          status.textContent = '❌ Erro: ' + data.error;
+        } else if (data.upsert && data.upsert.error) {
+          status.className = 'status error';
+          status.textContent = '❌ UPSERT falhou: ' + data.upsert.error.message;
+        } else if (data.upsert && data.upsert.data) {
+          status.className = 'status success';
+          status.textContent = '✅ Save funcionou! Dados salvos com sucesso.';
+        } else {
+          status.className = 'status error';
+          status.textContent = '⚠️ Resposta inesperada';
+        }
+
+        output.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        status.className = 'status error';
+        status.textContent = '❌ Erro de rede: ' + err.message;
+        output.textContent = err.stack;
+      }
+    })();
+  </script>
+</body>
+</html>
