@@ -150,7 +150,7 @@
     if (!el) {
       el = document.createElement('div');
       el.id = 'saveStatus';
-      el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-family:Kalam,cursive;font-size:14px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(10px);pointer-events:none;';
+      el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-family:Kalam,cursive;font-size:14px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(10px);pointer-events:none;max-width:90vw;word-break:break-word;';
       document.body.appendChild(el);
     }
     el.textContent = msg;
@@ -277,24 +277,37 @@
   }
   window.showHub = showHub;
 
-  // ═══ SYNC FROM SUPABASE ═══
-  async function syncFromServer() {
+  // ═══ SYNC FROM SUPABASE (with retry + timeout) ═══
+  async function syncFromServer(attempt) {
+    attempt = attempt || 1;
+    const maxAttempts = 3;
+
     if (!auth || !auth.isAuthenticated()) {
       console.warn('[RetroMynd] Not authenticated, skipping sync');
       return;
     }
+
     try {
-      showSaveStatus('warn', 'Sincronizando...');
-      console.log('[RetroMynd] Starting sync... Token:', localStorage.getItem('token') ? 'EXISTS' : 'MISSING');
+      if (attempt === 1) showSaveStatus('warn', 'Sincronizando...');
+      else showSaveStatus('warn', `Tentativa ${attempt}/${maxAttempts}...`);
+
+      const token = localStorage.getItem('token');
+      console.log(`[RetroMynd] Sync attempt ${attempt}/${maxAttempts}, token: ${token ? 'YES' : 'NO'}`);
+
+      // Fetch with timeout (15s)
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
 
       const resp = await fetch('/api/data/load', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
+          'Authorization': 'Bearer ' + token
+        },
+        signal: controller.signal
       });
 
+      clearTimeout(timeout);
       console.log('[RetroMynd] Load response status:', resp.status);
 
       if (!resp.ok) {
@@ -305,7 +318,7 @@
           showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
           return;
         }
-        throw new Error(`HTTP ${resp.status}: ${errBody}`);
+        throw new Error(`HTTP ${resp.status}: ${errBody.substring(0, 100)}`);
       }
 
       const allData = await resp.json();
@@ -323,7 +336,6 @@
         if (d.items && Array.isArray(d.items) && d.items.length > 0) {
           store.set('goals', d.items, false);
           loaded++;
-          console.log('[RetroMynd] Loaded goals:', d.items.length);
         }
       }
 
@@ -332,7 +344,6 @@
         if (d.notes && Array.isArray(d.notes) && d.notes.length > 0) {
           store.set('notes', d.notes, false);
           loaded++;
-          console.log('[RetroMynd] Loaded notes:', d.notes.length);
         }
       }
 
@@ -356,18 +367,31 @@
       store._lastSyncOk = true;
       console.log(`[RetroMynd] Synced ${loaded} data types ✓`);
       if (loaded > 0) showSaveStatus('ok', `Dados carregados da nuvem ✓`);
-      else showSaveStatus('warn', 'Nuvem vazia — usando dados locais');
-    } catch(e) {
-      store._lastSyncOk = false;
-      console.error('[RetroMynd] Sync error details:', e);
-      console.error('[RetroMynd] Error name:', e.name, 'message:', e.message);
+      else showSaveStatus('ok', 'Conectado à nuvem ✓');
 
-      if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token'))) {
+    } catch(e) {
+      console.error(`[RetroMynd] Sync error (attempt ${attempt}):`, e.name, e.message);
+
+      // Retry on network/timeout errors
+      if (attempt < maxAttempts && (e.name === 'AbortError' || e.name === 'TypeError' || e.message.includes('500'))) {
+        const delay = 1000 * attempt;
+        console.log(`[RetroMynd] Retrying in ${delay}ms...`);
+        showSaveStatus('warn', `Reconectando... (${attempt}/${maxAttempts})`);
+        await new Promise(r => setTimeout(r, delay));
+        return syncFromServer(attempt + 1);
+      }
+
+      store._lastSyncOk = false;
+
+      // Specific error messages
+      if (e.name === 'AbortError') {
+        showSaveStatus('error', 'Timeout — servidor demorou demais. Dados locais OK.');
+      } else if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token'))) {
         showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
-      } else if (e.name === 'TypeError' && e.message.includes('fetch')) {
+      } else if (e.name === 'TypeError') {
         showSaveStatus('error', 'Sem internet — usando dados locais');
       } else {
-        showSaveStatus('error', 'Erro de conexão — usando dados locais');
+        showSaveStatus('error', `Erro sync: ${e.message.substring(0, 80)}`);
       }
     }
   }
