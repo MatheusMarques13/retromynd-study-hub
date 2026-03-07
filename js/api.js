@@ -12,7 +12,14 @@ const api = {
     const response = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.error || error.message || 'Erro no servidor');
+      const errorMsg = error.detail || error.error || error.message || `HTTP ${response.status}`;
+      const err = new Error(errorMsg);
+      err.status = response.status;
+      err.code = error.code;
+      err.hint = error.hint;
+      err.fullError = error;
+      console.error('[API Error]', endpoint, response.status, error);
+      throw err;
     }
     return response.json();
   },
