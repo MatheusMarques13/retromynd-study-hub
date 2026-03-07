@@ -49,7 +49,6 @@
       this._flushTimer = setTimeout(() => this.flush(), 1500);
     },
 
-    // Flush immediately (no debounce)
     flushNow() {
       clearTimeout(this._flushTimer);
       return this.flush();
@@ -86,16 +85,13 @@
         } catch (e) {
           allOk = false;
           console.warn('[RetroMynd] ❌ Save failed:', type, e.message);
-          // Re-mark dirty keys for this type
           for (const key of dirtyKeys) {
             const mapper = this._serverMap[key];
             if (mapper && mapper().type === type) this._dirty.add(key);
           }
-
-          // If 401, token is bad - try to warn user
           if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token') || e.message.toLowerCase().includes('expirado'))) {
-            console.error('[RetroMynd] 🔑 Token expired/invalid - data NOT saved to cloud!');
-            showSaveStatus('error', 'Sessão expirada! Faça login novamente para salvar.');
+            console.error('[RetroMynd] 🔑 Token expired/invalid!');
+            showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
             break;
           }
         }
@@ -108,15 +104,12 @@
         showSaveStatus('ok', 'Salvo na nuvem ✓');
       }
 
-      // Retry if still dirty
       if (this._dirty.size > 0) {
         this._retryCount++;
         if (this._retryCount <= this._maxRetries) {
           const delay = Math.min(2000 * Math.pow(2, this._retryCount - 1), 30000);
-          console.log(`[RetroMynd] Retry ${this._retryCount}/${this._maxRetries} in ${delay}ms`);
           setTimeout(() => this.flush(), delay);
         } else {
-          console.error('[RetroMynd] Max retries reached. Data in localStorage only.');
           showSaveStatus('error', 'Falha ao salvar na nuvem. Dados salvos localmente.');
         }
       }
@@ -137,26 +130,19 @@
         try {
           const token = localStorage.getItem('token');
           if (!token) continue;
-          // sendBeacon for reliable unload saves
           const blob = new Blob([JSON.stringify({ data_type: type, data })], { type: 'application/json' });
-          const sent = navigator.sendBeacon('/api/data/save?token=' + encodeURIComponent(token), blob);
-          if (!sent) console.warn('[RetroMynd] sendBeacon failed for', type);
+          navigator.sendBeacon('/api/data/save?token=' + encodeURIComponent(token), blob);
         } catch (e) { /* best effort */ }
       }
     }
   };
   window._store = store;
 
-  // Save on tab close / navigate away
   window.addEventListener('beforeunload', () => store.flushSync());
   window.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') store.flushNow();
   });
-
-  // Also save periodically every 30s if dirty
-  setInterval(() => {
-    if (store._dirty.size > 0) store.flush();
-  }, 30000);
+  setInterval(() => { if (store._dirty.size > 0) store.flush(); }, 30000);
 
   // ═══ SAVE STATUS INDICATOR ═══
   function showSaveStatus(type, msg) {
@@ -168,24 +154,13 @@
       document.body.appendChild(el);
     }
     el.textContent = msg;
-    if (type === 'ok') {
-      el.style.background = '#D1FAE5';
-      el.style.color = '#059669';
-    } else if (type === 'error') {
-      el.style.background = '#FEE2E2';
-      el.style.color = '#DC2626';
-      el.style.pointerEvents = 'auto';
-    } else {
-      el.style.background = '#FEF3C7';
-      el.style.color = '#D97706';
-    }
+    if (type === 'ok') { el.style.background = '#D1FAE5'; el.style.color = '#059669'; }
+    else if (type === 'error') { el.style.background = '#FEE2E2'; el.style.color = '#DC2626'; el.style.pointerEvents = 'auto'; }
+    else { el.style.background = '#FEF3C7'; el.style.color = '#D97706'; }
     el.style.opacity = '1';
     el.style.transform = 'translateY(0)';
     clearTimeout(el._hideTimer);
-    el._hideTimer = setTimeout(() => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(10px)';
-    }, type === 'error' ? 8000 : 3000);
+    el._hideTimer = setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(10px)'; }, type === 'error' ? 8000 : 3000);
   }
   window.showSaveStatus = showSaveStatus;
 
@@ -203,7 +178,6 @@
     if (closeBtn) closeBtn.onclick = () => closeProfile();
     if (overlay) overlay.onclick = () => closeProfile();
     if (logoutBtn) logoutBtn.onclick = () => {
-      // Force save before logout
       showSaveStatus('warn', 'Salvando antes de sair...');
       store.flushNow().then(() => {
         localStorage.removeItem('token');
@@ -220,9 +194,7 @@
     if (avatarGrid) {
       avatarGrid.innerHTML = avatars.map(a => `<span class="pp-avatar-opt" onclick="window.pickAvatar('${a}')">${a}</span>`).join('');
     }
-    if (avatarBig) avatarBig.onclick = () => {
-      if (avatarGrid) avatarGrid.classList.toggle('open');
-    };
+    if (avatarBig) avatarBig.onclick = () => { if (avatarGrid) avatarGrid.classList.toggle('open'); };
 
     const ppName = $('ppName');
     const ppBio = $('ppBio');
@@ -231,30 +203,19 @@
   }
 
   function openProfile() {
-    const panel = $('ppPanel');
-    const overlay = $('ppOverlay');
+    const panel = $('ppPanel'), overlay = $('ppOverlay');
     if (panel) panel.classList.add('open');
     if (overlay) overlay.classList.add('open');
-
     const user = auth ? auth.getUser() : null;
     if (user) {
-      const ppName = $('ppName');
-      const ppEmail = $('ppEmail');
-      const ppBio = $('ppBio');
-      const ppAvatarBig = $('ppAvatarBig');
-      const ppSince = $('ppSince');
-      const ppStats = $('ppStats');
-
+      const ppName = $('ppName'), ppEmail = $('ppEmail'), ppBio = $('ppBio'), ppAvatarBig = $('ppAvatarBig'), ppSince = $('ppSince'), ppStats = $('ppStats');
       if (ppName) ppName.value = user.name || '';
       if (ppEmail) ppEmail.textContent = user.email || '';
       if (ppBio) ppBio.value = user.bio || localStorage.getItem('rms_bio') || '';
       if (ppAvatarBig) ppAvatarBig.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
       if (ppSince) ppSince.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR') : 'Hoje';
-
-      const goals = getGoals();
-      const notes = getNotes();
-      const streak = parseInt(store.getRaw('streak', '0'));
-      const pomos = parseInt(store.getRaw('pomodoros', '0'));
+      const goals = getGoals(), notes = getNotes();
+      const streak = parseInt(store.getRaw('streak', '0')), pomos = parseInt(store.getRaw('pomodoros', '0'));
       if (ppStats) ppStats.innerHTML = `
         <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--pink)">${streak}</div><div class="pp-stat-lbl">Streak</div></div>
         <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--blue)">${notes.length}</div><div class="pp-stat-lbl">Notas</div></div>
@@ -265,29 +226,24 @@
   }
 
   function closeProfile() {
-    const panel = $('ppPanel');
-    const overlay = $('ppOverlay');
+    const panel = $('ppPanel'), overlay = $('ppOverlay');
     if (panel) panel.classList.remove('open');
     if (overlay) overlay.classList.remove('open');
   }
 
   window.pickAvatar = function(emoji) {
-    const ppAvatarBig = $('ppAvatarBig');
-    const headerAvatar = $('headerAvatar');
+    const ppAvatarBig = $('ppAvatarBig'), headerAvatar = $('headerAvatar');
     if (ppAvatarBig) ppAvatarBig.textContent = emoji;
     if (headerAvatar) headerAvatar.textContent = emoji;
     localStorage.setItem('rms_avatar', emoji);
-    const grid = $('ppAvatarGrid');
-    if (grid) grid.classList.remove('open');
+    const grid = $('ppAvatarGrid'); if (grid) grid.classList.remove('open');
     const user = auth ? auth.getUser() : null;
     if (user) { user.avatar = emoji; localStorage.setItem('rms_user', JSON.stringify(user)); }
   };
 
   function saveProfile() {
-    const ppName = $('ppName');
-    const ppBio = $('ppBio');
-    const name = ppName ? ppName.value : '';
-    const bio = ppBio ? ppBio.value : '';
+    const ppName = $('ppName'), ppBio = $('ppBio');
+    const name = ppName ? ppName.value : '', bio = ppBio ? ppBio.value : '';
     localStorage.setItem('rms_bio', bio);
     const user = auth ? auth.getUser() : null;
     if (user) {
@@ -305,16 +261,13 @@
     if (hub) { hub.style.display = 'block'; hub.classList.add('show'); }
     const user = auth ? auth.getUser() : null;
     if (user) {
-      const headerName = $('headerName');
-      const headerAvatar = $('headerAvatar');
+      const headerName = $('headerName'), headerAvatar = $('headerAvatar');
       if (headerName) headerName.textContent = user.name || user.email || 'Estudante';
       if (headerAvatar) headerAvatar.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
     }
     updateDate();
     initProfilePanel();
-
     await syncFromServer();
-
     loadStats();
     try { initPomodoro(); } catch(e) {}
     try { initGoals(); } catch(e) {}
@@ -326,38 +279,63 @@
 
   // ═══ SYNC FROM SUPABASE ═══
   async function syncFromServer() {
-    if (!auth || !auth.isAuthenticated()) return;
+    if (!auth || !auth.isAuthenticated()) {
+      console.warn('[RetroMynd] Not authenticated, skipping sync');
+      return;
+    }
     try {
       showSaveStatus('warn', 'Sincronizando...');
-      const allData = await auth.loadData('');
+      console.log('[RetroMynd] Starting sync... Token:', localStorage.getItem('token') ? 'EXISTS' : 'MISSING');
+
+      const resp = await fetch('/api/data/load', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      });
+
+      console.log('[RetroMynd] Load response status:', resp.status);
+
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        console.error('[RetroMynd] Load error body:', errBody);
+
+        if (resp.status === 401) {
+          showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
+          return;
+        }
+        throw new Error(`HTTP ${resp.status}: ${errBody}`);
+      }
+
+      const allData = await resp.json();
+      console.log('[RetroMynd] Server data keys:', Object.keys(allData));
 
       if (!allData || typeof allData !== 'object') {
-        console.log('[RetroMynd] No server data yet, keeping localStorage');
         showSaveStatus('warn', 'Sem dados na nuvem ainda');
         return;
       }
 
       let loaded = 0;
 
-      // Goals
       if (allData.goals && allData.goals.data) {
         const d = allData.goals.data;
         if (d.items && Array.isArray(d.items) && d.items.length > 0) {
           store.set('goals', d.items, false);
           loaded++;
+          console.log('[RetroMynd] Loaded goals:', d.items.length);
         }
       }
 
-      // Notes
       if (allData.notes && allData.notes.data) {
         const d = allData.notes.data;
         if (d.notes && Array.isArray(d.notes) && d.notes.length > 0) {
           store.set('notes', d.notes, false);
           loaded++;
+          console.log('[RetroMynd] Loaded notes:', d.notes.length);
         }
       }
 
-      // Timer/Pomodoros
       if (allData.timer && allData.timer.data) {
         const d = allData.timer.data;
         if (d.pomodoros != null && d.pomodoros > 0) {
@@ -366,29 +344,28 @@
         }
       }
 
-      // Streak
       if (allData.streak && allData.streak.data) {
         const d = allData.streak.data;
         if (d.days && typeof d.days === 'object' && Object.keys(d.days).length > 0) {
           store.set('streak_days', d.days, false);
           loaded++;
         }
-        if (d.current != null) {
-          store.setRaw('streak', d.current, false);
-        }
+        if (d.current != null) store.setRaw('streak', d.current, false);
       }
 
       store._lastSyncOk = true;
-      console.log(`[RetroMynd] Synced ${loaded} data types from server ✓`);
+      console.log(`[RetroMynd] Synced ${loaded} data types ✓`);
       if (loaded > 0) showSaveStatus('ok', `Dados carregados da nuvem ✓`);
       else showSaveStatus('warn', 'Nuvem vazia — usando dados locais');
     } catch(e) {
       store._lastSyncOk = false;
-      console.warn('[RetroMynd] Sync error:', e.message);
+      console.error('[RetroMynd] Sync error details:', e);
+      console.error('[RetroMynd] Error name:', e.name, 'message:', e.message);
 
       if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token'))) {
         showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
-        // Don't redirect immediately - let user see their local data
+      } else if (e.name === 'TypeError' && e.message.includes('fetch')) {
+        showSaveStatus('error', 'Sem internet — usando dados locais');
       } else {
         showSaveStatus('error', 'Erro de conexão — usando dados locais');
       }
@@ -458,7 +435,7 @@
             const p = parseInt(store.getRaw('pomodoros', '0')) + 1;
             store.setRaw('pomodoros', p);
             loadStats();
-            store.flushNow(); // Save pomodoro immediately
+            store.flushNow();
           }
         }
         updateTimerDisplay();
@@ -477,7 +454,7 @@
     const tD = $('tD'); if (tD) tD.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  // ═══ GOALS (with Hoje/Historico tabs, filters, pagination) ═══
+  // ═══ GOALS ═══
   let goalTab = 'today';
   let goalFilter = 'a';
   let goalPage = 1;
@@ -487,46 +464,33 @@
     const addBtn = $('goalAddBtn'); const input = $('goalInput');
     if (addBtn) addBtn.onclick = addGoal;
     if (input) input.onkeydown = e => { if (e.key === 'Enter') addGoal(); };
-
     const gtC = $('gtC'), gtH = $('gtH');
     if (gtC) gtC.onclick = () => { goalTab = 'today'; goalPage = 1; renderGoalTabs(); };
     if (gtH) gtH.onclick = () => { goalTab = 'history'; goalPage = 1; renderGoalTabs(); };
-
     document.querySelectorAll('#goalFilters .goal-filter').forEach(btn => {
       btn.onclick = () => {
-        goalFilter = btn.dataset.f;
-        goalPage = 1;
+        goalFilter = btn.dataset.f; goalPage = 1;
         document.querySelectorAll('#goalFilters .goal-filter').forEach(b => b.classList.remove('on'));
-        btn.classList.add('on');
-        renderHistory();
+        btn.classList.add('on'); renderHistory();
       };
     });
-
     const pgPrev = $('pgPrev'), pgNext = $('pgNext');
     if (pgPrev) pgPrev.onclick = () => { if (goalPage > 1) { goalPage--; renderGoals(); } };
     if (pgNext) pgNext.onclick = () => { goalPage++; renderGoals(); };
-
     renderGoalTabs();
   }
 
   function renderGoalTabs() {
-    const gtC = $('gtC'), gtH = $('gtH');
-    const gvC = $('gvC'), gvH = $('gvH');
+    const gtC = $('gtC'), gtH = $('gtH'), gvC = $('gvC'), gvH = $('gvH');
     if (gtC) gtC.classList.toggle('on', goalTab === 'today');
     if (gtH) gtH.classList.toggle('on', goalTab === 'history');
     if (gvC) gvC.style.display = goalTab === 'today' ? '' : 'none';
     if (gvH) gvH.style.display = goalTab === 'history' ? '' : 'none';
-    if (goalTab === 'today') renderGoals();
-    else renderHistory();
+    if (goalTab === 'today') renderGoals(); else renderHistory();
   }
 
   function getGoals() { return store.get('goals', []); }
-  function saveGoals(g) {
-    store.set('goals', g);
-    loadStats();
-    // Force immediate cloud save for goals (critical data)
-    store.flushNow();
-  }
+  function saveGoals(g) { store.set('goals', g); loadStats(); store.flushNow(); }
 
   function addGoal() {
     const input = $('goalInput'); if (!input || !input.value.trim()) return;
@@ -544,13 +508,10 @@
       const pager = $('goalPager'); if (pager) pager.style.display = 'none';
       return;
     }
-
-    const total = goals.length;
-    const totalPages = Math.ceil(total / GOALS_PER_PAGE);
+    const total = goals.length, totalPages = Math.ceil(total / GOALS_PER_PAGE);
     if (goalPage > totalPages) goalPage = totalPages;
     const start = (goalPage - 1) * GOALS_PER_PAGE;
     const pageGoals = goals.slice(start, start + GOALS_PER_PAGE);
-
     container.innerHTML = pageGoals.map(g => `
       <div class="goal-row ${g.done?'done':''}">
         <div class="gchk" onclick="window.toggleGoal(${g.id})">${g.done?'✓':''}</div>
@@ -558,7 +519,6 @@
         <span class="gx" onclick="window.deleteGoal(${g.id})">×</span>
       </div>
     `).join('');
-
     const pager = $('goalPager');
     if (pager) {
       pager.style.display = totalPages > 1 ? '' : 'none';
@@ -568,27 +528,21 @@
     }
   }
 
-  // ═══ HISTORY VIEW ═══
   function renderHistory() {
     const container = $('histContainer'); if (!container) return;
     const summaryEl = $('histSummary');
     const allGoals = getGoals();
     const todayKey = localDateKey(new Date());
-
     const byDate = {};
     allGoals.forEach(g => {
       const key = localDateKey(new Date(g.date));
       if (!byDate[key]) byDate[key] = [];
       byDate[key].push(g);
     });
-
     const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
-
-    const totalAll = allGoals.length;
     const doneAll = allGoals.filter(g => g.done).length;
     const pendingAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) === todayKey).length;
     const expiredAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) < todayKey).length;
-
     if (summaryEl) {
       summaryEl.innerHTML = `
         <div class="hist-stat"><div class="hist-stat-num green">${doneAll}</div><div class="hist-stat-lbl">Concluídas</div></div>
@@ -596,31 +550,21 @@
         <div class="hist-stat"><div class="hist-stat-num blue">${pendingAll}</div><div class="hist-stat-lbl">Pendentes</div></div>
       `;
     }
-
-    if (sortedDates.length === 0) {
-      container.innerHTML = '<div class="hist-empty">Nenhuma meta registrada ainda</div>';
-      return;
-    }
-
+    if (sortedDates.length === 0) { container.innerHTML = '<div class="hist-empty">Nenhuma meta registrada ainda</div>'; return; }
     let html = '';
     const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
     sortedDates.forEach(dateKey => {
       let goals = byDate[dateKey];
       const isToday = dateKey === todayKey;
-
       if (goalFilter === 'c') goals = goals.filter(g => g.done);
       else if (goalFilter === 'e') goals = goals.filter(g => !g.done && dateKey < todayKey);
       else if (goalFilter === 'p') goals = goals.filter(g => !g.done && dateKey >= todayKey);
-
       if (goals.length === 0) return;
-
       const d = new Date(dateKey + 'T12:00:00');
       const dayName = diasSemana[d.getDay()];
       const dateLabel = `${dayName}, ${d.getDate()}/${d.getMonth()+1}`;
       const done = goals.filter(g => g.done).length;
       const pct = goals.length > 0 ? Math.round(done / goals.length * 100) : 0;
-
       html += `<div class="hist-section">`;
       html += `<div class="hist-date-header">`;
       html += `<span class="hist-date-label ${isToday ? 'today' : ''}">${isToday ? '📌 HOJE' : dateLabel}</span>`;
@@ -628,26 +572,17 @@
       html += `<span class="hist-date-stats">${done}/${goals.length} (${pct}%)</span>`;
       html += `</div>`;
       html += `<div class="hist-bar"><div class="hist-bar-fill" style="width:${pct}%"></div></div>`;
-
       goals.forEach(g => {
-        const isDone = g.done;
-        const isExpired = !isDone && dateKey < todayKey;
+        const isDone = g.done, isExpired = !isDone && dateKey < todayKey;
         const cls = isDone ? 'done' : (isExpired ? 'expired' : '');
         const chkCls = isDone ? 'ok' : (isExpired ? 'fail' : 'pend');
         const chkIcon = isDone ? '✓' : (isExpired ? '✗' : '●');
         const badgeCls = isDone ? 'ok' : (isExpired ? 'exp' : 'live');
         const badgeText = isDone ? 'DONE' : (isExpired ? 'EXPIRED' : 'ACTIVE');
-
-        html += `<div class="hist-row ${cls}">`;
-        html += `<div class="hchk ${chkCls}">${chkIcon}</div>`;
-        html += `<span class="hlabel">${g.text}</span>`;
-        html += `<span class="hbadge ${badgeCls}">${badgeText}</span>`;
-        html += `</div>`;
+        html += `<div class="hist-row ${cls}"><div class="hchk ${chkCls}">${chkIcon}</div><span class="hlabel">${g.text}</span><span class="hbadge ${badgeCls}">${badgeText}</span></div>`;
       });
-
       html += `</div>`;
     });
-
     container.innerHTML = html || '<div class="hist-empty">Nenhuma meta com esse filtro</div>';
   }
 
@@ -655,29 +590,23 @@
   window.deleteGoal = function(id) { saveGoals(getGoals().filter(x=>x.id!==id)); renderGoals(); if(goalTab==='history') renderHistory(); };
   window.renderGoals = renderGoals;
 
-  // ═══ NOTES (with Post-its) ═══
+  // ═══ NOTES ═══
   let currentNote = null;
   const postitColors = ['postit-yellow','postit-pink','postit-mint','postit-peach','postit-lilac','postit-sky'];
   let selectedPostitColor = 'postit-yellow';
 
   function initNotes() { renderNotesList(); }
   function getNotes() { return store.get('notes', []); }
-  function saveNotes(n) {
-    store.set('notes', n);
-    loadStats();
-    store.flushNow(); // Immediate cloud save for notes too
-  }
+  function saveNotes(n) { store.set('notes', n); loadStats(); store.flushNow(); }
 
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
-    const notes = getNotes();
-    const colors = postitColors;
+    const notes = getNotes(), colors = postitColors;
     app.innerHTML = `<div class="notes-grid">
       <div class="note-add-card" onclick="window.createNote()"><span>+</span><small>Nova nota</small></div>
       ${notes.map((n,i) => {
         const postitCount = (n.postits && n.postits.length) ? ` • ${n.postits.length} post-it${n.postits.length>1?'s':''}` : '';
-        return `
-        <div class="note-card" style="background:var(--${n.color||colors[i%colors.length]});--rot:${(Math.random()*4-2).toFixed(1)}deg" onclick="window.openNote(${n.id})">
+        return `<div class="note-card" style="background:var(--${n.color||colors[i%colors.length]});--rot:${(Math.random()*4-2).toFixed(1)}deg" onclick="window.openNote(${n.id})">
           <div class="note-card-del" onclick="event.stopPropagation();window.deleteNote(${n.id})">×</div>
           <div class="note-card-title">${n.title||'Sem título'}</div>
           <div class="note-card-preview">${n.content||''}${postitCount}</div>
@@ -696,102 +625,62 @@
   window.openNote = function(id) {
     const notes = getNotes(), note = notes.find(n=>n.id===id); if(!note) return;
     if (!note.postits) note.postits = [];
-    currentNote = note;
-    selectedPostitColor = 'postit-yellow';
-    renderNoteEditor();
+    currentNote = note; selectedPostitColor = 'postit-yellow'; renderNoteEditor();
   };
 
   function renderNoteEditor() {
     const app = $('notesApp'); if (!app || !currentNote) return;
     const note = currentNote;
-    const postitsHtml = note.postits.map((p, i) => `
-      <div class="note-postit" style="background:var(--${p.color || 'postit-yellow'})">
-        ${p.text}
-        <span class="note-postit-del" onclick="window.deletePostit(${i})">×</span>
-      </div>
-    `).join('');
-
-    const colorPickerHtml = postitColors.map(c =>
-      `<div class="postit-color-pick ${c===selectedPostitColor?'active':''}" style="background:var(--${c})" onclick="window.selectPostitColor('${c}')"></div>`
-    ).join('');
-
-    const noteColorHtml = postitColors.map(c =>
-      `<div class="note-color-dot ${c===note.color?'active':''}" style="background:var(--${c})" onclick="window.changeNoteColor('${c}')"></div>`
-    ).join('');
-
+    const postitsHtml = note.postits.map((p, i) => `<div class="note-postit" style="background:var(--${p.color || 'postit-yellow'})">${p.text}<span class="note-postit-del" onclick="window.deletePostit(${i})">×</span></div>`).join('');
+    const colorPickerHtml = postitColors.map(c => `<div class="postit-color-pick ${c===selectedPostitColor?'active':''}" style="background:var(--${c})" onclick="window.selectPostitColor('${c}')"></div>`).join('');
+    const noteColorHtml = postitColors.map(c => `<div class="note-color-dot ${c===note.color?'active':''}" style="background:var(--${c})" onclick="window.changeNoteColor('${c}')"></div>`).join('');
     app.innerHTML = `<div class="note-editor">
-      <div class="note-editor-header">
-        <button class="note-back" onclick="window.closeNote()">← Voltar</button>
-        ${noteColorHtml}
-      </div>
+      <div class="note-editor-header"><button class="note-back" onclick="window.closeNote()">← Voltar</button>${noteColorHtml}</div>
       <input class="note-title-input" id="noteTitle" value="${note.title}" placeholder="Título..." oninput="window.saveCurrentNote()">
       <textarea class="note-textarea" id="noteContent" placeholder="Escreva aqui..." oninput="window.saveCurrentNote()">${note.content}</textarea>
-
       <div class="px-div"></div>
-
       <div class="note-postits" id="notePostits">${postitsHtml}</div>
-
       <div class="postit-add-row">
         <input class="postit-add-input" id="postitInput" placeholder="Adicionar post-it..." onkeydown="if(event.key==='Enter')window.addPostit()">
         ${colorPickerHtml}
         <button class="postit-add-btn" onclick="window.addPostit()">+ Post-it</button>
       </div>
-
-      <div class="note-meta">
-        <span>Criada: ${new Date(note.date).toLocaleDateString('pt-BR')}</span>
-        <span>${note.postits.length} post-it${note.postits.length!==1?'s':''}</span>
-      </div>
+      <div class="note-meta"><span>Criada: ${new Date(note.date).toLocaleDateString('pt-BR')}</span><span>${note.postits.length} post-it${note.postits.length!==1?'s':''}</span></div>
     </div>`;
   }
 
-  window.selectPostitColor = function(color) {
-    selectedPostitColor = color;
-    renderNoteEditor();
-    const input = $('postitInput'); if (input) input.focus();
-  };
+  window.selectPostitColor = function(color) { selectedPostitColor = color; renderNoteEditor(); const input = $('postitInput'); if (input) input.focus(); };
 
   window.addPostit = function() {
     const input = $('postitInput'); if (!input || !input.value.trim() || !currentNote) return;
     const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
     if (!n.postits) n.postits = [];
     n.postits.push({ text: input.value.trim(), color: selectedPostitColor, date: new Date().toISOString() });
-    currentNote = n;
-    saveNotes(notes);
-    renderNoteEditor();
+    currentNote = n; saveNotes(notes); renderNoteEditor();
     setTimeout(() => { const inp = $('postitInput'); if (inp) inp.focus(); }, 50);
   };
 
   window.deletePostit = function(index) {
     if (!currentNote) return;
-    const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
-    if (!n.postits) return;
-    n.postits.splice(index, 1);
-    currentNote = n;
-    saveNotes(notes);
-    renderNoteEditor();
+    const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n || !n.postits) return;
+    n.postits.splice(index, 1); currentNote = n; saveNotes(notes); renderNoteEditor();
   };
 
   window.changeNoteColor = function(color) {
     if (!currentNote) return;
     const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
-    n.color = color;
-    currentNote = n;
-    saveNotes(notes);
-    renderNoteEditor();
+    n.color = color; currentNote = n; saveNotes(notes); renderNoteEditor();
   };
 
   window.closeNote = function() { currentNote = null; renderNotesList(); };
 
-  // Debounced save for note typing (don't spam server on every keystroke)
   let _noteTypingTimer = null;
   window.saveCurrentNote = function() {
     if (!currentNote) return;
     const notes = getNotes(), n = notes.find(x => x.id === currentNote.id); if (!n) return;
     const t = $('noteTitle'), c = $('noteContent');
-    if (t) n.title = t.value;
-    if (c) n.content = c.value;
+    if (t) n.title = t.value; if (c) n.content = c.value;
     currentNote = n;
-    // Save to localStorage immediately but debounce cloud save
     store.set('notes', notes, false);
     localStorage.setItem('rms_notes', JSON.stringify(notes));
     store._dirty.add('notes');
@@ -818,10 +707,8 @@
     store.setRaw('streak', streak, false);
     if(btn) btn.onclick=()=>{
       data[localDateKey(new Date())]=true;
-      store.set('streak_days', data);
-      store.setRaw('streak', 0);
-      initStreak(); loadStats();
-      store.flushNow(); // Save streak immediately
+      store.set('streak_days', data); store.setRaw('streak', 0);
+      initStreak(); loadStats(); store.flushNow();
     };
   }
 
@@ -842,8 +729,7 @@
 
   window.openLesson = function() {
     const panel = $('lessonPanel'), overlay = $('lessonOverlay'), iframe = $('lessonIframe');
-    if (panel) panel.classList.add('open');
-    if (overlay) overlay.classList.add('open');
+    if (panel) panel.classList.add('open'); if (overlay) overlay.classList.add('open');
     if (iframe && !iframe.src.includes('blob:')) {
       const dataEl = $('lessonData');
       if (dataEl) { try { const html = atob(dataEl.textContent.trim()); iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' })); } catch(e) {} }
@@ -851,8 +737,7 @@
   };
   window.closeLesson = function() {
     const panel = $('lessonPanel'), overlay = $('lessonOverlay');
-    if (panel) panel.classList.remove('open');
-    if (overlay) overlay.classList.remove('open');
+    if (panel) panel.classList.remove('open'); if (overlay) overlay.classList.remove('open');
   };
 
   // ═══ THEME ═══
@@ -877,8 +762,7 @@
     for (let i = 0; i < 80; i++) {
       const star = document.createElement('div');
       star.className = 'star';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%'; star.style.top = Math.random() * 100 + '%';
       star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
       star.style.setProperty('--bright', (0.4 + Math.random() * 0.6));
       star.style.setProperty('--scale', (1.1 + Math.random() * 0.5));

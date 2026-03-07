@@ -1,8 +1,29 @@
-module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.status(200).json({
-    status: 'ok',
-    service: 'RetroMynd Study Hub API',
+const { cors } = require('./_lib/auth');
+
+module.exports = async (req, res) => {
+  cors(res);
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const checks = {
+    server: 'ok',
+    jwt_secret: !!process.env.JWT_SECRET ? 'ok' : 'MISSING',
+    supabase_url: !!process.env.SUPABASE_URL ? 'ok' : 'MISSING',
+    supabase_key: !!process.env.SUPABASE_SERVICE_ROLE_KEY ? 'ok' : 'MISSING',
     timestamp: new Date().toISOString()
-  });
+  };
+
+  // Test Supabase connection if env vars exist
+  if (checks.supabase_url === 'ok' && checks.supabase_key === 'ok') {
+    try {
+      const { getSupabase } = require('./_lib/supabase');
+      const supabase = getSupabase();
+      const { error } = await supabase.from('user_data').select('id').limit(1);
+      checks.supabase_connection = error ? 'FAIL: ' + error.message : 'ok';
+    } catch (e) {
+      checks.supabase_connection = 'FAIL: ' + e.message;
+    }
+  }
+
+  const allOk = Object.values(checks).every(v => v === 'ok' || v === checks.timestamp);
+  return res.status(allOk ? 200 : 503).json(checks);
 };
