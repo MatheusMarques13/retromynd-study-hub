@@ -1,4 +1,4 @@
-const { getSupabase } = require('../_lib/supabase');
+const { createClient } = require('@supabase/supabase-js');
 const { getUserFromReq, cors } = require('../_lib/auth');
 
 module.exports = async (req, res) => {
@@ -9,45 +9,66 @@ module.exports = async (req, res) => {
   try {
     const tokenUser = getUserFromReq(req);
     if (!tokenUser) {
-      return res.status(401).json({ error: 'Token inválido ou expirado' });
+      return res.status(401).json({ error: 'Token inv\u00e1lido ou expirado' });
     }
 
-    const supabase = getSupabase();
+    // Create supabase client with service_role key directly (bypasses RLS)
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('[LOAD] Missing env vars!');
+      return res.status(500).json({ error: 'Server misconfigured' });
+    }
 
-    // Table schema: id (uuid, = user id), hub_data (jsonb), lesson_data (jsonb), preferences (jsonb), updated_at
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      },
+      db: {
+        schema: 'public'
+      }
+    });
+
+    const userId = tokenUser.id;
+    console.log(`[LOAD] User: ${userId}`);
+
     const { data, error } = await supabase
       .from('user_data')
       .select('*')
-      .eq('id', tokenUser.id)
+      .eq('id', userId)
       .maybeSingle();
 
     if (error) {
-      console.error('Load Supabase error:', JSON.stringify(error));
+      console.error('[LOAD] Supabase error:', JSON.stringify(error));
       return res.status(500).json({ error: 'Erro ao carregar dados', detail: error.message });
     }
 
     if (!data) {
-      // No data yet for this user — return empty
+      console.log('[LOAD] No data found for user');
       return res.status(200).json({});
     }
 
-    // Map from DB columns to what the frontend expects
+    console.log(`[LOAD] Data found, updated_at: ${data.updated_at}`);
+    console.log(`[LOAD] hub_data keys: ${Object.keys(data.hub_data || {}).join(', ')}`);
+
+    // Map from DB columns to what frontend expects
     const result = {};
     const hubData = data.hub_data || {};
 
-    // hub_data contains: goals, notes, timer, streak
     if (hubData.goals) result.goals = { data: hubData.goals, updated_at: data.updated_at };
     if (hubData.notes) result.notes = { data: hubData.notes, updated_at: data.updated_at };
     if (hubData.timer) result.timer = { data: hubData.timer, updated_at: data.updated_at };
     if (hubData.streak) result.streak = { data: hubData.streak, updated_at: data.updated_at };
 
-    // Also pass lesson_data and preferences if they exist
     if (data.lesson_data) result.lessons = { data: data.lesson_data, updated_at: data.updated_at };
     if (data.preferences) result.preferences = { data: data.preferences, updated_at: data.updated_at };
 
+    console.log(`[LOAD] Returning ${Object.keys(result).length} data types`);
     return res.status(200).json(result);
   } catch (err) {
-    console.error('Load catch error:', err.message);
-    return res.status(500).json({ error: 'Erro interno do servidor', detail: err.message });
+    console.error('[LOAD] Catch error:', err.message, err.stack);
+    return res.status(500).json({ error: 'Erro interno', detail: err.message });
   }
 };
