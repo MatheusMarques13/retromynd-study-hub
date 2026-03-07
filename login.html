@@ -23,14 +23,13 @@ body{font-family:'Kalam','Caveat',cursive;font-size:16px;background:var(--bg);co
 @keyframes hb{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}60%{transform:scale(1)}}
 .login-card{position:relative;z-index:1;width:100%;max-width:420px;background:var(--paper);border:1px solid #E5E0DA;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;animation:fadeUp .5s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.card-holes{position:absolute;top:0;left:0;width:32px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;z-index:2;pointer-events:none}
-.hole{width:14px;height:14px;border-radius:50%;background:var(--bg);border:1px solid #D4CFC9;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
-.card-header{padding:20px 22px 10px 52px;position:relative}
-.card-header::before{content:'';position:absolute;top:0;left:40px;width:2px;height:100%;background:var(--paper-margin);opacity:.5}
+.card-holes{display:none}
+.card-header{padding:20px 22px 10px 22px;position:relative}
+.card-header::before{display:none}
 .card-header h1{font-family:'Pacifico',cursive;font-size:28px;color:var(--pink);text-shadow:1px 1px 0 #F0C0D4}
 .card-header p{font-size:14px;color:var(--text-light);margin-top:2px}
-.card-body{padding:10px 22px 28px 52px;position:relative;background-image:repeating-linear-gradient(var(--paper) 0px,var(--paper) calc(var(--line-h) - 1px),var(--paper-line) calc(var(--line-h) - 1px),var(--paper-line) var(--line-h));background-size:100% var(--line-h)}
-.card-body::before{content:'';position:absolute;top:0;left:40px;width:2px;height:100%;background:var(--paper-margin);opacity:.5}
+.card-body{padding:10px 22px 28px 22px;position:relative;background:var(--paper)}
+.card-body::before{display:none}
 .saved-user{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--lavender-soft);border-radius:8px;margin-bottom:14px;cursor:pointer;transition:all .2s;border:2px solid transparent}
 .saved-user:hover{border-color:var(--lavender);transform:translateY(-1px);box-shadow:var(--shadow-hover)}
 .saved-avatar{width:40px;height:40px;border-radius:50%;background:var(--pink-soft);display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -244,7 +243,6 @@ async function doSubmit(){
     try {
       data = JSON.parse(rawText);
     } catch(parseErr) {
-      // Server returned non-JSON (HTML error page, etc)
       diag.textContent = `Status: ${res.status}\nTempo: ${elapsed}ms\nResposta (não é JSON):\n${rawText.substring(0, 500)}`;
       diag.classList.add('show');
       throw new Error(`Servidor retornou status ${res.status} (não-JSON). Veja detalhes abaixo.`);
@@ -267,7 +265,6 @@ async function doSubmit(){
 
   } catch(e){
     msg.className='msg err';
-    // Distinguish network errors from server errors
     if(e.name === 'TypeError' && e.message.includes('fetch')){
       msg.textContent = '❌ Sem conexão com o servidor. Verifique sua internet.';
       diag.textContent = `Erro de rede (fetch failed):\n${e.message}\n\nIsso significa que o navegador não conseguiu se conectar ao servidor Vercel.`;
@@ -293,13 +290,11 @@ async function runDiag(){
   add('URL: ' + window.location.href);
   add('');
 
-  // 1. Token
   const token = localStorage.getItem('token');
   add('Token: ' + (token ? 'exists (' + token.length + ' chars)' : 'NONE'));
   add('User: ' + (localStorage.getItem('rms_user') ? 'exists' : 'NONE'));
   add('');
 
-  // 2. Health
   add('--- Health Check ---');
   try {
     const t0 = Date.now();
@@ -313,7 +308,6 @@ async function runDiag(){
   }
   add('');
 
-  // 3. Login endpoint (OPTIONS preflight)
   add('--- Login Preflight ---');
   try {
     const t0 = Date.now();
@@ -325,7 +319,6 @@ async function runDiag(){
   }
   add('');
 
-  // 4. Login test with bad creds
   add('--- Login Test (bad creds) ---');
   try {
     const t0 = Date.now();
@@ -343,7 +336,6 @@ async function runDiag(){
   }
   add('');
 
-  // 5. LocalStorage keys
   add('--- localStorage ---');
   const keys = [];
   for(let i=0; i<localStorage.length; i++) keys.push(localStorage.key(i));
@@ -353,7 +345,6 @@ async function runDiag(){
   add('=== Done ===');
 }
 
-// Enter key
 document.getElementById('inputPass').addEventListener('keydown', function(e){
   if(e.key==='Enter') doSubmit();
 });
