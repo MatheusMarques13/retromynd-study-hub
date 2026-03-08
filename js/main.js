@@ -58,8 +58,8 @@
       return this.flush();
     },
 
-    // GOALS REMOVED from _serverMap — goals save/load independently now
     _serverMap: {
+      goals:        () => ({ type: 'goals',  data: store.get('goals', []) }),
       notes:        () => ({ type: 'notes',  data: store.get('notes', []) }),
       pomodoros:    () => ({ type: 'timer',  data: { pomodoros: parseInt(store.getRaw('pomodoros', '0')), totalMinutes: 0 } }),
       streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
@@ -142,15 +142,6 @@
   window._store = store;
 
   window.addEventListener('beforeunload', () => {
-    // Save goals via sendBeacon on page unload
-    try {
-      const token = localStorage.getItem('token');
-      const goals = store.get('goals', []);
-      if (token && goals.length > 0) {
-        const blob = new Blob([JSON.stringify({ data_type: 'goals', data: goals })], { type: 'application/json' });
-        navigator.sendBeacon('/api/data/save?token=' + encodeURIComponent(token), blob);
-      }
-    } catch(e) {}
     store.flushSync();
   });
   window.addEventListener('visibilitychange', () => {
@@ -292,7 +283,6 @@
   window.showHub = showHub;
 
   // ═══ SYNC FROM SUPABASE ═══
-  // GOALS ARE NOT PART OF THIS SYNC — they save/load independently
   async function syncFromServer(attempt) {
     attempt = attempt || 1;
     const maxAttempts = 3;
@@ -324,19 +314,36 @@
       let loaded = 0;
       let needsResync = false;
 
-      // =============================================
-      // GOALS — loaded independently, NOT touched here
-      // We just load from server if local is empty
-      // =============================================
+      // GOALS SYNC
       if (allData.goals && allData.goals.data && Array.isArray(allData.goals.data)) {
         const serverGoals = allData.goals.data;
         const localGoals = store.get('goals', []);
+
         if (localGoals.length === 0 && serverGoals.length > 0) {
           store.set('goals', serverGoals, false);
           loaded++;
-          try { renderGoals(); } catch(e) {}
+        } else if (localGoals.length > 0 && serverGoals.length === 0) {
+          needsResync = true;
+          store._dirty.add('goals');
+        } else if (localGoals.length > 0 && serverGoals.length > 0) {
+          const merged = new Map();
+          serverGoals.forEach(g => merged.set(g.id, g));
+          let hasNew = false;
+          localGoals.forEach(g => {
+            if (!merged.has(g.id)) hasNew = true;
+            merged.set(g.id, g);
+          });
+          const result = Array.from(merged.values());
+          store.set('goals', result, false);
+          if (hasNew || result.length !== serverGoals.length) {
+            needsResync = true;
+            store._dirty.add('goals');
+          }
+          loaded++;
         }
-        // If local has goals, DO NOT TOUCH THEM. Server never overwrites local.
+      } else if (store.get('goals', []).length > 0) {
+        needsResync = true;
+        store._dirty.add('goals');
       }
 
       // NOTES SYNC
@@ -504,11 +511,7 @@
     const tD = $('tD'); if (tD) tD.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  // ═══════════════════════════════════════════════
-  // GOALS — completely independent persistence
-  // Does NOT use store.flush / syncFromServer
-  // Saves directly to server, loads from localStorage
-  // ═══════════════════════════════════════════════
+  // ═══ GOALS ═══
   let goalTab = 'today';
   let goalFilter = 'a';
   let goalPage = 1;
@@ -518,35 +521,13 @@
     return store.get('goals', []);
   }
 
-  // Save goals: write to localStorage THEN push directly to server
   function saveGoals(goals) {
-    // Step 1: localStorage immediately
+    store.set('goals', goals);
     localStorage.setItem('rms_goals', JSON.stringify(goals));
-    store.set('goals', goals, false); // false = do NOT add to dirty/flush cycle
-
-    // Step 2: update UI stats
+    store._dirty.add('goals');
+    store._localModifiedAt = Date.now();
     loadStats();
-
-    // Step 3: direct server save (not through flush)
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch('/api/data/save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({ data_type: 'goals', data: goals })
-      }).then(r => {
-        if (r.ok) {
-          showSaveStatus('ok', 'Metas salvas ✓');
-        } else {
-          showSaveStatus('error', 'Erro ao salvar metas no servidor');
-        }
-      }).catch(() => {
-        showSaveStatus('error', 'Sem conexão — metas salvas localmente');
-      });
-    }
+    store.flushNow().catch(function(){});
   }
 
   function initGoals() {
