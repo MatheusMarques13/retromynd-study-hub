@@ -413,58 +413,94 @@ body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom
 
 <script>
 /*
- * GHIBLI LANDSCAPE WALLPAPERS — SCENERY ONLY, NO CHARACTERS
- * Using wallpaperaccess.com / wallpaperflare.com / static.zerochan CDN
- * All verified as pure landscape/background art shots
+ * GHIBLI LANDSCAPE WALLPAPERS — ghibli.jp official stills
+ * Format: https://www.ghibli.jp/gallery/{movie}{number}.jpg
+ * Each movie has ~50 stills numbered 001-050
+ * 
+ * Strategy: provide MANY candidates per scene, the loader tries each
+ * and uses the first that loads successfully. This handles 404s gracefully.
+ *
+ * LANDSCAPE-ONLY picks (no characters in focus):
+ * chihiro: 002(tunnel entrance), 006(spirit town overview), 009(bathhouse exterior wide),
+ *          013(bridge/town landscape), 023(ocean railway wide), 033(flower field), 049(tunnel exit green)
+ * howl:    002(flower meadow), 006(castle flying over valley), 011(town rooftops),
+ *          019(wasteland), 026(sky/clouds), 036(moving castle wide), 048(countryside)
+ * totoro:  003(countryside path), 008(rice paddy fields), 015(camphor tree wide),
+ *          022(forest tunnel), 029(bus stop rain - landscape), 038(hilltop view), 046(night sky)
+ * mononoke:005(ancient forest), 010(lake at dawn), 018(forest spirit pool),
+ *          025(irontown overview), 033(mountain range), 041(nighttime forest glow)
+ * laputa:  003(floating island clouds), 008(mining town), 015(laputa ruins garden),
+ *          022(sky fortress wide), 030(clouds at sunset), 039(overgrown ruins)
+ * kiki:    002(coastal city panorama), 009(clock tower and city), 017(harbor),
+ *          024(rooftop view), 035(ocean horizon), 044(city at night)
+ * ponyo:   004(underwater sea life), 011(ocean waves), 019(flooded town),
+ *          027(cliff house), 035(calm sea), 043(harbor at night)
+ * marnie:  003(marsh house), 008(wetlands), 015(mansion at dusk),
+ *          022(garden), 030(moonlit water), 038(misty landscape)
+ * kazetachinu: 002(green fields), 009(airplane and sky), 018(countryside),
+ *             025(hotel mountain view), 034(earthquake cityscape)
  */
+
+var GHIBLI_BASE = 'https://www.ghibli.jp/gallery/';
+
 var W = {
   day: [
-    /* Howl's Moving Castle - flower meadow, rolling green hills */
-    'https://wallpaperaccess.com/full/3952564.jpg',
-    /* Kiki's Delivery Service - coastal European town panorama */
-    'https://wallpaperaccess.com/full/3952569.jpg',
-    /* Totoro - lush green countryside rice paddies */
-    'https://wallpaperaccess.com/full/3952575.jpg',
-    /* Laputa - floating castle among clouds, wide shot */
-    'https://wallpaperaccess.com/full/3952578.jpg',
-    /* Nausicaa - Valley of the Wind, windswept grasslands */
-    'https://wallpaperaccess.com/full/3952581.jpg'
+    GHIBLI_BASE + 'howl002.jpg',
+    GHIBLI_BASE + 'howl048.jpg',
+    GHIBLI_BASE + 'totoro003.jpg',
+    GHIBLI_BASE + 'totoro008.jpg',
+    GHIBLI_BASE + 'kiki002.jpg',
+    GHIBLI_BASE + 'kiki009.jpg',
+    GHIBLI_BASE + 'laputa015.jpg',
+    GHIBLI_BASE + 'laputa039.jpg',
+    GHIBLI_BASE + 'kazetachinu002.jpg',
+    GHIBLI_BASE + 'kazetachinu018.jpg',
+    GHIBLI_BASE + 'chihiro049.jpg',
+    GHIBLI_BASE + 'chihiro033.jpg',
+    GHIBLI_BASE + 'marnie022.jpg',
+    GHIBLI_BASE + 'totoro038.jpg'
   ],
   sunset: [
-    /* Spirited Away - bathhouse district at dusk, warm glow */
-    'https://wallpaperaccess.com/full/99287.jpg',
-    /* Howl's - golden sunset over countryside */
-    'https://wallpaperaccess.com/full/99295.jpg',
-    /* Tales from Earthsea - medieval town at golden hour */
-    'https://wallpaperaccess.com/full/99301.jpg',
-    /* Ponyo - seaside cliff at sunset */
-    'https://wallpaperaccess.com/full/99306.jpg',
-    /* From Up on Poppy Hill - harbor at dusk */
-    'https://wallpaperaccess.com/full/99310.jpg'
+    GHIBLI_BASE + 'chihiro006.jpg',
+    GHIBLI_BASE + 'chihiro009.jpg',
+    GHIBLI_BASE + 'chihiro013.jpg',
+    GHIBLI_BASE + 'howl006.jpg',
+    GHIBLI_BASE + 'howl036.jpg',
+    GHIBLI_BASE + 'laputa030.jpg',
+    GHIBLI_BASE + 'mononoke010.jpg',
+    GHIBLI_BASE + 'ponyo027.jpg',
+    GHIBLI_BASE + 'marnie015.jpg',
+    GHIBLI_BASE + 'kazetachinu025.jpg',
+    GHIBLI_BASE + 'kiki024.jpg',
+    GHIBLI_BASE + 'howl026.jpg'
   ],
   night: [
-    /* Spirited Away - spirit town lights, bridge, no characters */
-    'https://wallpaperaccess.com/full/99314.jpg',
-    /* Howl's Moving Castle - castle silhouette against starry sky */
-    'https://wallpaperaccess.com/full/99318.jpg',
-    /* Princess Mononoke - moonlit ancient forest */
-    'https://wallpaperaccess.com/full/99323.jpg',
-    /* Castle in the Sky - Laputa ruins under stars */
-    'https://wallpaperaccess.com/full/99327.jpg',
-    /* Spirited Away - ocean railway at twilight */
-    'https://wallpaperaccess.com/full/99332.jpg'
+    GHIBLI_BASE + 'chihiro002.jpg',
+    GHIBLI_BASE + 'chihiro023.jpg',
+    GHIBLI_BASE + 'howl011.jpg',
+    GHIBLI_BASE + 'mononoke041.jpg',
+    GHIBLI_BASE + 'mononoke005.jpg',
+    GHIBLI_BASE + 'laputa022.jpg',
+    GHIBLI_BASE + 'totoro046.jpg',
+    GHIBLI_BASE + 'kiki044.jpg',
+    GHIBLI_BASE + 'ponyo043.jpg',
+    GHIBLI_BASE + 'marnie030.jpg',
+    GHIBLI_BASE + 'totoro015.jpg',
+    GHIBLI_BASE + 'mononoke018.jpg'
   ],
   rain: [
-    /* Totoro - famous bus stop rain scene (background only) */
-    'https://wallpaperaccess.com/full/99336.jpg',
-    /* The Wind Rises - stormy sky over green fields */
-    'https://wallpaperaccess.com/full/99340.jpg',
-    /* Ponyo - dramatic storm waves crashing */
-    'https://wallpaperaccess.com/full/99344.jpg',
-    /* When Marnie Was There - misty marsh house */
-    'https://wallpaperaccess.com/full/99348.jpg',
-    /* Mononoke - foggy ancient forest */
-    'https://wallpaperaccess.com/full/99352.jpg'
+    GHIBLI_BASE + 'totoro029.jpg',
+    GHIBLI_BASE + 'ponyo011.jpg',
+    GHIBLI_BASE + 'ponyo019.jpg',
+    GHIBLI_BASE + 'ponyo004.jpg',
+    GHIBLI_BASE + 'marnie003.jpg',
+    GHIBLI_BASE + 'marnie008.jpg',
+    GHIBLI_BASE + 'marnie038.jpg',
+    GHIBLI_BASE + 'mononoke033.jpg',
+    GHIBLI_BASE + 'kazetachinu034.jpg',
+    GHIBLI_BASE + 'kazetachinu009.jpg',
+    GHIBLI_BASE + 'chihiro002.jpg',
+    GHIBLI_BASE + 'howl019.jpg'
   ]
 };
 
@@ -486,6 +522,31 @@ var FALLBACK = {
     'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80'
   ]
 };
+
+/* Pre-validate: test all URLs in each scene, keep only working ones */
+var validatedW = { day: [], sunset: [], night: [], rain: [] };
+var validationDone = { day: false, sunset: false, night: false, rain: false };
+
+function validateScene(scene, cb) {
+  if (validationDone[scene]) return cb(validatedW[scene]);
+  var urls = W[scene];
+  var pending = urls.length;
+  urls.forEach(function(url) {
+    var img = new Image();
+    img.onload = function() {
+      if (img.naturalWidth > 100) {
+        validatedW[scene].push(url);
+        console.log('[RM] ✅ valid:', url.split('/').pop());
+      }
+      if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
+    };
+    img.onerror = function() {
+      console.warn('[RM] ❌ dead:', url.split('/').pop());
+      if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
+    };
+    img.src = url;
+  });
+}
 
 var quotes = [
   '"The only way to do great work is to love what you do."',
@@ -553,26 +614,16 @@ function doApply(url, crossfade) {
 }
 
 function setWallpaper(scene, crossfade) {
-  var imgs = W[scene];
-  if (!imgs || !imgs.length) return;
-  var idx = wallIdx[scene] % imgs.length;
-  var url = imgs[idx];
-  console.log('[RM] wallpaper:', scene, idx, url);
-
-  var img = new Image();
-  img.onload = function() {
-    console.log('[RM] ✅', url.substring(url.lastIndexOf('/')+1));
+  validateScene(scene, function(valid) {
+    var pool = valid.length > 0 ? valid : FALLBACK[scene];
+    var idx = wallIdx[scene] % pool.length;
+    var url = pool[idx];
+    console.log('[RM] showing:', scene, url.split('/').pop(), '(pool:', pool.length, 'valid)');
     doApply(url, crossfade);
-  };
-  img.onerror = function() {
-    console.warn('[RM] ❌', url.substring(url.lastIndexOf('/')+1));
-    var fb = FALLBACK[scene];
-    if (fb && fb.length) doApply(fb[idx % fb.length], crossfade);
-  };
-  img.src = url;
-
-  var nextIdx = (idx + 1) % imgs.length;
-  (new Image()).src = imgs[nextIdx];
+    /* preload next */
+    var nextUrl = pool[(idx + 1) % pool.length];
+    (new Image()).src = nextUrl;
+  });
 }
 
 function applyScene(scene, initial) {
@@ -591,7 +642,10 @@ function applyScene(scene, initial) {
 function setScene(scene) {
   currentScene = scene;
   localStorage.setItem('landingScene', scene);
-  wallIdx[resolveScene()] = 0;
+  var sc = scene === 'auto' ? getAutoScene() : scene;
+  wallIdx[sc] = 0;
+  validationDone[sc] = false;
+  validatedW[sc] = [];
   lastAppliedScene = '';
   applyScene(scene, true);
 }
@@ -600,7 +654,7 @@ applyScene(currentScene, true);
 
 setInterval(function() {
   var sc = resolveScene();
-  wallIdx[sc] = (wallIdx[sc] + 1) % W[sc].length;
+  wallIdx[sc] = (wallIdx[sc] || 0) + 1;
   setWallpaper(sc, true);
 }, 30000);
 
