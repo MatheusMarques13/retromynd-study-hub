@@ -22,7 +22,7 @@
   --shadow-hover-hub: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.05);
   --postit-peach: #FFE5D9;
   --postit-pink: #FFE4EE;
-  --bg-overlay: rgba(0,0,0,0.30);
+  --bg-overlay: rgba(0,0,0,0.35);
   --radius: 6px;
 }
 
@@ -32,6 +32,7 @@ html, body { height:100%; overflow:hidden; }
 body {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #fff;
+  background: #0a0a1a;
   position: relative;
 }
 
@@ -42,7 +43,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
-  transition: opacity 2s ease-in-out;
+  transition: opacity 2.5s ease-in-out;
 }
 .wallpaper-layer.active { opacity: 1; }
 
@@ -59,59 +60,56 @@ body {
 
 .particle-dust {
   position: absolute;
-  width: 3px; height: 3px;
-  background: rgba(255,255,240,0.3);
+  background: rgba(255,255,220,0.5);
   border-radius: 50%;
   animation: floatDust linear infinite;
 }
 @keyframes floatDust {
   0% { transform: translate(0, 0) scale(1); opacity: 0; }
-  10% { opacity: 0.3; }
-  90% { opacity: 0.25; }
-  100% { transform: translate(var(--dx), var(--dy)) scale(0.4); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.4; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
 }
 
 .particle-firefly {
   position: absolute;
-  width: 4px; height: 4px;
-  background: radial-gradient(circle, rgba(255,200,80,0.6) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,200,50,0.9) 0%, rgba(255,180,50,0.4) 40%, transparent 70%);
   border-radius: 50%;
   animation: floatFirefly ease-in-out infinite;
 }
 @keyframes floatFirefly {
-  0%, 100% { transform: translate(0, 0); opacity: 0.08; }
-  25% { transform: translate(var(--dx), var(--dy)); opacity: 0.4; }
-  50% { transform: translate(var(--dx2), var(--dy2)); opacity: 0.1; }
-  75% { transform: translate(var(--dx3), var(--dy3)); opacity: 0.35; }
+  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+  25% { transform: translate(var(--dx), var(--dy)); opacity: 0.7; }
+  50% { transform: translate(var(--dx2), var(--dy2)); opacity: 0.15; }
+  75% { transform: translate(var(--dx3), var(--dy3)); opacity: 0.6; }
 }
 
 .particle-star {
   position: absolute;
-  width: 2px; height: 2px;
   background: #fff;
   border-radius: 50%;
   animation: twinkleStar ease-in-out infinite;
 }
 @keyframes twinkleStar {
-  0%, 100% { opacity: 0.05; transform: scale(1); }
-  50% { opacity: var(--bright, 0.4); transform: scale(1.3); }
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: var(--bright, 0.7); transform: scale(1.5); }
 }
 
 .particle-rain {
-  position: absolute; top: -20px;
-  width: 1px;
-  background: linear-gradient(transparent, rgba(200,215,240,0.3));
+  position: absolute; top: -30px;
+  width: 1.5px;
+  background: linear-gradient(transparent, rgba(180,200,240,0.5));
   animation: rainDrop linear infinite;
 }
 @keyframes rainDrop {
-  to { transform: translateY(105vh); }
+  to { transform: translateY(110vh); }
 }
 
 /* ═══ RETRO AMBIENT EFFECTS ═══ */
 .retro-scanlines {
   display: none;
   position: fixed; inset: 0; z-index: 3; pointer-events: none;
-  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
 }
 body.retro-dark .retro-scanlines,
 body.retro-light .retro-scanlines { display: block; }
@@ -127,7 +125,7 @@ body.retro-light .retro-neon-border { display: block; }
 
 @keyframes neonPulse {
   0%, 100% { border-color: rgba(245,197,24,0); box-shadow: none; }
-  50% { border-color: rgba(245,197,24,0.05); box-shadow: inset 0 0 40px rgba(245,197,24,0.02); }
+  50% { border-color: rgba(245,197,24,0.08); box-shadow: inset 0 0 60px rgba(245,197,24,0.03); }
 }
 
 /* ═══ LAYOUT ═══ */
@@ -385,7 +383,7 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 }
 </style>
 </head>
-<body data-scene="auto">
+<body>
 
 <!-- Wallpaper layers for crossfade -->
 <div class="wallpaper-layer active" id="wallA"></div>
@@ -447,43 +445,35 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 </div>
 
 <script>
-// ═══ GHIBLI LANDSCAPE WALLPAPERS ═══
-const wallpapers = {
+/* ═══ UNSPLASH WALLPAPERS (no CORS issues) ═══ */
+var W = {
   day: [
-    'https://www.ghibli.jp/gallery/totoro016.jpg',
-    'https://www.ghibli.jp/gallery/totoro032.jpg',
-    'https://www.ghibli.jp/gallery/totoro050.jpg',
-    'https://www.ghibli.jp/gallery/karigurashi038.jpg',
-    'https://www.ghibli.jp/gallery/marnie034.jpg',
-    'https://www.ghibli.jp/gallery/kokurikozaka033.jpg',
+    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920&q=80',
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80',
+    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80',
+    'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80'
   ],
   sunset: [
-    'https://www.ghibli.jp/gallery/chihiro050.jpg',
-    'https://www.ghibli.jp/gallery/chihiro044.jpg',
-    'https://www.ghibli.jp/gallery/mononoke030.jpg',
-    'https://www.ghibli.jp/gallery/mononoke036.jpg',
-    'https://www.ghibli.jp/gallery/ponyo033.jpg',
-    'https://www.ghibli.jp/gallery/gedsenki035.jpg',
+    'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920&q=80',
+    'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=80',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80',
+    'https://images.unsplash.com/photo-1472120435266-95c21c82c65a?w=1920&q=80'
   ],
   night: [
-    'https://www.ghibli.jp/gallery/howl038.jpg',
-    'https://www.ghibli.jp/gallery/howl050.jpg',
-    'https://www.ghibli.jp/gallery/chihiro038.jpg',
-    'https://www.ghibli.jp/gallery/ponyo036.jpg',
-    'https://www.ghibli.jp/gallery/kaze042.jpg',
-    'https://www.ghibli.jp/gallery/mononoke050.jpg',
+    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80',
+    'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=80',
+    'https://images.unsplash.com/photo-1475274047050-1d0c55b0033b?w=1920&q=80',
+    'https://images.unsplash.com/photo-1532978379173-523e16f371f2?w=1920&q=80'
   ],
   rain: [
-    'https://www.ghibli.jp/gallery/kazetachinu033.jpg',
-    'https://www.ghibli.jp/gallery/totoro019.jpg',
-    'https://www.ghibli.jp/gallery/kaze036.jpg',
-    'https://www.ghibli.jp/gallery/marnie030.jpg',
-    'https://www.ghibli.jp/gallery/karigurashi034.jpg',
-    'https://www.ghibli.jp/gallery/chihiro033.jpg',
+    'https://images.unsplash.com/photo-1515694346937-94d85e39d29b?w=1920&q=80',
+    'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80',
+    'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=1920&q=80',
+    'https://images.unsplash.com/photo-1501999635878-71cb5379c2d8?w=1920&q=80'
   ]
 };
 
-const quotes = [
+var quotes = [
   '"The only way to do great work is to love what you do."',
   '"Don\'t watch the clock; do what it does. Keep going."',
   '"The beautiful thing about learning is that nobody can take it away from you."',
@@ -492,26 +482,26 @@ const quotes = [
   '"The expert in anything was once a beginner."',
   '"Dream big. Start small. Act now."',
   '"First, solve the problem. Then, write the code."',
-  '"Talk is cheap. Show me the code."',
+  '"Talk is cheap. Show me the code."'
 ];
 
 document.getElementById('quoteBox').textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
-// ═══ CLOCK & GREETING ═══
+/* ═══ CLOCK & GREETING ═══ */
 function updateClock() {
-  const now = new Date();
+  var now = new Date();
   document.getElementById('clock').textContent =
-    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 }
 
 function updateGreeting() {
-  const now = new Date();
-  const h = now.getHours();
-  const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  let period = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
-  let name = localStorage.getItem('rmUserName') || '';
+  var now = new Date();
+  var h = now.getHours();
+  var days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var period = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
+  var name = localStorage.getItem('rmUserName') || '';
   if (!name) { try { name = JSON.parse(localStorage.getItem('rms_user') || '{}').name || ''; } catch(e){} }
-  const n = name ? ', ' + name.split(' ')[0] : '';
+  var n = name ? ', ' + name.split(' ')[0] : '';
   document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this ❤️';
 }
 
@@ -519,14 +509,14 @@ updateClock(); updateGreeting();
 setInterval(updateClock, 1000);
 setInterval(updateGreeting, 60000);
 
-// ═══ SCENE + WALLPAPER ROTATION ═══
-let currentScene = localStorage.getItem('landingScene') || 'auto';
-let wallIdx = { day: 0, sunset: 0, night: 0, rain: 0 };
-let activeLayer = 'A';
-let lastAppliedScene = '';
+/* ═══ SCENE + WALLPAPER ROTATION ═══ */
+var currentScene = localStorage.getItem('landingScene') || 'auto';
+var wallIdx = { day: 0, sunset: 0, night: 0, rain: 0 };
+var activeLayer = 'A';
+var lastAppliedScene = '';
 
 function getAutoScene() {
-  const h = new Date().getHours();
+  var h = new Date().getHours();
   if (h >= 6 && h < 17) return 'day';
   if (h >= 17 && h < 20) return 'sunset';
   return 'night';
@@ -537,37 +527,56 @@ function resolveScene() {
 }
 
 function setWallpaper(scene, crossfade) {
-  const imgs = wallpapers[scene];
+  var imgs = W[scene];
   if (!imgs || !imgs.length) return;
-  const idx = wallIdx[scene] % imgs.length;
-  const url = imgs[idx];
+  var idx = wallIdx[scene] % imgs.length;
+  var url = imgs[idx];
+
+  console.log('[RetroMynd] setWallpaper:', scene, idx, crossfade ? 'crossfade' : 'instant');
 
   if (crossfade) {
-    const showId = activeLayer === 'A' ? 'wallB' : 'wallA';
-    const hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
-    const showEl = document.getElementById(showId);
-    const hideEl = document.getElementById(hideId);
+    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
+    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
+    var showEl = document.getElementById(showId);
+    var hideEl = document.getElementById(hideId);
 
-    showEl.style.backgroundImage = 'url(' + url + ')';
-    // Force reflow
-    showEl.offsetHeight;
-    showEl.classList.add('active');
-    hideEl.classList.remove('active');
-    activeLayer = activeLayer === 'A' ? 'B' : 'A';
+    /* Preload image before showing */
+    var img = new Image();
+    img.onload = function() {
+      showEl.style.backgroundImage = 'url("' + url + '")';
+      showEl.offsetHeight; /* force reflow */
+      showEl.classList.add('active');
+      hideEl.classList.remove('active');
+      activeLayer = activeLayer === 'A' ? 'B' : 'A';
+      console.log('[RetroMynd] Crossfade done:', url.substring(0, 60));
+    };
+    img.onerror = function() {
+      console.warn('[RetroMynd] Failed to load:', url);
+    };
+    img.src = url;
   } else {
-    const el = document.getElementById('wall' + activeLayer);
-    el.style.backgroundImage = 'url(' + url + ')';
-    el.classList.add('active');
+    var el = document.getElementById('wall' + activeLayer);
+    var img2 = new Image();
+    img2.onload = function() {
+      el.style.backgroundImage = 'url("' + url + '")';
+      el.classList.add('active');
+      console.log('[RetroMynd] Initial wallpaper loaded:', url.substring(0, 60));
+    };
+    img2.onerror = function() {
+      console.warn('[RetroMynd] Failed to load initial:', url);
+    };
+    img2.src = url;
   }
 
-  // Preload next
-  const nextIdx = (idx + 1) % imgs.length;
-  const preImg = new Image();
+  /* Preload next */
+  var nextIdx = (idx + 1) % imgs.length;
+  var preImg = new Image();
   preImg.src = imgs[nextIdx];
 }
 
 function applyScene(scene, initial) {
-  const actual = scene === 'auto' ? getAutoScene() : scene;
+  var actual = scene === 'auto' ? getAutoScene() : scene;
+  console.log('[RetroMynd] applyScene:', scene, '→ actual:', actual, 'initial:', initial);
 
   if (initial || lastAppliedScene !== actual) {
     setWallpaper(actual, !initial);
@@ -575,113 +584,121 @@ function applyScene(scene, initial) {
     lastAppliedScene = actual;
   }
 
-  document.querySelectorAll('#scenePill .pill-opt').forEach(b => {
-    b.classList.toggle('active', b.dataset.sc === scene);
-  });
+  var opts = document.querySelectorAll('#scenePill .pill-opt');
+  for (var i = 0; i < opts.length; i++) {
+    opts[i].classList.toggle('active', opts[i].getAttribute('data-sc') === scene);
+  }
 }
 
 function setScene(scene) {
   currentScene = scene;
   localStorage.setItem('landingScene', scene);
-  const actual = resolveScene();
+  var actual = resolveScene();
   wallIdx[actual] = 0;
   lastAppliedScene = '';
   applyScene(scene, true);
 }
 
-// Preload first wallpaper of each scene
-Object.keys(wallpapers).forEach(k => {
-  const img = new Image();
-  img.src = wallpapers[k][0];
-});
+/* Preload first wallpaper of each scene */
+var sceneKeys = Object.keys(W);
+for (var s = 0; s < sceneKeys.length; s++) {
+  var preImg = new Image();
+  preImg.src = W[sceneKeys[s]][0];
+}
 
-// Initial apply
+/* Initial apply */
 applyScene(currentScene, true);
 
-// Rotate wallpaper every 30s
+/* Rotate wallpaper every 30s */
 setInterval(function() {
-  const sc = resolveScene();
-  wallIdx[sc] = (wallIdx[sc] + 1) % wallpapers[sc].length;
+  var sc = resolveScene();
+  wallIdx[sc] = (wallIdx[sc] + 1) % W[sc].length;
   setWallpaper(sc, true);
 }, 30000);
 
-// Auto scene check every 5min
+/* Auto scene check every 5min */
 setInterval(function() {
   if (currentScene === 'auto') applyScene('auto');
 }, 300000);
 
-// ═══ AMBIENT PARTICLES ═══
-let currentParticleScene = '';
+/* ═══ AMBIENT PARTICLES ═══ */
+var currentParticleScene = '';
 
 function createParticles(scene) {
-  const c = document.getElementById('particles');
+  var c = document.getElementById('particles');
   if (currentParticleScene === scene) return;
   currentParticleScene = scene;
   c.innerHTML = '';
 
+  console.log('[RetroMynd] Creating particles for:', scene);
+
+  var i, p, sz;
+
   if (scene === 'day') {
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
+    for (i = 0; i < 25; i++) {
+      p = document.createElement('div');
       p.className = 'particle-dust';
       p.style.left = Math.random() * 100 + '%';
       p.style.top = Math.random() * 100 + '%';
-      p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
-      p.style.setProperty('--dy', -(40 + Math.random() * 80) + 'px');
-      p.style.animationDuration = (10 + Math.random() * 15) + 's';
-      p.style.animationDelay = Math.random() * 10 + 's';
-      const sz = (2 + Math.random() * 2) + 'px';
+      p.style.setProperty('--dx', (Math.random() * 100 - 50) + 'px');
+      p.style.setProperty('--dy', -(50 + Math.random() * 100) + 'px');
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = Math.random() * 8 + 's';
+      sz = (2 + Math.random() * 3) + 'px';
       p.style.width = sz; p.style.height = sz;
       c.appendChild(p);
     }
   } else if (scene === 'sunset') {
-    for (let i = 0; i < 12; i++) {
-      const p = document.createElement('div');
+    for (i = 0; i < 15; i++) {
+      p = document.createElement('div');
       p.className = 'particle-firefly';
       p.style.left = Math.random() * 100 + '%';
-      p.style.top = 30 + Math.random() * 60 + '%';
-      p.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
-      p.style.setProperty('--dy', -(10 + Math.random() * 30) + 'px');
-      p.style.setProperty('--dx2', (Math.random() * 40 - 20) + 'px');
-      p.style.setProperty('--dy2', -(20 + Math.random() * 40) + 'px');
-      p.style.setProperty('--dx3', (Math.random() * 50 - 25) + 'px');
-      p.style.setProperty('--dy3', -(5 + Math.random() * 20) + 'px');
-      p.style.animationDuration = (6 + Math.random() * 8) + 's';
-      p.style.animationDelay = Math.random() * 6 + 's';
-      const sz = (3 + Math.random() * 3) + 'px';
+      p.style.top = 20 + Math.random() * 70 + '%';
+      p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+      p.style.setProperty('--dy', -(15 + Math.random() * 40) + 'px');
+      p.style.setProperty('--dx2', (Math.random() * 60 - 30) + 'px');
+      p.style.setProperty('--dy2', -(25 + Math.random() * 50) + 'px');
+      p.style.setProperty('--dx3', (Math.random() * 70 - 35) + 'px');
+      p.style.setProperty('--dy3', -(5 + Math.random() * 25) + 'px');
+      p.style.animationDuration = (5 + Math.random() * 7) + 's';
+      p.style.animationDelay = Math.random() * 5 + 's';
+      sz = (4 + Math.random() * 5) + 'px';
       p.style.width = sz; p.style.height = sz;
       c.appendChild(p);
     }
   } else if (scene === 'night') {
-    for (let i = 0; i < 35; i++) {
-      const p = document.createElement('div');
+    for (i = 0; i < 50; i++) {
+      p = document.createElement('div');
       p.className = 'particle-star';
       p.style.left = Math.random() * 100 + '%';
-      p.style.top = Math.random() * 65 + '%';
-      p.style.setProperty('--bright', (0.2 + Math.random() * 0.35).toFixed(2));
-      p.style.animationDuration = (3 + Math.random() * 5) + 's';
-      p.style.animationDelay = Math.random() * 5 + 's';
-      const sz = (1 + Math.random() * 2) + 'px';
+      p.style.top = Math.random() * 70 + '%';
+      p.style.setProperty('--bright', (0.4 + Math.random() * 0.5).toFixed(2));
+      p.style.animationDuration = (2 + Math.random() * 4) + 's';
+      p.style.animationDelay = Math.random() * 4 + 's';
+      sz = (1.5 + Math.random() * 2.5) + 'px';
       p.style.width = sz; p.style.height = sz;
       c.appendChild(p);
     }
   } else if (scene === 'rain') {
-    for (let i = 0; i < 50; i++) {
-      const p = document.createElement('div');
+    for (i = 0; i < 80; i++) {
+      p = document.createElement('div');
       p.className = 'particle-rain';
       p.style.left = Math.random() * 100 + '%';
-      p.style.height = (10 + Math.random() * 16) + 'px';
-      p.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+      p.style.height = (12 + Math.random() * 20) + 'px';
+      p.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
       p.style.animationDelay = Math.random() * 2 + 's';
-      p.style.opacity = (0.12 + Math.random() * 0.18).toFixed(2);
+      p.style.opacity = (0.15 + Math.random() * 0.25).toFixed(2);
       c.appendChild(p);
     }
   }
+
+  console.log('[RetroMynd] Particles created:', c.children.length);
 }
 
-// ═══ AUTH CHECK ═══
+/* ═══ AUTH CHECK ═══ */
 (function() {
-  const token = localStorage.getItem('token');
-  const session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
+  var token = localStorage.getItem('token');
+  var session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
   if (token || session) {
     document.getElementById('enterBtn').href = '/index.html';
     document.getElementById('enterBtn').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Abrir Study Hub';
