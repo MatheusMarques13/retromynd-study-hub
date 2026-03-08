@@ -573,13 +573,18 @@ body.cafe-dark .bottom-group-left .retro-toggle:hover {
 
 <script>
 /* ═══════════════════════════════════════════════════
-   GHIBLI LANDSCAPE WALLPAPERS — VERIFIED SCENERY ONLY
-   Every URL has been visually confirmed as a landscape
-   with NO prominent character figures.
+   WALLPAPER POOLS — THEME-AWARE BACKGROUND STRATEGY
+   ═══════════════════════════════════════════════════
+   COMFY  → Ghibli landscape wallpapers (verified)
+   CAFÉ   → Cozy library/bookshop interiors (Unsplash)
+   RETRO  → Neon/cyberpunk/retro cityscapes (Unsplash)
+   Each has day/sunset/night/rain variants.
    ═══════════════════════════════════════════════════ */
 var G = 'https://www.ghibli.jp/gallery/';
+var U = 'https://images.unsplash.com/photo-';
 
-var W = {
+/* --- COMFY: Ghibli landscapes --- */
+var W_COMFY = {
   day: [
     G+'laputa036.jpg',       // Laputa floating castle — blue sky, clouds
     G+'laputa039.jpg',       // Laputa garden ruins from above — green
@@ -622,25 +627,101 @@ var W = {
   ]
 };
 
-var FB = {
+/* --- CAFÉ: Cozy library / bookshop interiors (Unsplash) --- */
+var W_CAFE = {
   day: [
-    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920&q=80',
-    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80',
-    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80'
+    U+'1507842217343-583bb7270b66?w=1920&q=80',  // Warm library shelves, sunlight
+    U+'1521587760476-6c12a4b040da?w=1920&q=80',  // Old bookshop interior
+    U+'1524995997946-a1c2e315a42f?w=1920&q=80',  // Cozy reading nook with books
+    U+'1481627834876-b7833e8f5570?w=1920&q=80',  // Classic library hall
+    U+'1519682337058-a94d519337bc?w=1920&q=80',  // Bookshelf warm wood
+    U+'1512820790803-83ca734da794?w=1920&q=80'   // Cafe interior warm tones
   ],
   sunset: [
-    'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920&q=80',
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80'
+    U+'1468581264429-2548ef9eb732?w=1920&q=80',  // Library with golden hour light
+    U+'1526243741027-444d633d7365?w=1920&q=80',  // Warm sunset through library window
+    U+'1495446815901-a7297e633e8d?w=1920&q=80',  // Old books golden light
+    U+'1559339352-11d035aa65de?w=1920&q=80',     // Coffee shop warm evening
+    U+'1506880018603-83d5b814b5a6?w=1920&q=80'   // Cozy warm interior
   ],
   night: [
-    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80',
-    'https://images.unsplash.com/photo-1475274047050-1d0c55b0033b?w=1920&q=80'
+    U+'1530538095376-a4936b35b5f0?w=1920&q=80',  // Library with lamp light at night
+    U+'1497366216548-37526070297c?w=1920&q=80',  // Dark bookshop with warm lamps
+    U+'1519682577862-22b62b24e493?w=1920&q=80',  // Night study room
+    U+'1532012197267-da84d127e765?w=1920&q=80',  // Dim library atmosphere
+    U+'1558618666-fcd25c85f82e?w=1920&q=80'      // Candle-lit study
   ],
   rain: [
-    'https://images.unsplash.com/photo-1515694346937-94d85e39d29b?w=1920&q=80',
-    'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80'
+    U+'1515694346937-94d85e39d29b?w=1920&q=80',  // Rain on window
+    U+'1519692933314-fef5c7921ef4?w=1920&q=80',  // Rainy window coffee shop
+    U+'1501436513145-8171d310ca43?w=1920&q=80',  // Moody rainy bookshop
+    U+'1496185106368-308ed53f0c9c?w=1920&q=80',  // Rain drops on glass
+    U+'1428592953211-077101b2021b?w=1920&q=80'   // Overcast atmosphere
   ]
 };
+
+/* --- RETRO: Neon / cyberpunk / retro cityscapes (Unsplash) --- */
+var W_RETRO = {
+  day: [
+    U+'1550745165-9bc0b252726f?w=1920&q=80',  // Retro arcade machines
+    U+'1511882150382-421056c89033?w=1920&q=80',// Vintage TV static retro
+    U+'1556438064-2d7646166914?w=1920&q=80',  // Retro computer setup
+    U+'1531525645387-7f14be1bdbbd?w=1920&q=80',// Old CRT monitors
+    U+'1558618666-fcd25c85f82e?w=1920&q=80'   // Retro gaming room
+  ],
+  sunset: [
+    U+'1579546929518-9e396f3cc809?w=1920&q=80',// Neon city sunset
+    U+'1534430480872-3498386e7856?w=1920&q=80',// Synthwave sunset sky
+    U+'1514565131-fce0801e5785?w=1920&q=80',  // Purple sunset cityscape
+    U+'1517420704952-d9f39e95b43e?w=1920&q=80',// Urban sunset neon
+    U+'1545127398-14699f92334b?w=1920&q=80'   // Golden hour cyberpunk
+  ],
+  night: [
+    U+'1563089145-599997674d42?w=1920&q=80',  // Neon city at night
+    U+'1519501025264-65ba15a82390?w=1920&q=80',// Tokyo neon streets
+    U+'1533174072545-7a4855d30cb8?w=1920&q=80',// Cyberpunk alley neon
+    U+'1505506364700-93a06f43f5e2?w=1920&q=80',// Neon signs night city
+    U+'1579548122080-c35fd6820ecb?w=1920&q=80',// Dark neon cityscape
+    U+'1542831371-29b0f74f9713?w=1920&q=80'   // Night city lights
+  ],
+  rain: [
+    U+'1501436513145-8171d310ca43?w=1920&q=80',// Neon rain reflections
+    U+'1507400492013-162706c8c05e?w=1920&q=80',// Rainy neon street
+    U+'1476820865390-c52aeebb9891?w=1920&q=80',// Wet city lights
+    U+'1519692933314-fef5c7921ef4?w=1920&q=80',// Rainy window neon glow
+    U+'1515694346937-94d85e39d29b?w=1920&q=80' // Rain on glass
+  ]
+};
+
+/* --- Fallback pools (guaranteed Unsplash photos) --- */
+var FB = {
+  day: [
+    U+'1501785888041-af3ef285b470?w=1920&q=80',
+    U+'1470071459604-3b5ec3a7fe05?w=1920&q=80',
+    U+'1441974231531-c6227db76b6e?w=1920&q=80'
+  ],
+  sunset: [
+    U+'1495616811223-4d98c6e9c869?w=1920&q=80',
+    U+'1506744038136-46273834b3fb?w=1920&q=80'
+  ],
+  night: [
+    U+'1519681393784-d120267933ba?w=1920&q=80',
+    U+'1475274047050-1d0c55b0033b?w=1920&q=80'
+  ],
+  rain: [
+    U+'1515694346937-94d85e39d29b?w=1920&q=80',
+    U+'1428592953211-077101b2021b?w=1920&q=80'
+  ]
+};
+
+/* --- Get the right wallpaper pool for current theme --- */
+function getWallpaperPool() {
+  var theme = localStorage.getItem('rm_theme') || 'comfy';
+  if (theme === 'cafe-dark' || theme === 'cafe-light') return W_CAFE;
+  if (theme === 'retro-dark' || theme === 'retro-light') return W_RETRO;
+  return W_COMFY;
+}
+var W = getWallpaperPool();
 
 /* --- wallpaper state --- */
 var readyPool = { day:[], sunset:[], night:[], rain:[] };
@@ -731,8 +812,40 @@ function setScene(scene) {
   applyScene(scene, true);
 }
 
+/* --- clock & greeting --- */
+function updateClock() {
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2, '0');
+  var m = String(now.getMinutes()).padStart(2, '0');
+  var el = document.getElementById('clock');
+  if (el) el.textContent = h + ':' + m;
+}
+
+function updateGreeting() {
+  var h = new Date().getHours();
+  var msg = '';
+  if (h >= 5 && h < 12) msg = 'Bom dia';
+  else if (h >= 12 && h < 18) msg = 'Boa tarde';
+  else msg = 'Boa noite';
+  // Try to get user name from localStorage
+  try {
+    var u = JSON.parse(localStorage.getItem('rms_user') || '{}');
+    if (u && u.name) msg += ', ' + u.name.split(' ')[0];
+  } catch(e) {}
+  var el = document.getElementById('greeting');
+  if (el) el.textContent = msg;
+}
+
 /* --- boot & timers --- */
+updateClock();
+updateGreeting();
 applyScene(currentScene, true);
+
+// Update clock every second
+setInterval(updateClock, 1000);
+
+// Update greeting every minute (in case hour changes)
+setInterval(updateGreeting, 60000);
 
 // Cycle wallpaper every 30s
 setInterval(function() {
@@ -741,10 +854,28 @@ setInterval(function() {
   showWall(sc, true);
 }, 30000);
 
-// Re-check auto scene every 5 min
+// Re-check auto scene every 60s (faster detection of time-of-day change)
 setInterval(function() {
   if (currentScene === 'auto') applyScene('auto');
-}, 300000);
+}, 60000);
+
+/* --- Theme change listener: reload wallpapers when theme switches --- */
+var _lastTheme = localStorage.getItem('rm_theme') || 'comfy';
+function checkThemeWallpaperSwitch() {
+  var cur = localStorage.getItem('rm_theme') || 'comfy';
+  if (cur !== _lastTheme) {
+    _lastTheme = cur;
+    W = getWallpaperPool();
+    // Reset validation cache so new pool gets loaded
+    readyPool = { day:[], sunset:[], night:[], rain:[] };
+    validated  = { day:false, sunset:false, night:false, rain:false };
+    wallIdx    = { day:0, sunset:0, night:0, rain:0 };
+    lastScene  = '';
+    applyScene(currentScene, true);
+  }
+}
+// Check every 500ms (catches theme toggle instantly)
+setInterval(checkThemeWallpaperSwitch, 500);
 
 
 var currentParticleScene = '';
