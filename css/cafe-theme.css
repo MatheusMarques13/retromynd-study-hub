@@ -4,7 +4,7 @@
    Supports: body.cafe-light | body.cafe-dark
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;500;600&display=swap');
 
 /* ========== CAFÉ LIGHT VARIABLES ========== */
 body.cafe-light {
@@ -48,7 +48,7 @@ body.cafe-dark * {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* Headings: Playfair Display serif */
+/* Headings: Outfit — clean, modern geometric sans-serif */
 body.cafe-light h1:not(#rmLoginOverlay h1),
 body.cafe-light h2:not(#rmLoginOverlay *),
 body.cafe-light h3,
@@ -61,8 +61,9 @@ body.cafe-dark h3,
 body.cafe-dark h4,
 body.cafe-dark h5,
 body.cafe-dark h6 {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  letter-spacing: 0.01em !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  letter-spacing: -0.01em !important;
+  font-weight: 600 !important;
 }
 
 /* Tags/code elements: Source Code Pro */
@@ -304,7 +305,7 @@ body.cafe-dark [class*="stat"] [class*="num"],
 body.cafe-dark [class*="stat"] [class*="count"],
 body.cafe-dark [class*="streak"],
 body.cafe-dark [class*="score"] {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
   font-size: 2.2rem !important;
@@ -336,7 +337,7 @@ body.cafe-dark [class*="timer"] [class*="time"],
 body.cafe-dark [class*="clock"],
 body.cafe-dark [class*="countdown"],
 body.cafe-dark [class*="digit"] {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
   font-weight: 700 !important;
@@ -576,7 +577,7 @@ body.cafe-dark [class*="sticky"] {
 /* ========== STREAK ========== */
 body.cafe-light [class*="streak-num"],
 body.cafe-dark [class*="streak-num"] {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
 }
@@ -682,7 +683,7 @@ body.cafe-dark [class*="tab"] {
 /* Header title — warm serif */
 body.cafe-light .header-title,
 body.cafe-dark .header-title {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
   animation: none !important;
@@ -705,7 +706,7 @@ body.cafe-dark .scoreboard {
 
 body.cafe-light .score-val,
 body.cafe-dark .score-val {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
   font-size: 1.7rem !important;
@@ -800,7 +801,7 @@ body.cafe-dark .stat-card {
 
 body.cafe-light .stat-val,
 body.cafe-dark .stat-val {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
   font-size: 2.4rem !important;
@@ -839,7 +840,7 @@ body.cafe-dark .streak-card {
 
 body.cafe-light .streak-num,
 body.cafe-dark .streak-num {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
 }
@@ -852,7 +853,7 @@ body.cafe-dark .streak-sub {
 
 body.cafe-light .streak-best-val,
 body.cafe-dark .streak-best-val {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
 }
 
@@ -864,7 +865,7 @@ body.cafe-dark .streak-best-lbl {
 /* Section titles */
 body.cafe-light .sec-title,
 body.cafe-dark .sec-title {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-accent) !important;
   font-size: 1rem !important;
   letter-spacing: 0.02em !important;
@@ -950,7 +951,7 @@ body.cafe-dark .rank-pos.gold {
 body.cafe-light .rank-score,
 body.cafe-dark .rank-score {
   color: var(--cafe-highlight) !important;
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 body.cafe-light .rank-date,
@@ -997,7 +998,7 @@ body.cafe-light[data-page="landing"] {
 /* Clock on landing */
 body.cafe-light .clock,
 body.cafe-dark .clock {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-highlight) !important;
   text-shadow: none !important;
 }
@@ -1005,7 +1006,7 @@ body.cafe-dark .clock {
 /* Greeting */
 body.cafe-light .greeting,
 body.cafe-dark .greeting {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-text) !important;
   font-weight: 700 !important;
 }
@@ -1013,7 +1014,7 @@ body.cafe-dark .greeting {
 /* Brand name */
 body.cafe-light .brand-name,
 body.cafe-dark .brand-name {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-accent) !important;
   text-shadow: none !important;
 }
@@ -1089,7 +1090,7 @@ body.cafe-dark .theme-label {
 /* Quote box */
 body.cafe-light .quote-box,
 body.cafe-dark .quote-box {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   font-style: italic !important;
   color: var(--cafe-text-mid) !important;
 }
@@ -1155,7 +1156,7 @@ body.cafe-dark .login-card {
 
 body.cafe-light .card-header h1,
 body.cafe-dark .card-header h1 {
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
   color: var(--cafe-accent) !important;
 }
 
@@ -1268,7 +1269,7 @@ body.cafe-dark .brand span {
 body.cafe-light .lyric,
 body.cafe-dark .lyric {
   color: var(--cafe-text-muted) !important;
-  font-family: 'Playfair Display', serif !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 /* ========== DARK MODE SPECIFIC OVERRIDES ========== */
