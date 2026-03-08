@@ -7,25 +7,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- Preload Ghibli wallpapers -->
 <link rel="preload" as="image" href="https://www.ghibli.jp/gallery/chihiro050.jpg">
 <link rel="preload" as="image" href="https://www.ghibli.jp/gallery/howl038.jpg">
 <style>
 :root {
-  --bg-overlay: rgba(0,0,0,0.35);
+  --bg-overlay: rgba(0,0,0,0.3);
   --text-main: #fff;
   --text-dim: rgba(255,255,255,0.7);
   --text-muted: rgba(255,255,255,0.45);
   --accent: #FF6B9D;
-  --accent-soft: rgba(255,107,157,0.25);
-  --glass: rgba(255,255,255,0.08);
-  --glass-border: rgba(255,255,255,0.12);
-  --glass-hover: rgba(255,255,255,0.15);
+  --comfy-warm: rgba(255,180,120,0.15);
+  --comfy-warm-border: rgba(255,180,120,0.25);
+  --comfy-warm-hover: rgba(255,180,120,0.3);
+  --comfy-glow: rgba(255,200,150,0.2);
+  --comfy-rose: rgba(255,140,160,0.15);
+  --comfy-amber: rgba(255,190,100,0.12);
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-hover: rgba(255,255,255,0.12);
   --radius: 16px;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
-
 html, body { height:100%; overflow:hidden; }
 
 body {
@@ -45,33 +48,29 @@ body {
 }
 .bg-scene.active { opacity: 1; }
 
-/* Day: My Neighbor Totoro — lush green countryside */
 .scene-day {
   background-image: url('https://www.ghibli.jp/gallery/totoro016.jpg');
   background-color: #4a8c3f;
 }
-
-/* Sunset: Spirited Away — warm bathhouse glow */
 .scene-sunset {
   background-image: url('https://www.ghibli.jp/gallery/chihiro050.jpg');
   background-color: #d4567a;
 }
-
-/* Night: Howl's Moving Castle — starry dreamscape */
 .scene-night {
   background-image: url('https://www.ghibli.jp/gallery/howl038.jpg');
   background-color: #0a1225;
 }
-
-/* Rain: The Wind Rises — overcast moody sky */
 .scene-rain {
   background-image: url('https://www.ghibli.jp/gallery/kazetachinu033.jpg');
   background-color: #4a5565;
 }
 
+/* Warm comfy overlay — adds cozy tint */
 .bg-overlay {
   position: fixed; inset: 0; z-index: 1;
-  background: var(--bg-overlay);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(20,10,5,0.35) 100%);
   pointer-events: none;
 }
 
@@ -100,8 +99,8 @@ body {
   font-family: 'Source Code Pro', monospace;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  color: rgba(255,220,180,0.95);
+  text-shadow: 0 0 20px rgba(255,180,120,0.3), 0 2px 12px rgba(0,0,0,0.5);
   letter-spacing: 3px;
   text-transform: uppercase;
 }
@@ -109,7 +108,7 @@ body {
   font-family: 'Source Code Pro', monospace;
   font-size: 0.5rem;
   font-weight: 400;
-  color: var(--text-dim);
+  color: rgba(255,200,160,0.5);
   letter-spacing: 2px;
   text-transform: lowercase;
 }
@@ -121,18 +120,19 @@ body {
   font-size: 1rem;
   font-weight: 500;
   font-style: italic;
-  color: #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  color: rgba(255,235,210,0.9);
+  text-shadow: 0 0 16px rgba(255,180,120,0.2), 0 2px 12px rgba(0,0,0,0.4);
   line-height: 1.5;
 }
 
 /* ═══ CENTER CONTENT ═══ */
 .greeting {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #fff;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.45);
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  font-style: italic;
+  color: rgba(255,230,200,0.9);
+  text-shadow: 0 0 24px rgba(255,180,120,0.25), 0 2px 16px rgba(0,0,0,0.4);
   margin-bottom: 0.3rem;
   line-height: 1.4;
   opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
@@ -142,8 +142,11 @@ body {
   font-family: 'Source Sans 3', sans-serif;
   font-size: clamp(5rem, 14vw, 10rem);
   font-weight: 700;
-  color: #fff;
-  text-shadow: 0 4px 30px rgba(0,0,0,0.45);
+  color: rgba(255,245,235,0.95);
+  text-shadow:
+    0 0 60px rgba(255,180,120,0.2),
+    0 0 30px rgba(255,150,100,0.15),
+    0 4px 30px rgba(0,0,0,0.4);
   letter-spacing: -4px;
   line-height: 1;
   margin-bottom: 0.5rem;
@@ -152,26 +155,27 @@ body {
 
 .enter-btn {
   font-family: 'Source Sans 3', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   padding: 14px 48px;
-  border: 2px solid rgba(255,255,255,0.4);
+  border: 1.5px solid rgba(255,180,120,0.35);
   border-radius: 50px;
-  background: rgba(255,255,255,0.12);
-  color: #fff;
+  background: linear-gradient(135deg, rgba(255,180,120,0.1) 0%, rgba(255,140,160,0.08) 100%);
+  color: rgba(255,235,210,0.95);
   cursor: pointer;
-  backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
+  backdrop-filter: blur(16px);
+  transition: all 0.35s ease;
   text-decoration: none;
   display: inline-flex; align-items: center; gap: 8px;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.2);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
   opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards;
 }
 .enter-btn:hover {
-  background: rgba(255,255,255,0.22);
-  border-color: rgba(255,255,255,0.6);
+  background: linear-gradient(135deg, rgba(255,180,120,0.2) 0%, rgba(255,140,160,0.15) 100%);
+  border-color: rgba(255,180,120,0.5);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 32px rgba(255,150,100,0.15), 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 .enter-btn:active { transform: translateY(0); }
 
@@ -186,27 +190,28 @@ body {
 
 .glass-pill {
   display: flex; align-items: center; gap: 4px;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(255,180,120,0.06) 0%, rgba(255,140,160,0.04) 100%);
+  border: 1px solid rgba(255,180,120,0.15);
   border-radius: 24px;
   padding: 4px;
   backdrop-filter: blur(16px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 .pill-opt {
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%; border: none;
   background: transparent;
-  color: var(--text-dim);
+  color: rgba(255,200,170,0.5);
   cursor: pointer;
   font-size: 0.85rem;
   transition: all 0.25s ease;
 }
-.pill-opt:hover { color: #fff; background: var(--glass-hover); }
+.pill-opt:hover { color: rgba(255,220,180,0.9); background: rgba(255,180,120,0.1); }
 .pill-opt.active {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: rgba(255,180,120,0.18);
+  color: rgba(255,230,200,0.95);
+  box-shadow: 0 0 12px rgba(255,150,100,0.15), 0 2px 8px rgba(0,0,0,0.1);
 }
 .pill-opt svg { width: 16px; height: 16px; }
 
@@ -214,7 +219,7 @@ body {
   font-family: 'Source Code Pro', monospace;
   font-size: 0.5rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: rgba(255,180,120,0.35);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   text-align: center;
@@ -249,27 +254,29 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Landing retro toggle - COMFY glass style */
+/* ═══ RETRO TOGGLE — Comfy style ═══ */
 .bottom-group-left .retro-toggle {
   font-family: 'Source Code Pro', monospace !important;
   font-size: 0.6rem !important;
   font-weight: 600 !important;
   padding: 8px 20px !important;
-  border: 1px solid var(--glass-border) !important;
+  border: 1px solid rgba(255,180,120,0.2) !important;
   border-radius: 24px !important;
-  background: var(--glass) !important;
-  color: var(--text-dim) !important;
+  background: linear-gradient(135deg, rgba(255,180,120,0.06) 0%, rgba(255,140,160,0.04) 100%) !important;
+  color: rgba(255,200,170,0.6) !important;
   cursor: pointer !important;
   backdrop-filter: blur(16px) !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   transition: all 0.25s ease !important;
   margin-left: 0 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important;
 }
 .bottom-group-left .retro-toggle:hover {
-  background: var(--glass-hover) !important;
-  color: #fff !important;
-  border-color: rgba(255,255,255,0.3) !important;
+  background: rgba(255,180,120,0.12) !important;
+  color: rgba(255,230,200,0.9) !important;
+  border-color: rgba(255,180,120,0.35) !important;
+  box-shadow: 0 0 16px rgba(255,150,100,0.15), 0 4px 16px rgba(0,0,0,0.1) !important;
 }
 
 /* ═══ LANDING RETRO OVERRIDES ═══ */
@@ -288,6 +295,7 @@ body.retro-light .clock {
 body.retro-dark .greeting,
 body.retro-light .greeting {
   font-family: 'Space Mono', monospace !important;
+  font-style: normal !important;
   color: var(--rpixel, #e8f0ff) !important;
 }
 
@@ -308,6 +316,7 @@ body.retro-dark .quote-box,
 body.retro-light .quote-box {
   font-family: 'Space Mono', monospace !important;
   font-style: normal !important;
+  color: var(--rpixel, #e8f0ff) !important;
 }
 
 body.retro-dark .enter-btn,
@@ -318,6 +327,7 @@ body.retro-light .enter-btn {
   border-radius: 0 !important;
   backdrop-filter: none !important;
   color: var(--rpixel, #e8f0ff) !important;
+  box-shadow: none !important;
 }
 
 body.retro-dark .enter-btn:hover,
@@ -334,6 +344,7 @@ body.retro-light .glass-pill {
   border: 2px solid var(--rborder, #1e3a6e) !important;
   border-radius: 0 !important;
   backdrop-filter: none !important;
+  box-shadow: none !important;
 }
 
 body.retro-dark .pill-opt,
@@ -365,6 +376,17 @@ body.retro-dark .bottom-group-left .retro-toggle,
 body.retro-light .bottom-group-left .retro-toggle {
   border-radius: 0 !important;
   backdrop-filter: none !important;
+  background: transparent !important;
+  border-color: var(--rborder, #1e3a6e) !important;
+  color: var(--rdim, #7a8faa) !important;
+  box-shadow: none !important;
+}
+
+body.retro-dark .bottom-group-left .retro-toggle:hover,
+body.retro-light .bottom-group-left .retro-toggle:hover {
+  border-color: var(--rgold, #f5c518) !important;
+  color: var(--rgold, #f5c518) !important;
+  box-shadow: 0 0 8px rgba(245,197,24,.3) !important;
 }
 
 @media (max-width: 600px) {
@@ -409,7 +431,6 @@ body.retro-light .bottom-group-left .retro-toggle {
 
 <!-- Bottom Bar -->
 <div class="bottom-bar">
-  <!-- Left: RETRO/COMFY toggle -->
   <div class="bottom-group-left">
     <button class="retro-toggle" onclick="toggleRetroMode()">RETRO</button>
     <div class="theme-label">ESTILO</div>
