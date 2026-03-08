@@ -1,6 +1,5 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
-// PERSISTENCE: Local-first. Save to localStorage immediately, sync to server async.
 // =============================================================================
 
 (function() {
@@ -59,8 +58,8 @@
       return this.flush();
     },
 
+    // GOALS REMOVED from _serverMap — goals save/load independently now
     _serverMap: {
-      goals:        () => ({ type: 'goals',  data: store.get('goals', []) }),
       notes:        () => ({ type: 'notes',  data: store.get('notes', []) }),
       pomodoros:    () => ({ type: 'timer',  data: { pomodoros: parseInt(store.getRaw('pomodoros', '0')), totalMinutes: 0 } }),
       streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
@@ -85,18 +84,15 @@
       for (const [type, data] of ops) {
         try {
           await auth.saveData(type, data);
-          console.log('[RetroMynd] ☁️ Saved:', type, Array.isArray(data) ? '(' + data.length + ' items)' : '');
           this._retryCount = 0;
           this._serverConfirmedAt = Date.now();
         } catch (e) {
           allOk = false;
-          console.error('[RetroMynd] ❌ Save FAILED:', type, e.message);
           for (const key of dirtyKeys) {
             const mapper = this._serverMap[key];
             if (mapper && mapper().type === type) this._dirty.add(key);
           }
           if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token') || e.message.toLowerCase().includes('expirado'))) {
-            console.error('[RetroMynd] 🔑 Token expired/invalid!');
             showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
             break;
           }
@@ -145,7 +141,18 @@
   };
   window._store = store;
 
-  window.addEventListener('beforeunload', () => store.flushSync());
+  window.addEventListener('beforeunload', () => {
+    // Save goals via sendBeacon on page unload
+    try {
+      const token = localStorage.getItem('token');
+      const goals = store.get('goals', []);
+      if (token && goals.length > 0) {
+        const blob = new Blob([JSON.stringify({ data_type: 'goals', data: goals })], { type: 'application/json' });
+        navigator.sendBeacon('/api/data/save?token=' + encodeURIComponent(token), blob);
+      }
+    } catch(e) {}
+    store.flushSync();
+  });
   window.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') store.flushNow();
   });
@@ -285,6 +292,7 @@
   window.showHub = showHub;
 
   // ═══ SYNC FROM SUPABASE ═══
+  // GOALS ARE NOT PART OF THIS SYNC — they save/load independently
   async function syncFromServer(attempt) {
     attempt = attempt || 1;
     const maxAttempts = 3;
@@ -313,54 +321,25 @@
       const allData = await resp.json();
       if (!allData || typeof allData !== 'object') { showSaveStatus('ok', 'Conectado ✓'); return; }
 
-      console.log('[RetroMynd] Server data keys:', Object.keys(allData));
-
       let loaded = 0;
       let needsResync = false;
 
       // =============================================
-      // GOALS SYNC — identical pattern to notes
+      // GOALS — loaded independently, NOT touched here
+      // We just load from server if local is empty
       // =============================================
       if (allData.goals && allData.goals.data && Array.isArray(allData.goals.data)) {
         const serverGoals = allData.goals.data;
         const localGoals = store.get('goals', []);
-
         if (localGoals.length === 0 && serverGoals.length > 0) {
-          // No local data, accept server
           store.set('goals', serverGoals, false);
           loaded++;
-          console.log('[RetroMynd] Goals: loaded from server (' + serverGoals.length + ')');
-        } else if (localGoals.length > 0 && serverGoals.length === 0) {
-          // Local has data, server empty — push to server
-          needsResync = true;
-          store._dirty.add('goals');
-          console.log('[RetroMynd] Goals: pushing local to server (' + localGoals.length + ')');
-        } else if (localGoals.length > 0 && serverGoals.length > 0) {
-          // Both have data — merge by ID, local wins
-          const merged = new Map();
-          serverGoals.forEach(g => merged.set(g.id, g));
-          let hasNew = false;
-          localGoals.forEach(g => {
-            if (!merged.has(g.id)) hasNew = true;
-            merged.set(g.id, g); // local always wins
-          });
-          const result = Array.from(merged.values());
-          store.set('goals', result, false);
-          if (hasNew || result.length !== serverGoals.length) {
-            needsResync = true;
-            store._dirty.add('goals');
-          }
-          loaded++;
-          console.log('[RetroMynd] Goals: merged (' + result.length + ')');
+          try { renderGoals(); } catch(e) {}
         }
-      } else if (store.get('goals', []).length > 0) {
-        needsResync = true;
-        store._dirty.add('goals');
+        // If local has goals, DO NOT TOUCH THEM. Server never overwrites local.
       }
 
-      // =============================================
       // NOTES SYNC
-      // =============================================
       if (allData.notes && allData.notes.data && Array.isArray(allData.notes.data)) {
         const serverNotes = allData.notes.data;
         const localNotes = store.get('notes', []);
@@ -418,25 +397,20 @@
       }
 
       store._lastSyncOk = true;
-      console.log('[RetroMynd] Synced ' + loaded + ' data types ✓');
       if (loaded > 0) showSaveStatus('ok', 'Dados sincronizados ✓');
       else showSaveStatus('ok', 'Conectado ✓');
 
-      // Re-render UI with synced data
       if (loaded > 0) {
         loadStats();
         try { renderGoals(); } catch(e) {}
         try { renderNotesList(); } catch(e) {}
       }
 
-      // Push local-only data to server
       if (needsResync) {
-        console.log('[RetroMynd] Re-syncing local data to server...');
         setTimeout(() => store.flush(), 300);
       }
 
     } catch(e) {
-      console.error('[RetroMynd] Sync error:', e.name, e.message);
       if (attempt < maxAttempts && (e.name === 'AbortError' || e.name === 'TypeError' || e.message.includes('500'))) {
         await new Promise(r => setTimeout(r, 1000 * attempt));
         return syncFromServer(attempt + 1);
@@ -531,41 +505,48 @@
   }
 
   // ═══════════════════════════════════════════════
-  // GOALS — rewritten from scratch
-  // Same persistence pattern as notes
+  // GOALS — completely independent persistence
+  // Does NOT use store.flush / syncFromServer
+  // Saves directly to server, loads from localStorage
   // ═══════════════════════════════════════════════
   let goalTab = 'today';
   let goalFilter = 'a';
   let goalPage = 1;
   const GOALS_PER_PAGE = 8;
 
-  // READ goals from localStorage
   function getGoals() {
     return store.get('goals', []);
   }
 
-  // WRITE goals: save to localStorage + push to server (identical to saveNotes)
+  // Save goals: write to localStorage THEN push directly to server
   function saveGoals(goals) {
-    // 1. Write to localStorage immediately
-    store.set('goals', goals);
-
-    // 2. Also write raw key as backup (belt and suspenders)
+    // Step 1: localStorage immediately
     localStorage.setItem('rms_goals', JSON.stringify(goals));
+    store.set('goals', goals, false); // false = do NOT add to dirty/flush cycle
 
-    // 3. Mark dirty and flush to server
-    store._dirty.add('goals');
-    store._localModifiedAt = Date.now();
-
-    // 4. Update stats
+    // Step 2: update UI stats
     loadStats();
 
-    // 5. Force immediate server save
-    store.flushNow().then(() => {
-      console.log('[Goals] ✅ Saved to server (' + goals.length + ' goals)');
-    }).catch((e) => {
-      console.error('[Goals] ❌ Server save failed:', e.message);
-      showSaveStatus('error', 'Erro ao salvar metas. Dados locais OK.');
-    });
+    // Step 3: direct server save (not through flush)
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('/api/data/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ data_type: 'goals', data: goals })
+      }).then(r => {
+        if (r.ok) {
+          showSaveStatus('ok', 'Metas salvas ✓');
+        } else {
+          showSaveStatus('error', 'Erro ao salvar metas no servidor');
+        }
+      }).catch(() => {
+        showSaveStatus('error', 'Sem conexão — metas salvas localmente');
+      });
+    }
   }
 
   function initGoals() {
@@ -590,7 +571,6 @@
     if (pgPrev) pgPrev.onclick = () => { if (goalPage > 1) { goalPage--; renderGoals(); } };
     if (pgNext) pgNext.onclick = () => { goalPage++; renderGoals(); };
 
-    console.log('[Goals] Initialized. Current goals:', getGoals().length);
     renderGoalTabs();
   }
 
@@ -607,17 +587,8 @@
   function addGoal() {
     const input = $('goalInput');
     if (!input || !input.value.trim()) return;
-
     const goals = getGoals();
-    const newGoal = {
-      id: Date.now(),
-      text: input.value.trim(),
-      done: false,
-      date: new Date().toISOString()
-    };
-    goals.push(newGoal);
-
-    console.log('[Goals] Adding:', newGoal.text, '| Total:', goals.length);
+    goals.push({ id: Date.now(), text: input.value.trim(), done: false, date: new Date().toISOString() });
     saveGoals(goals);
     input.value = '';
     renderGoals();
@@ -714,32 +685,20 @@
     container.innerHTML = html || '<div class="hist-empty">Nenhuma meta com esse filtro</div>';
   }
 
-  // Global handlers for goals
   window.toggleGoal = function(id) {
     const goals = getGoals();
     const goal = goals.find(x => x.id === id);
-    if (goal) {
-      goal.done = !goal.done;
-      console.log('[Goals] Toggle:', goal.text, '->', goal.done ? 'DONE' : 'UNDONE');
-      saveGoals(goals);
-      renderGoals();
-      if (goalTab === 'history') renderHistory();
-    }
+    if (goal) { goal.done = !goal.done; saveGoals(goals); renderGoals(); if (goalTab === 'history') renderHistory(); }
   };
 
   window.deleteGoal = function(id) {
-    const goals = getGoals().filter(x => x.id !== id);
-    console.log('[Goals] Deleted goal. Remaining:', goals.length);
-    saveGoals(goals);
-    renderGoals();
-    if (goalTab === 'history') renderHistory();
+    saveGoals(getGoals().filter(x => x.id !== id));
+    renderGoals(); if (goalTab === 'history') renderHistory();
   };
 
   window.renderGoals = renderGoals;
 
-  // ═══════════════════════════════════════════════
-  // NOTES
-  // ═══════════════════════════════════════════════
+  // ═══ NOTES ═══
   let currentNote = null;
   const postitColors = ['postit-yellow','postit-pink','postit-mint','postit-peach','postit-lilac','postit-sky'];
   let selectedPostitColor = 'postit-yellow';
