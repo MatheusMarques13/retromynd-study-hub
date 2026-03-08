@@ -4,6 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RetroMynd — Study Hub</title>
+<meta name="description" content="Your aesthetic study companion. Pomodoro timer, daily goals, notes & more — all wrapped in a beautiful Ghibli-inspired interface.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://retromynd-study-hub.vercel.app/">
+<meta property="og:title" content="RetroMynd — Study Hub">
+<meta property="og:description" content="Your aesthetic study companion. Pomodoro timer, daily goals, notes & more — all wrapped in a beautiful Ghibli-inspired interface. ✨">
+<meta property="og:image" content="https://www.ghibli.jp/gallery/howl002.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1038">
+<meta property="og:site_name" content="RetroMynd Study Hub">
+<meta property="og:locale" content="pt_BR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RetroMynd — Study Hub">
+<meta name="twitter:description" content="Your aesthetic study companion. Pomodoro, goals, notes & Ghibli vibes ✨">
+<meta name="twitter:image" content="https://www.ghibli.jp/gallery/howl002.jpg">
+
+<!-- Theme color -->
+<meta name="theme-color" content="#FF6B9D">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Press+Start+2P&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
@@ -412,35 +435,6 @@ body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom
 </div>
 
 <script>
-/*
- * GHIBLI LANDSCAPE WALLPAPERS — ghibli.jp official stills
- * Format: https://www.ghibli.jp/gallery/{movie}{number}.jpg
- * Each movie has ~50 stills numbered 001-050
- * 
- * Strategy: provide MANY candidates per scene, the loader tries each
- * and uses the first that loads successfully. This handles 404s gracefully.
- *
- * LANDSCAPE-ONLY picks (no characters in focus):
- * chihiro: 002(tunnel entrance), 006(spirit town overview), 009(bathhouse exterior wide),
- *          013(bridge/town landscape), 023(ocean railway wide), 033(flower field), 049(tunnel exit green)
- * howl:    002(flower meadow), 006(castle flying over valley), 011(town rooftops),
- *          019(wasteland), 026(sky/clouds), 036(moving castle wide), 048(countryside)
- * totoro:  003(countryside path), 008(rice paddy fields), 015(camphor tree wide),
- *          022(forest tunnel), 029(bus stop rain - landscape), 038(hilltop view), 046(night sky)
- * mononoke:005(ancient forest), 010(lake at dawn), 018(forest spirit pool),
- *          025(irontown overview), 033(mountain range), 041(nighttime forest glow)
- * laputa:  003(floating island clouds), 008(mining town), 015(laputa ruins garden),
- *          022(sky fortress wide), 030(clouds at sunset), 039(overgrown ruins)
- * kiki:    002(coastal city panorama), 009(clock tower and city), 017(harbor),
- *          024(rooftop view), 035(ocean horizon), 044(city at night)
- * ponyo:   004(underwater sea life), 011(ocean waves), 019(flooded town),
- *          027(cliff house), 035(calm sea), 043(harbor at night)
- * marnie:  003(marsh house), 008(wetlands), 015(mansion at dusk),
- *          022(garden), 030(moonlit water), 038(misty landscape)
- * kazetachinu: 002(green fields), 009(airplane and sky), 018(countryside),
- *             025(hotel mountain view), 034(earthquake cityscape)
- */
-
 var GHIBLI_BASE = 'https://www.ghibli.jp/gallery/';
 
 var W = {
@@ -523,7 +517,6 @@ var FALLBACK = {
   ]
 };
 
-/* Pre-validate: test all URLs in each scene, keep only working ones */
 var validatedW = { day: [], sunset: [], night: [], rain: [] };
 var validationDone = { day: false, sunset: false, night: false, rain: false };
 
@@ -536,12 +529,12 @@ function validateScene(scene, cb) {
     img.onload = function() {
       if (img.naturalWidth > 100) {
         validatedW[scene].push(url);
-        console.log('[RM] ✅ valid:', url.split('/').pop());
+        console.log('[RM] \u2705 valid:', url.split('/').pop());
       }
       if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
     };
     img.onerror = function() {
-      console.warn('[RM] ❌ dead:', url.split('/').pop());
+      console.warn('[RM] \u274c dead:', url.split('/').pop());
       if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
     };
     img.src = url;
@@ -569,12 +562,12 @@ function updateClock() {
 function updateGreeting() {
   var now = new Date();
   var h = now.getHours();
-  var days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var days = ['Domingo','Segunda','Ter\u00e7a','Quarta','Quinta','Sexta','S\u00e1bado'];
   var period = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
   var name = localStorage.getItem('rmUserName') || '';
   if (!name) { try { name = JSON.parse(localStorage.getItem('rms_user') || '{}').name || ''; } catch(e){} }
   var n = name ? ', ' + name.split(' ')[0] : '';
-  document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this ❤️';
+  document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this \u2764\ufe0f';
 }
 updateClock(); updateGreeting();
 setInterval(updateClock, 1000);
@@ -620,7 +613,6 @@ function setWallpaper(scene, crossfade) {
     var url = pool[idx];
     console.log('[RM] showing:', scene, url.split('/').pop(), '(pool:', pool.length, 'valid)');
     doApply(url, crossfade);
-    /* preload next */
     var nextUrl = pool[(idx + 1) % pool.length];
     (new Image()).src = nextUrl;
   });
