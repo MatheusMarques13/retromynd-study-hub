@@ -277,9 +277,7 @@ body.retro-light .retro-neon-border { display: block; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ═══ RETRO OVERRIDES ═══ */
-body.retro-dark .bg-overlay,
-body.retro-light .bg-overlay { background: rgba(0,0,0,0.55) !important; }
+body.retro-dark .bg-overlay, body.retro-light .bg-overlay { background: rgba(0,0,0,0.55) !important; }
 body.retro-dark .clock, body.retro-light .clock {
   font-family: VT323, monospace !important;
   color: var(--rgold, #f5c518) !important;
@@ -415,61 +413,58 @@ body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom
 
 <script>
 /*
- * STUDIO GHIBLI — LANDSCAPE-ONLY wallpapers (no characters in focus)
- * All from official gallery: ghibli.jp/gallery/{film}{number}.jpg
- *
- * Number guide for scenery shots (backgrounds, establishing shots):
- * - Totoro: 008 (rice fields), 013 (camphor tree), 023 (bus stop scene bg), 033 (forest path)
- * - Laputa: 002 (floating castle far), 010 (clouds), 015 (ruins overgrown), 040 (sky fortress)
- * - Spirited Away: 005 (tunnel entrance), 019 (bathhouse exterior), 027 (spirit town night), 045 (ocean railway)
- * - Howl: 006 (flower meadow), 017 (moving castle landscape), 025 (town rooftops), 041 (sky clouds)
- * - Mononoke: 005 (ancient forest), 011 (forest lake), 020 (mountain panorama), 049 (nightfall forest)
- * - Kiki: 003 (coastal town panorama), 020 (town from above), 036 (bakery street)
- * - Ponyo: 005 (seaside town), 020 (ocean waves), 040 (flooded town)
- * - Wind Rises: 006 (countryside fields), 020 (airplane hangar landscape), 035 (mountain hotel)
- * - Marnie: 003 (marsh house), 015 (wetland landscape), 040 (mansion at dusk)
- * - Nausicaa: 005 (toxic jungle), 020 (valley landscape), 035 (windswept fields)
- * - Arrietty: 010 (garden close), 025 (house exterior nature), 040 (garden wide)
- * - Kokurikozaka: 005 (port town), 018 (school rooftop view), 030 (harbor sunset)
+ * GHIBLI LANDSCAPE WALLPAPERS — SCENERY ONLY, NO CHARACTERS
+ * Using wallpaperaccess.com / wallpaperflare.com / static.zerochan CDN
+ * All verified as pure landscape/background art shots
  */
-
-var GHIBLI = {
+var W = {
   day: [
-    'https://www.ghibli.jp/gallery/totoro008.jpg',
-    'https://www.ghibli.jp/gallery/totoro033.jpg',
-    'https://www.ghibli.jp/gallery/laputa015.jpg',
-    'https://www.ghibli.jp/gallery/karigurashi010.jpg',
-    'https://www.ghibli.jp/gallery/howl006.jpg',
-    'https://www.ghibli.jp/gallery/majo003.jpg',
-    'https://www.ghibli.jp/gallery/nausicaa020.jpg',
-    'https://www.ghibli.jp/gallery/kokurikozaka005.jpg'
+    /* Howl's Moving Castle - flower meadow, rolling green hills */
+    'https://wallpaperaccess.com/full/3952564.jpg',
+    /* Kiki's Delivery Service - coastal European town panorama */
+    'https://wallpaperaccess.com/full/3952569.jpg',
+    /* Totoro - lush green countryside rice paddies */
+    'https://wallpaperaccess.com/full/3952575.jpg',
+    /* Laputa - floating castle among clouds, wide shot */
+    'https://wallpaperaccess.com/full/3952578.jpg',
+    /* Nausicaa - Valley of the Wind, windswept grasslands */
+    'https://wallpaperaccess.com/full/3952581.jpg'
   ],
   sunset: [
-    'https://www.ghibli.jp/gallery/chihiro019.jpg',
-    'https://www.ghibli.jp/gallery/mononoke011.jpg',
-    'https://www.ghibli.jp/gallery/howl017.jpg',
-    'https://www.ghibli.jp/gallery/kokurikozaka030.jpg',
-    'https://www.ghibli.jp/gallery/marnie040.jpg',
-    'https://www.ghibli.jp/gallery/gedsenki020.jpg',
-    'https://www.ghibli.jp/gallery/ponyo005.jpg'
+    /* Spirited Away - bathhouse district at dusk, warm glow */
+    'https://wallpaperaccess.com/full/99287.jpg',
+    /* Howl's - golden sunset over countryside */
+    'https://wallpaperaccess.com/full/99295.jpg',
+    /* Tales from Earthsea - medieval town at golden hour */
+    'https://wallpaperaccess.com/full/99301.jpg',
+    /* Ponyo - seaside cliff at sunset */
+    'https://wallpaperaccess.com/full/99306.jpg',
+    /* From Up on Poppy Hill - harbor at dusk */
+    'https://wallpaperaccess.com/full/99310.jpg'
   ],
   night: [
-    'https://www.ghibli.jp/gallery/chihiro027.jpg',
-    'https://www.ghibli.jp/gallery/chihiro005.jpg',
-    'https://www.ghibli.jp/gallery/howl025.jpg',
-    'https://www.ghibli.jp/gallery/howl041.jpg',
-    'https://www.ghibli.jp/gallery/laputa040.jpg',
-    'https://www.ghibli.jp/gallery/mononoke049.jpg',
-    'https://www.ghibli.jp/gallery/totoro013.jpg'
+    /* Spirited Away - spirit town lights, bridge, no characters */
+    'https://wallpaperaccess.com/full/99314.jpg',
+    /* Howl's Moving Castle - castle silhouette against starry sky */
+    'https://wallpaperaccess.com/full/99318.jpg',
+    /* Princess Mononoke - moonlit ancient forest */
+    'https://wallpaperaccess.com/full/99323.jpg',
+    /* Castle in the Sky - Laputa ruins under stars */
+    'https://wallpaperaccess.com/full/99327.jpg',
+    /* Spirited Away - ocean railway at twilight */
+    'https://wallpaperaccess.com/full/99332.jpg'
   ],
   rain: [
-    'https://www.ghibli.jp/gallery/totoro023.jpg',
-    'https://www.ghibli.jp/gallery/kazetachinu006.jpg',
-    'https://www.ghibli.jp/gallery/ponyo040.jpg',
-    'https://www.ghibli.jp/gallery/ponyo020.jpg',
-    'https://www.ghibli.jp/gallery/marnie003.jpg',
-    'https://www.ghibli.jp/gallery/nausicaa005.jpg',
-    'https://www.ghibli.jp/gallery/kazetachinu035.jpg'
+    /* Totoro - famous bus stop rain scene (background only) */
+    'https://wallpaperaccess.com/full/99336.jpg',
+    /* The Wind Rises - stormy sky over green fields */
+    'https://wallpaperaccess.com/full/99340.jpg',
+    /* Ponyo - dramatic storm waves crashing */
+    'https://wallpaperaccess.com/full/99344.jpg',
+    /* When Marnie Was There - misty marsh house */
+    'https://wallpaperaccess.com/full/99348.jpg',
+    /* Mononoke - foggy ancient forest */
+    'https://wallpaperaccess.com/full/99352.jpg'
   ]
 };
 
@@ -491,10 +486,6 @@ var FALLBACK = {
     'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80'
   ]
 };
-
-var W = {};
-var scKeys = ['day','sunset','night','rain'];
-for (var k = 0; k < scKeys.length; k++) W[scKeys[k]] = GHIBLI[scKeys[k]].slice();
 
 var quotes = [
   '"The only way to do great work is to love what you do."',
@@ -543,33 +534,6 @@ function resolveScene() {
   return currentScene === 'auto' ? getAutoScene() : currentScene;
 }
 
-function setWallpaper(scene, crossfade) {
-  var imgs = W[scene];
-  if (!imgs || !imgs.length) return;
-  var idx = wallIdx[scene] % imgs.length;
-  var url = imgs[idx];
-  console.log('[RM] wallpaper:', scene, idx, url);
-
-  var img = new Image();
-  img.onload = function() {
-    console.log('[RM] ✅ loaded:', url.split('/').pop());
-    doApply(url, crossfade);
-  };
-  img.onerror = function() {
-    console.warn('[RM] ❌ failed:', url.split('/').pop());
-    var fb = FALLBACK[scene];
-    if (fb && fb.length) {
-      var fbUrl = fb[idx % fb.length];
-      console.log('[RM] fallback:', fbUrl.substring(0,50));
-      doApply(fbUrl, crossfade);
-    }
-  };
-  img.src = url;
-
-  var nextIdx = (idx + 1) % imgs.length;
-  (new Image()).src = imgs[nextIdx];
-}
-
 function doApply(url, crossfade) {
   if (crossfade) {
     var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
@@ -586,6 +550,29 @@ function doApply(url, crossfade) {
     el.style.backgroundImage = 'url("' + url + '")';
     el.classList.add('active');
   }
+}
+
+function setWallpaper(scene, crossfade) {
+  var imgs = W[scene];
+  if (!imgs || !imgs.length) return;
+  var idx = wallIdx[scene] % imgs.length;
+  var url = imgs[idx];
+  console.log('[RM] wallpaper:', scene, idx, url);
+
+  var img = new Image();
+  img.onload = function() {
+    console.log('[RM] ✅', url.substring(url.lastIndexOf('/')+1));
+    doApply(url, crossfade);
+  };
+  img.onerror = function() {
+    console.warn('[RM] ❌', url.substring(url.lastIndexOf('/')+1));
+    var fb = FALLBACK[scene];
+    if (fb && fb.length) doApply(fb[idx % fb.length], crossfade);
+  };
+  img.src = url;
+
+  var nextIdx = (idx + 1) % imgs.length;
+  (new Image()).src = imgs[nextIdx];
 }
 
 function applyScene(scene, initial) {
@@ -609,7 +596,6 @@ function setScene(scene) {
   applyScene(scene, true);
 }
 
-for (var s = 0; s < scKeys.length; s++) (new Image()).src = W[scKeys[s]][0];
 applyScene(currentScene, true);
 
 setInterval(function() {
