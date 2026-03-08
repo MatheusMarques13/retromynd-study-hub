@@ -869,8 +869,73 @@
     }
   }
 
+  // ═══ MIGRATE LEGACY DATA ═══
+  function migrateLegacyData() {
+    if (localStorage.getItem('rms_migrated_v2')) return;
+    try {
+      // Try both prefixed and unprefixed legacy keys
+      const user = auth ? auth.getUser() : null;
+      const prefixes = [''];
+      if (user && user.email) {
+        prefixes.push('rm_' + user.email.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_');
+      }
+      for (const pfx of prefixes) {
+        // Migrate goals
+        const oldGoals = localStorage.getItem(pfx + 'rmGoals2');
+        if (oldGoals) {
+          const parsed = JSON.parse(oldGoals);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const existing = store.get('goals', []);
+            const existingIds = new Set(existing.map(g => g.text + '|' + g.date));
+            let added = 0;
+            for (const g of parsed) {
+              const key = g.text + '|' + (g.date || '');
+              if (!existingIds.has(key)) {
+                existing.push({
+                  id: g.id || Date.now() + added,
+                  text: g.text,
+                  done: !!g.done,
+                  date: g.date ? new Date(g.date + 'T12:00:00').toISOString() : new Date().toISOString()
+                });
+                existingIds.add(key);
+                added++;
+              }
+            }
+            if (added > 0) {
+              store.set('goals', existing, false);
+              store._dirty.add('goals');
+            }
+          }
+        }
+        // Migrate notes
+        const oldNotes = localStorage.getItem(pfx + 'rmNotes3');
+        if (oldNotes) {
+          const parsed = JSON.parse(oldNotes);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const existing = store.get('notes', []);
+            const existingIds = new Set(existing.map(n => n.id));
+            let added = 0;
+            for (const n of parsed) {
+              if (!existingIds.has(n.id)) {
+                existing.push(n);
+                existingIds.add(n.id);
+                added++;
+              }
+            }
+            if (added > 0) {
+              store.set('notes', existing, false);
+              store._dirty.add('notes');
+            }
+          }
+        }
+      }
+    } catch(e) { console.warn('[Migration] Error:', e); }
+    localStorage.setItem('rms_migrated_v2', '1');
+  }
+
   // ═══ INIT ═══
   function init() {
+    migrateLegacyData();
     const savedTheme = localStorage.getItem('rms_theme') || 'light';
     window.setTheme(savedTheme);
     if (auth && auth.isAuthenticated()) showHub();
