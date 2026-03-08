@@ -81,28 +81,36 @@ body {
 
 .particle-dust {
   position: absolute;
-  background: rgba(255,255,220,0.5);
+  background: radial-gradient(circle, rgba(255,255,200,0.8) 0%, rgba(255,255,220,0.3) 50%, transparent 70%);
   border-radius: 50%;
   animation: floatDust linear infinite;
+  filter: blur(0.5px);
 }
 @keyframes floatDust {
   0% { transform: translate(0, 0) scale(1); opacity: 0; }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.4; }
-  100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
+  8% { opacity: 0.7; }
+  50% { opacity: 0.5; }
+  90% { opacity: 0.3; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
 }
 
 .particle-firefly {
   position: absolute;
-  background: radial-gradient(circle, rgba(255,200,50,0.9) 0%, rgba(255,180,50,0.4) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,220,80,1) 0%, rgba(255,200,50,0.6) 30%, rgba(255,180,50,0.2) 60%, transparent 80%);
   border-radius: 50%;
   animation: floatFirefly ease-in-out infinite;
+  filter: blur(0.3px);
+  box-shadow: 0 0 8px rgba(255,200,50,0.4), 0 0 20px rgba(255,180,50,0.15);
 }
 @keyframes floatFirefly {
-  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
-  25% { transform: translate(var(--dx), var(--dy)); opacity: 0.7; }
-  50% { transform: translate(var(--dx2), var(--dy2)); opacity: 0.15; }
-  75% { transform: translate(var(--dx3), var(--dy3)); opacity: 0.6; }
+  0%, 100% { transform: translate(0, 0) scale(0.8); opacity: 0.05; }
+  15% { transform: translate(calc(var(--dx) * 0.3), calc(var(--dy) * 0.3)); opacity: 0.8; }
+  25% { transform: translate(var(--dx), var(--dy)); opacity: 0.9; }
+  40% { transform: translate(calc(var(--dx2) * 0.7), calc(var(--dy2) * 0.7)); opacity: 0.3; }
+  50% { transform: translate(var(--dx2), var(--dy2)) scale(1.2); opacity: 0.1; }
+  65% { transform: translate(calc(var(--dx3) * 0.5), calc(var(--dy3) * 0.5)); opacity: 0.7; }
+  75% { transform: translate(var(--dx3), var(--dy3)); opacity: 0.85; }
+  90% { opacity: 0.2; }
 }
 
 .particle-star {
@@ -110,20 +118,37 @@ body {
   background: #fff;
   border-radius: 50%;
   animation: twinkleStar ease-in-out infinite;
+  box-shadow: 0 0 3px rgba(255,255,255,0.5);
 }
 @keyframes twinkleStar {
-  0%, 100% { opacity: 0.1; transform: scale(1); }
-  50% { opacity: var(--bright, 0.7); transform: scale(1.5); }
+  0%, 100% { opacity: 0.05; transform: scale(0.8); box-shadow: 0 0 2px rgba(255,255,255,0.2); }
+  30% { opacity: calc(var(--bright, 0.7) * 0.5); transform: scale(1.1); }
+  50% { opacity: var(--bright, 0.7); transform: scale(1.6); box-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(200,220,255,0.2); }
+  70% { opacity: calc(var(--bright, 0.7) * 0.6); transform: scale(1.2); }
 }
 
 .particle-rain {
   position: absolute; top: -30px;
   width: 1.5px;
-  background: linear-gradient(transparent, rgba(180,200,240,0.5));
+  background: linear-gradient(transparent, rgba(180,200,240,0.6), rgba(160,190,240,0.3));
   animation: rainDrop linear infinite;
+  filter: blur(0.3px);
 }
 @keyframes rainDrop {
   to { transform: translateY(110vh); }
+}
+
+/* Rain splash effect */
+.particle-splash {
+  position: absolute;
+  width: 4px; height: 1px;
+  background: rgba(180,200,240,0.4);
+  border-radius: 50%;
+  animation: splashFade 0.6s ease-out infinite;
+}
+@keyframes splashFade {
+  0% { transform: scale(0); opacity: 0.6; }
+  100% { transform: scale(3, 0.5); opacity: 0; }
 }
 
 .retro-scanlines {
@@ -371,6 +396,124 @@ body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom
   transform: none !important;
 }
 
+/* ===== CAFÉ THEME — LANDING ===== */
+body.cafe { background: #1a1410 !important; }
+body.cafe .bg-overlay { background: rgba(10,8,5,0.45) !important; }
+body.cafe .clock {
+  font-family: 'Playfair Display', Didot, serif !important;
+  color: #f0e8dc !important;
+  text-shadow: 0 2px 40px rgba(201,169,110,.2), 0 4px 20px rgba(0,0,0,.4) !important;
+  letter-spacing: -2px !important;
+}
+body.cafe .greeting {
+  font-family: 'Cormorant Garamond', Garamond, serif !important;
+  color: #e8c9a0 !important;
+  font-weight: 400 !important;
+  font-size: 1.3rem !important;
+}
+body.cafe .brand-name {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 0.7rem !important;
+  color: #c9a96e !important;
+  text-shadow: 0 1px 12px rgba(201,169,110,.2) !important;
+  letter-spacing: 3px !important;
+}
+body.cafe .brand-sub {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: rgba(232,201,160,0.6) !important;
+  font-style: italic !important;
+  letter-spacing: 2px !important;
+}
+body.cafe .quote-box {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-style: italic !important;
+  color: rgba(240,232,220,0.75) !important;
+  font-size: 1rem !important;
+}
+body.cafe .enter-btn {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 1.1rem !important; font-weight: 600 !important;
+  background: transparent !important;
+  border: 1px solid rgba(201,169,110,0.4) !important;
+  border-radius: 4px !important;
+  color: #c9a96e !important;
+  box-shadow: none !important;
+  letter-spacing: 0.1em !important;
+}
+body.cafe .enter-btn svg { stroke: #c9a96e !important; }
+body.cafe .enter-btn:hover {
+  background: rgba(201,169,110,0.1) !important;
+  border-color: #c9a96e !important;
+  color: #e8c9a0 !important;
+  box-shadow: 0 4px 24px rgba(201,169,110,.15) !important;
+  transform: translateY(-1px) !important;
+}
+body.cafe .glass-pill {
+  background: rgba(44,37,32,0.8) !important;
+  border: 1px solid rgba(201,169,110,0.2) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3) !important;
+  backdrop-filter: blur(8px) !important;
+}
+body.cafe .pill-opt { border-radius: 4px !important; color: #a89880 !important; }
+body.cafe .pill-opt.active {
+  background: #c9a96e !important; color: #1a1410 !important;
+  box-shadow: 0 2px 8px rgba(201,169,110,.3) !important;
+}
+body.cafe .pill-opt:hover { color: #c9a96e !important; background: rgba(201,169,110,.08) !important; }
+body.cafe .theme-label {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: #a89880 !important;
+  letter-spacing: 2px !important;
+  font-size: 7px !important;
+}
+body.cafe .bottom-group-left .retro-toggle {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 0.95rem !important; font-weight: 600 !important;
+  padding: 8px 20px !important;
+  border: 1px solid rgba(201,169,110,0.3) !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  color: #c9a96e !important;
+  box-shadow: none !important;
+  letter-spacing: 0.1em !important;
+}
+body.cafe .bottom-group-left .retro-toggle:hover {
+  background: rgba(201,169,110,0.1) !important;
+  border-color: #c9a96e !important;
+  color: #e8c9a0 !important;
+  transform: none !important;
+}
+
+/* Café steam particles */
+.particle-steam {
+  position: absolute;
+  background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0.03) 50%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(2px);
+  animation: steamFloat ease-in-out infinite;
+}
+@keyframes steamFloat {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.3; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale, 2)); opacity: 0; }
+}
+
+/* Café golden dust */
+.particle-golden {
+  position: absolute;
+  background: radial-gradient(circle, rgba(201,169,110,0.6) 0%, rgba(201,169,110,0.2) 50%, transparent 70%);
+  border-radius: 50%;
+  animation: goldenDrift linear infinite;
+}
+@keyframes goldenDrift {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  15% { opacity: 0.5; }
+  85% { opacity: 0.3; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+
 @media (max-width: 600px) {
   .top-bar { padding: 1.2rem 1.2rem; }
   .quote-box { font-size: 0.85rem; max-width: 180px; }
@@ -437,64 +580,60 @@ body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom
 <script>
 var GHIBLI_BASE = 'https://www.ghibli.jp/gallery/';
 
+/* Landscape-only Ghibli scenes — no character close-ups */
 var W = {
   day: [
-    GHIBLI_BASE + 'howl002.jpg',
-    GHIBLI_BASE + 'howl048.jpg',
-    GHIBLI_BASE + 'totoro003.jpg',
-    GHIBLI_BASE + 'totoro008.jpg',
-    GHIBLI_BASE + 'kiki002.jpg',
-    GHIBLI_BASE + 'kiki009.jpg',
-    GHIBLI_BASE + 'laputa015.jpg',
-    GHIBLI_BASE + 'laputa039.jpg',
-    GHIBLI_BASE + 'kazetachinu002.jpg',
-    GHIBLI_BASE + 'kazetachinu018.jpg',
-    GHIBLI_BASE + 'chihiro049.jpg',
-    GHIBLI_BASE + 'chihiro033.jpg',
-    GHIBLI_BASE + 'marnie022.jpg',
-    GHIBLI_BASE + 'totoro038.jpg'
+    GHIBLI_BASE + 'howl002.jpg',     /* Howl's castle meadow panorama */
+    GHIBLI_BASE + 'howl048.jpg',     /* Flower fields wide shot */
+    GHIBLI_BASE + 'totoro003.jpg',   /* Rice paddy countryside */
+    GHIBLI_BASE + 'totoro038.jpg',   /* Forest canopy */
+    GHIBLI_BASE + 'kiki009.jpg',     /* Coastal town overview */
+    GHIBLI_BASE + 'laputa015.jpg',   /* Laputa floating island */
+    GHIBLI_BASE + 'laputa039.jpg',   /* Cloud sea panorama */
+    GHIBLI_BASE + 'kazetachinu018.jpg', /* Mountain landscape */
+    GHIBLI_BASE + 'marnie022.jpg',   /* Marsh scenery */
+    GHIBLI_BASE + 'mononoke034.jpg', /* Forest clearing */
+    GHIBLI_BASE + 'ponyo038.jpg',    /* Ocean cliff view */
+    GHIBLI_BASE + 'chihiro049.jpg'   /* Spirit world landscape */
   ],
   sunset: [
-    GHIBLI_BASE + 'chihiro006.jpg',
-    GHIBLI_BASE + 'chihiro009.jpg',
-    GHIBLI_BASE + 'chihiro013.jpg',
-    GHIBLI_BASE + 'howl006.jpg',
-    GHIBLI_BASE + 'howl036.jpg',
-    GHIBLI_BASE + 'laputa030.jpg',
-    GHIBLI_BASE + 'mononoke010.jpg',
-    GHIBLI_BASE + 'ponyo027.jpg',
-    GHIBLI_BASE + 'marnie015.jpg',
-    GHIBLI_BASE + 'kazetachinu025.jpg',
-    GHIBLI_BASE + 'kiki024.jpg',
-    GHIBLI_BASE + 'howl026.jpg'
+    GHIBLI_BASE + 'chihiro006.jpg',  /* Spirit bathhouse at dusk */
+    GHIBLI_BASE + 'chihiro013.jpg',  /* Flooded tracks sunset */
+    GHIBLI_BASE + 'howl006.jpg',     /* Mountain sunset panorama */
+    GHIBLI_BASE + 'howl036.jpg',     /* Castle against sunset sky */
+    GHIBLI_BASE + 'howl026.jpg',     /* Golden hour meadow */
+    GHIBLI_BASE + 'laputa030.jpg',   /* Ruins at golden hour */
+    GHIBLI_BASE + 'mononoke010.jpg', /* Forest at dusk */
+    GHIBLI_BASE + 'kazetachinu025.jpg', /* Countryside sunset */
+    GHIBLI_BASE + 'marnie015.jpg',   /* Wetland at sunset */
+    GHIBLI_BASE + 'kiki024.jpg',     /* Town at golden hour */
+    GHIBLI_BASE + 'ponyo027.jpg'     /* Ocean sunset */
   ],
   night: [
-    GHIBLI_BASE + 'chihiro002.jpg',
-    GHIBLI_BASE + 'chihiro023.jpg',
-    GHIBLI_BASE + 'howl011.jpg',
-    GHIBLI_BASE + 'mononoke041.jpg',
-    GHIBLI_BASE + 'mononoke005.jpg',
-    GHIBLI_BASE + 'laputa022.jpg',
-    GHIBLI_BASE + 'totoro046.jpg',
-    GHIBLI_BASE + 'kiki044.jpg',
-    GHIBLI_BASE + 'ponyo043.jpg',
-    GHIBLI_BASE + 'marnie030.jpg',
-    GHIBLI_BASE + 'totoro015.jpg',
-    GHIBLI_BASE + 'mononoke018.jpg'
+    GHIBLI_BASE + 'chihiro002.jpg',  /* Spirit world night */
+    GHIBLI_BASE + 'chihiro023.jpg',  /* Night train on water */
+    GHIBLI_BASE + 'howl011.jpg',     /* Starlit sky */
+    GHIBLI_BASE + 'mononoke041.jpg', /* Night forest glow */
+    GHIBLI_BASE + 'mononoke005.jpg', /* Dark forest canopy */
+    GHIBLI_BASE + 'mononoke018.jpg', /* Moonlit forest */
+    GHIBLI_BASE + 'laputa022.jpg',   /* Night sky */
+    GHIBLI_BASE + 'totoro046.jpg',   /* Night countryside */
+    GHIBLI_BASE + 'totoro015.jpg',   /* Night forest */
+    GHIBLI_BASE + 'marnie030.jpg',   /* Night marsh */
+    GHIBLI_BASE + 'ponyo043.jpg'     /* Night ocean */
   ],
   rain: [
-    GHIBLI_BASE + 'totoro029.jpg',
-    GHIBLI_BASE + 'ponyo011.jpg',
-    GHIBLI_BASE + 'ponyo019.jpg',
-    GHIBLI_BASE + 'ponyo004.jpg',
-    GHIBLI_BASE + 'marnie003.jpg',
-    GHIBLI_BASE + 'marnie008.jpg',
-    GHIBLI_BASE + 'marnie038.jpg',
-    GHIBLI_BASE + 'mononoke033.jpg',
-    GHIBLI_BASE + 'kazetachinu034.jpg',
-    GHIBLI_BASE + 'kazetachinu009.jpg',
-    GHIBLI_BASE + 'chihiro002.jpg',
-    GHIBLI_BASE + 'howl019.jpg'
+    GHIBLI_BASE + 'totoro029.jpg',   /* Bus stop in rain */
+    GHIBLI_BASE + 'ponyo011.jpg',    /* Storm waves */
+    GHIBLI_BASE + 'ponyo019.jpg',    /* Flooded road */
+    GHIBLI_BASE + 'marnie003.jpg',   /* Misty marsh */
+    GHIBLI_BASE + 'marnie008.jpg',   /* Foggy wetland */
+    GHIBLI_BASE + 'marnie038.jpg',   /* Rain on water */
+    GHIBLI_BASE + 'mononoke033.jpg', /* Rainy forest */
+    GHIBLI_BASE + 'kazetachinu034.jpg', /* Overcast landscape */
+    GHIBLI_BASE + 'kazetachinu009.jpg', /* Misty mountains */
+    GHIBLI_BASE + 'howl019.jpg',     /* Rain on town */
+    GHIBLI_BASE + 'chihiro009.jpg'   /* Misty train tracks */
   ]
 };
 
@@ -644,6 +783,19 @@ function setScene(scene) {
 
 applyScene(currentScene, true);
 
+/* Re-create particles when theme changes (café has its own particles) */
+var _lastThemeForParticles = document.body.className;
+var _themeObserver = new MutationObserver(function(mutations) {
+  var newClass = document.body.className;
+  if (newClass !== _lastThemeForParticles) {
+    _lastThemeForParticles = newClass;
+    currentParticleScene = '';
+    var sc = resolveScene();
+    createParticles(sc);
+  }
+});
+_themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
 setInterval(function() {
   var sc = resolveScene();
   wallIdx[sc] = (wallIdx[sc] || 0) + 1;
@@ -661,50 +813,87 @@ function createParticles(scene) {
   currentParticleScene = scene;
   c.innerHTML = '';
   var i, p, sz;
+  var isCafe = document.body.classList.contains('cafe');
+
+  if (isCafe) {
+    /* Café: warm golden dust + steam wisps */
+    for (i = 0; i < 35; i++) {
+      p = document.createElement('div'); p.className = 'particle-golden';
+      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
+      p.style.setProperty('--dx',(Math.random()*120-60)+'px');
+      p.style.setProperty('--dy',-(40+Math.random()*120)+'px');
+      p.style.animationDuration = (10+Math.random()*15)+'s';
+      p.style.animationDelay = Math.random()*10+'s';
+      sz=(1.5+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
+      c.appendChild(p);
+    }
+    for (i = 0; i < 8; i++) {
+      p = document.createElement('div'); p.className = 'particle-steam';
+      p.style.left = 15+Math.random()*70+'%'; p.style.top = 50+Math.random()*40+'%';
+      p.style.setProperty('--dx',(Math.random()*60-30)+'px');
+      p.style.setProperty('--dy',-(80+Math.random()*120)+'px');
+      p.style.setProperty('--scale',(1.5+Math.random()*2).toFixed(1));
+      p.style.animationDuration = (12+Math.random()*10)+'s';
+      p.style.animationDelay = Math.random()*8+'s';
+      sz=(20+Math.random()*40)+'px'; p.style.width=sz; p.style.height=sz;
+      c.appendChild(p);
+    }
+    return;
+  }
+
   if (scene === 'day') {
-    for (i = 0; i < 25; i++) {
+    for (i = 0; i < 45; i++) {
       p = document.createElement('div'); p.className = 'particle-dust';
       p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
-      p.style.setProperty('--dx',(Math.random()*100-50)+'px');
-      p.style.setProperty('--dy',-(50+Math.random()*100)+'px');
-      p.style.animationDuration = (8+Math.random()*12)+'s';
-      p.style.animationDelay = Math.random()*8+'s';
-      sz=(2+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
+      p.style.setProperty('--dx',(Math.random()*140-70)+'px');
+      p.style.setProperty('--dy',-(60+Math.random()*140)+'px');
+      p.style.animationDuration = (7+Math.random()*14)+'s';
+      p.style.animationDelay = Math.random()*10+'s';
+      sz=(1.5+Math.random()*4)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'sunset') {
-    for (i = 0; i < 15; i++) {
+    for (i = 0; i < 28; i++) {
       p = document.createElement('div'); p.className = 'particle-firefly';
-      p.style.left = Math.random()*100+'%'; p.style.top = 20+Math.random()*70+'%';
-      p.style.setProperty('--dx',(Math.random()*80-40)+'px');
-      p.style.setProperty('--dy',-(15+Math.random()*40)+'px');
-      p.style.setProperty('--dx2',(Math.random()*60-30)+'px');
-      p.style.setProperty('--dy2',-(25+Math.random()*50)+'px');
-      p.style.setProperty('--dx3',(Math.random()*70-35)+'px');
-      p.style.setProperty('--dy3',-(5+Math.random()*25)+'px');
-      p.style.animationDuration = (5+Math.random()*7)+'s';
-      p.style.animationDelay = Math.random()*5+'s';
-      sz=(4+Math.random()*5)+'px'; p.style.width=sz; p.style.height=sz;
+      p.style.left = Math.random()*100+'%'; p.style.top = 15+Math.random()*75+'%';
+      p.style.setProperty('--dx',(Math.random()*100-50)+'px');
+      p.style.setProperty('--dy',-(20+Math.random()*60)+'px');
+      p.style.setProperty('--dx2',(Math.random()*80-40)+'px');
+      p.style.setProperty('--dy2',-(30+Math.random()*70)+'px');
+      p.style.setProperty('--dx3',(Math.random()*90-45)+'px');
+      p.style.setProperty('--dy3',-(10+Math.random()*40)+'px');
+      p.style.animationDuration = (4+Math.random()*8)+'s';
+      p.style.animationDelay = Math.random()*6+'s';
+      sz=(3+Math.random()*6)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'night') {
-    for (i = 0; i < 50; i++) {
+    for (i = 0; i < 90; i++) {
       p = document.createElement('div'); p.className = 'particle-star';
-      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*70+'%';
-      p.style.setProperty('--bright',(0.4+Math.random()*0.5).toFixed(2));
-      p.style.animationDuration = (2+Math.random()*4)+'s';
-      p.style.animationDelay = Math.random()*4+'s';
-      sz=(1.5+Math.random()*2.5)+'px'; p.style.width=sz; p.style.height=sz;
+      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*75+'%';
+      p.style.setProperty('--bright',(0.3+Math.random()*0.6).toFixed(2));
+      p.style.animationDuration = (1.5+Math.random()*5)+'s';
+      p.style.animationDelay = Math.random()*5+'s';
+      sz=(1+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'rain') {
-    for (i = 0; i < 80; i++) {
+    for (i = 0; i < 140; i++) {
       p = document.createElement('div'); p.className = 'particle-rain';
       p.style.left = Math.random()*100+'%';
-      p.style.height = (12+Math.random()*20)+'px';
-      p.style.animationDuration = (0.4+Math.random()*0.5)+'s';
+      p.style.height = (10+Math.random()*25)+'px';
+      p.style.animationDuration = (0.3+Math.random()*0.5)+'s';
       p.style.animationDelay = Math.random()*2+'s';
-      p.style.opacity = (0.15+Math.random()*0.25).toFixed(2);
+      p.style.opacity = (0.12+Math.random()*0.3).toFixed(2);
+      c.appendChild(p);
+    }
+    /* Add splash effects at bottom */
+    for (i = 0; i < 20; i++) {
+      p = document.createElement('div'); p.className = 'particle-splash';
+      p.style.left = Math.random()*100+'%';
+      p.style.bottom = Math.random()*15+'%';
+      p.style.animationDuration = (0.4+Math.random()*0.4)+'s';
+      p.style.animationDelay = Math.random()*3+'s';
       c.appendChild(p);
     }
   }

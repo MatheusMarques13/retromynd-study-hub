@@ -109,3 +109,42 @@ textarea {
   font-family: 'Source Serif 4', 'Source Serif Pro', 'Georgia', serif !important;
   font-weight: 700;
 }
+
+/* === CAFÉ THEME FONT OVERRIDE === */
+body.cafe *,
+body.cafe input,
+body.cafe textarea,
+body.cafe select,
+body.cafe button,
+body.cafe .note-title,
+body.cafe .note-body,
+body.cafe .goal-text,
+body.cafe .stat-label,
+body.cafe .stat-num,
+body.cafe .clock,
+body.cafe .brand-name,
+body.cafe [style*="Kalam"],
+body.cafe [style*="Caveat"],
+body.cafe .tab,
+body.cafe .login-btn,
+body.cafe .field input,
+body.cafe .enter-btn,
+body.cafe .greeting {
+  font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif !important;
+}
+body.cafe h1, body.cafe h2, body.cafe h3,
+body.cafe h4, body.cafe h5, body.cafe h6,
+body.cafe .section-title,
+body.cafe .nb-header h2,
+body.cafe .card-header h1,
+body.cafe .quote-box {
+  font-family: 'Playfair Display', Didot, 'Times New Roman', serif !important;
+}
+body.cafe .pixel,
+body.cafe .brand-sub,
+body.cafe .theme-label,
+body.cafe .bottom-text,
+body.cafe .card-footer span {
+  font-family: 'Cormorant Garamond', Garamond, serif !important;
+  letter-spacing: 2px;
+}
