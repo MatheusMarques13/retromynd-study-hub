@@ -1,6 +1,9 @@
 {
   "rewrites": [
+    { "source": "/", "destination": "/landing.html" },
+    { "source": "/landing", "destination": "/landing.html" },
     { "source": "/login", "destination": "/login.html" },
-    { "source": "/((?!api/|login|js/).*)", "destination": "/index.html" }
+    { "source": "/hub", "destination": "/index.html" },
+    { "source": "/((?!api/|login|landing|js/|css/|.*\\.html$).*)", "destination": "/index.html" }
   ]
 }
