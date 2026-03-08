@@ -285,26 +285,39 @@
   function setTheme(t) { localStorage.setItem(THEME_KEY, t); }
   function isRetro() { var t = getTheme(); return t === 'retro-dark' || t === 'retro-light'; }
 
+  /* Emoji labels: ☁️ Comfy | 👾 Retro | 🌙 Midnight */
+  function themeEmoji(theme) {
+    if (theme === 'retro-dark' || theme === 'retro-light') return '👾';
+    if (theme === 'midnight') return '🌙';
+    return '☁️';
+  }
+
   function applyTheme(theme) {
-    document.body.classList.remove('retro-dark','retro-light','retro-mode');
+    document.body.classList.remove('retro-dark', 'retro-light', 'retro-mode', 'midnight');
     if (theme === 'retro-dark') document.body.classList.add('retro-dark');
     else if (theme === 'retro-light') document.body.classList.add('retro-light');
+    else if (theme === 'midnight') document.body.classList.add('midnight');
     setTheme(theme);
     updateToggleButtons(theme);
   }
 
   function updateToggleButtons(theme) {
-    var isR = (theme === 'retro-dark' || theme === 'retro-light');
+    var nextThemeLabel = { comfy: 'Retro', 'retro-dark': 'Midnight', 'retro-light': 'Midnight', midnight: 'Comfy' };
+    var themeName = theme.charAt(0).toUpperCase() + theme.replace('-dark','').replace('-light','').slice(1);
+    var next = nextThemeLabel[theme] || 'Retro';
     document.querySelectorAll('.retro-toggle').forEach(function(btn) {
-      btn.textContent = isR ? 'COMFY' : 'RETRO';
+      btn.textContent = themeEmoji(theme);
+      btn.title = 'Theme: ' + themeName + ' — click for ' + next;
     });
   }
 
-  /* Toggle retro on/off */
+  /* Cycle: comfy → retro-dark → midnight → comfy */
   window.toggleRetroMode = function(force) {
     if (typeof force === 'string') { applyTheme(force); return; }
-    if (isRetro()) { applyTheme('comfy'); }
-    else { applyTheme('retro-dark'); }
+    var current = getTheme();
+    if (current === 'comfy') { applyTheme('retro-dark'); }
+    else if (current === 'retro-dark' || current === 'retro-light') { applyTheme('midnight'); }
+    else { applyTheme('comfy'); }
   };
 
   /* ===== HOOK EXISTING LIGHT/DARK BUTTONS ===== */
@@ -329,12 +342,14 @@
 
   /* ===== INJECT TOGGLE BUTTON ===== */
   function injectToggleButton() {
+    var currentEmoji = themeEmoji(getTheme());
     /* Try profile bar first */
     var bar = document.getElementById('rmProfileBar');
     if (bar && !bar.querySelector('.retro-toggle')) {
       var btn = document.createElement('button');
       btn.className = 'retro-toggle';
-      btn.textContent = isRetro() ? 'COMFY' : 'RETRO';
+      btn.textContent = currentEmoji;
+      btn.title = 'Switch theme';
       btn.onclick = function() { window.toggleRetroMode(); };
       var sairBtn = bar.querySelector('.pb-logout');
       if (sairBtn) bar.insertBefore(btn, sairBtn);
@@ -346,7 +361,8 @@
     if (hubHeader && !hubHeader.querySelector('.retro-toggle')) {
       var btn2 = document.createElement('button');
       btn2.className = 'retro-toggle';
-      btn2.textContent = isRetro() ? 'COMFY' : 'RETRO';
+      btn2.textContent = currentEmoji;
+      btn2.title = 'Switch theme';
       btn2.onclick = function() { window.toggleRetroMode(); };
       var themeToggle = document.getElementById('themeToggle');
       if (themeToggle) themeToggle.parentNode.insertBefore(btn2, themeToggle.nextSibling);
