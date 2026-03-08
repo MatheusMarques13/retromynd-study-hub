@@ -445,33 +445,67 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 </div>
 
 <script>
-/* ═══ UNSPLASH WALLPAPERS (no CORS issues) ═══ */
-var W = {
+/* ═══ STUDIO GHIBLI WALLPAPERS (official gallery) + Unsplash fallbacks ═══ */
+var GHIBLI = {
+  day: [
+    'https://www.ghibli.jp/gallery/totoro016.jpg',
+    'https://www.ghibli.jp/gallery/totoro032.jpg',
+    'https://www.ghibli.jp/gallery/totoro050.jpg',
+    'https://www.ghibli.jp/gallery/karigurashi038.jpg',
+    'https://www.ghibli.jp/gallery/marnie034.jpg',
+    'https://www.ghibli.jp/gallery/kokurikozaka033.jpg'
+  ],
+  sunset: [
+    'https://www.ghibli.jp/gallery/chihiro050.jpg',
+    'https://www.ghibli.jp/gallery/chihiro044.jpg',
+    'https://www.ghibli.jp/gallery/mononoke030.jpg',
+    'https://www.ghibli.jp/gallery/mononoke036.jpg',
+    'https://www.ghibli.jp/gallery/ponyo033.jpg',
+    'https://www.ghibli.jp/gallery/gedsenki035.jpg'
+  ],
+  night: [
+    'https://www.ghibli.jp/gallery/howl038.jpg',
+    'https://www.ghibli.jp/gallery/howl050.jpg',
+    'https://www.ghibli.jp/gallery/chihiro038.jpg',
+    'https://www.ghibli.jp/gallery/ponyo036.jpg',
+    'https://www.ghibli.jp/gallery/kaze042.jpg',
+    'https://www.ghibli.jp/gallery/mononoke050.jpg'
+  ],
+  rain: [
+    'https://www.ghibli.jp/gallery/kazetachinu033.jpg',
+    'https://www.ghibli.jp/gallery/totoro019.jpg',
+    'https://www.ghibli.jp/gallery/kaze036.jpg',
+    'https://www.ghibli.jp/gallery/marnie030.jpg',
+    'https://www.ghibli.jp/gallery/karigurashi034.jpg',
+    'https://www.ghibli.jp/gallery/chihiro033.jpg'
+  ]
+};
+
+var FALLBACK = {
   day: [
     'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920&q=80',
-    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80',
-    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80',
-    'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80'
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80'
   ],
   sunset: [
     'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920&q=80',
-    'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=80',
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80',
-    'https://images.unsplash.com/photo-1472120435266-95c21c82c65a?w=1920&q=80'
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80'
   ],
   night: [
     'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80',
-    'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=80',
-    'https://images.unsplash.com/photo-1475274047050-1d0c55b0033b?w=1920&q=80',
-    'https://images.unsplash.com/photo-1532978379173-523e16f371f2?w=1920&q=80'
+    'https://images.unsplash.com/photo-1475274047050-1d0c55b0033b?w=1920&q=80'
   ],
   rain: [
     'https://images.unsplash.com/photo-1515694346937-94d85e39d29b?w=1920&q=80',
-    'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80',
-    'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=1920&q=80',
-    'https://images.unsplash.com/photo-1501999635878-71cb5379c2d8?w=1920&q=80'
+    'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80'
   ]
 };
+
+/* Use Ghibli as primary */
+var W = {};
+var scKeys = ['day','sunset','night','rain'];
+for (var k = 0; k < scKeys.length; k++) {
+  W[scKeys[k]] = GHIBLI[scKeys[k]].slice();
+}
 
 var quotes = [
   '"The only way to do great work is to love what you do."',
@@ -514,6 +548,7 @@ var currentScene = localStorage.getItem('landingScene') || 'auto';
 var wallIdx = { day: 0, sunset: 0, night: 0, rain: 0 };
 var activeLayer = 'A';
 var lastAppliedScene = '';
+var failedUrls = {};
 
 function getAutoScene() {
   var h = new Date().getHours();
@@ -526,47 +561,64 @@ function resolveScene() {
   return currentScene === 'auto' ? getAutoScene() : currentScene;
 }
 
+function applyBg(el, url) {
+  el.style.backgroundImage = 'url("' + url + '")';
+}
+
 function setWallpaper(scene, crossfade) {
   var imgs = W[scene];
   if (!imgs || !imgs.length) return;
   var idx = wallIdx[scene] % imgs.length;
   var url = imgs[idx];
 
-  console.log('[RetroMynd] setWallpaper:', scene, idx, crossfade ? 'crossfade' : 'instant');
+  console.log('[RM] wallpaper:', scene, idx, url.substring(0, 50));
 
-  if (crossfade) {
-    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
-    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
-    var showEl = document.getElementById(showId);
-    var hideEl = document.getElementById(hideId);
-
-    /* Preload image before showing */
-    var img = new Image();
-    img.onload = function() {
-      showEl.style.backgroundImage = 'url("' + url + '")';
-      showEl.offsetHeight; /* force reflow */
+  var img = new Image();
+  img.onload = function() {
+    console.log('[RM] loaded OK:', url.substring(0, 50));
+    if (crossfade) {
+      var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
+      var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
+      var showEl = document.getElementById(showId);
+      var hideEl = document.getElementById(hideId);
+      applyBg(showEl, url);
+      showEl.offsetHeight;
       showEl.classList.add('active');
       hideEl.classList.remove('active');
       activeLayer = activeLayer === 'A' ? 'B' : 'A';
-      console.log('[RetroMynd] Crossfade done:', url.substring(0, 60));
-    };
-    img.onerror = function() {
-      console.warn('[RetroMynd] Failed to load:', url);
-    };
-    img.src = url;
-  } else {
-    var el = document.getElementById('wall' + activeLayer);
-    var img2 = new Image();
-    img2.onload = function() {
-      el.style.backgroundImage = 'url("' + url + '")';
+    } else {
+      var el = document.getElementById('wall' + activeLayer);
+      applyBg(el, url);
       el.classList.add('active');
-      console.log('[RetroMynd] Initial wallpaper loaded:', url.substring(0, 60));
-    };
-    img2.onerror = function() {
-      console.warn('[RetroMynd] Failed to load initial:', url);
-    };
-    img2.src = url;
-  }
+    }
+  };
+  img.onerror = function() {
+    console.warn('[RM] FAILED:', url);
+    failedUrls[url] = true;
+    /* Try fallback */
+    var fb = FALLBACK[scene];
+    if (fb && fb.length) {
+      var fbIdx = idx % fb.length;
+      var fbUrl = fb[fbIdx];
+      console.log('[RM] Using fallback:', fbUrl.substring(0, 50));
+      if (crossfade) {
+        var sId = activeLayer === 'A' ? 'wallB' : 'wallA';
+        var hId = activeLayer === 'A' ? 'wallA' : 'wallB';
+        var sEl = document.getElementById(sId);
+        var hEl = document.getElementById(hId);
+        applyBg(sEl, fbUrl);
+        sEl.offsetHeight;
+        sEl.classList.add('active');
+        hEl.classList.remove('active');
+        activeLayer = activeLayer === 'A' ? 'B' : 'A';
+      } else {
+        var el2 = document.getElementById('wall' + activeLayer);
+        applyBg(el2, fbUrl);
+        el2.classList.add('active');
+      }
+    }
+  };
+  img.src = url;
 
   /* Preload next */
   var nextIdx = (idx + 1) % imgs.length;
@@ -576,7 +628,7 @@ function setWallpaper(scene, crossfade) {
 
 function applyScene(scene, initial) {
   var actual = scene === 'auto' ? getAutoScene() : scene;
-  console.log('[RetroMynd] applyScene:', scene, '→ actual:', actual, 'initial:', initial);
+  console.log('[RM] applyScene:', scene, '->', actual, 'initial:', initial);
 
   if (initial || lastAppliedScene !== actual) {
     setWallpaper(actual, !initial);
@@ -600,10 +652,9 @@ function setScene(scene) {
 }
 
 /* Preload first wallpaper of each scene */
-var sceneKeys = Object.keys(W);
-for (var s = 0; s < sceneKeys.length; s++) {
+for (var s = 0; s < scKeys.length; s++) {
   var preImg = new Image();
-  preImg.src = W[sceneKeys[s]][0];
+  preImg.src = W[scKeys[s]][0];
 }
 
 /* Initial apply */
@@ -630,8 +681,7 @@ function createParticles(scene) {
   currentParticleScene = scene;
   c.innerHTML = '';
 
-  console.log('[RetroMynd] Creating particles for:', scene);
-
+  console.log('[RM] particles:', scene);
   var i, p, sz;
 
   if (scene === 'day') {
@@ -691,8 +741,7 @@ function createParticles(scene) {
       c.appendChild(p);
     }
   }
-
-  console.log('[RetroMynd] Particles created:', c.children.length);
+  console.log('[RM] particles count:', c.children.length);
 }
 
 /* ═══ AUTH CHECK ═══ */
