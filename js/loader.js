@@ -14,7 +14,7 @@
   document.head.appendChild(woodCSS);
 
   // Carregar scripts
-  const scripts = ['js/api.js','js/auth.js','js/retro-mode.js','js/main.js','js/emoji-manager.js'];
+  const scripts = ['js/api.js','js/auth.js','js/retro-mode.js','js/cafe-mode.js','js/main.js','js/emoji-manager.js'];
   function loadScript(src){
     return new Promise((resolve)=>{
       const s=document.createElement('script');
