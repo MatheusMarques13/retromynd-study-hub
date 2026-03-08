@@ -1,7 +1,6 @@
 // =============================================================================
 // MAIN.JS - RetroMynd Study Hub
 // PERSISTENCE: Local-first. Save to localStorage immediately, sync to server async.
-// Server NEVER overwrites local data that has more items.
 // =============================================================================
 
 (function() {
@@ -86,12 +85,12 @@
       for (const [type, data] of ops) {
         try {
           await auth.saveData(type, data);
-          console.log('[RetroMynd] ☁️ Saved:', type);
+          console.log('[RetroMynd] ☁️ Saved:', type, Array.isArray(data) ? '(' + data.length + ' items)' : '');
           this._retryCount = 0;
           this._serverConfirmedAt = Date.now();
         } catch (e) {
           allOk = false;
-          console.warn('[RetroMynd] ❌ Save failed:', type, e.message);
+          console.error('[RetroMynd] ❌ Save FAILED:', type, e.message);
           for (const key of dirtyKeys) {
             const mapper = this._serverMap[key];
             if (mapper && mapper().type === type) this._dirty.add(key);
@@ -276,7 +275,7 @@
     updateDate();
     initProfilePanel();
     try { initPomodoro(); } catch(e) {}
-    try { initGoals(); } catch(e) {}
+    try { initGoals(); } catch(e) { console.error('[Goals] Init error:', e); }
     try { initNotes(); } catch(e) {}
     try { initStreak(); } catch(e) {}
     try { initRetroLesson(); } catch(e) {}
@@ -319,59 +318,48 @@
       let loaded = 0;
       let needsResync = false;
 
-      // SAFETY: snapshot local data BEFORE sync to prevent race conditions
-      const localGoalsBeforeSync = store.get('goals', []);
-      const localNotesBeforeSync = store.get('notes', []);
-
       // =============================================
-      // GOALS SYNC: MERGE strategy - never lose data
+      // GOALS SYNC — identical pattern to notes
       // =============================================
       if (allData.goals && allData.goals.data && Array.isArray(allData.goals.data)) {
         const serverGoals = allData.goals.data;
-        // Re-read local RIGHT NOW (not cached) to catch any writes during fetch
         const localGoals = store.get('goals', []);
 
         if (localGoals.length === 0 && serverGoals.length > 0) {
+          // No local data, accept server
           store.set('goals', serverGoals, false);
           loaded++;
-          console.log('[RetroMynd] Goals: server -> local (' + serverGoals.length + ')');
+          console.log('[RetroMynd] Goals: loaded from server (' + serverGoals.length + ')');
         } else if (localGoals.length > 0 && serverGoals.length === 0) {
+          // Local has data, server empty — push to server
           needsResync = true;
           store._dirty.add('goals');
-          console.log('[RetroMynd] Goals: local -> server (' + localGoals.length + ')');
+          console.log('[RetroMynd] Goals: pushing local to server (' + localGoals.length + ')');
         } else if (localGoals.length > 0 && serverGoals.length > 0) {
-          // ALWAYS MERGE by ID - keep ALL unique items from both sides
-          const allIds = new Map();
-          // Server first as base
-          serverGoals.forEach(g => allIds.set(g.id, g));
-          // Local overwrites server (local wins for existing IDs)
+          // Both have data — merge by ID, local wins
+          const merged = new Map();
+          serverGoals.forEach(g => merged.set(g.id, g));
+          let hasNew = false;
           localGoals.forEach(g => {
-            const existing = allIds.get(g.id);
-            if (!existing) {
-              allIds.set(g.id, g);
-              needsResync = true;
-            } else {
-              // Local wins if: done status changed, or text changed
-              if (g.done !== existing.done || g.text !== existing.text) {
-                allIds.set(g.id, g);
-                needsResync = true;
-              }
-            }
+            if (!merged.has(g.id)) hasNew = true;
+            merged.set(g.id, g); // local always wins
           });
-          const merged = Array.from(allIds.values());
-          store.set('goals', merged, false);
-          if (needsResync) store._dirty.add('goals');
+          const result = Array.from(merged.values());
+          store.set('goals', result, false);
+          if (hasNew || result.length !== serverGoals.length) {
+            needsResync = true;
+            store._dirty.add('goals');
+          }
           loaded++;
-          console.log('[RetroMynd] Goals: merged (' + merged.length + ' from L:' + localGoals.length + ' S:' + serverGoals.length + ')');
+          console.log('[RetroMynd] Goals: merged (' + result.length + ')');
         }
-      } else if (localGoalsBeforeSync.length > 0) {
+      } else if (store.get('goals', []).length > 0) {
         needsResync = true;
         store._dirty.add('goals');
-        console.log('[RetroMynd] Goals: no server key, pushing local (' + localGoalsBeforeSync.length + ')');
       }
 
       // =============================================
-      // NOTES SYNC: Same merge logic
+      // NOTES SYNC
       // =============================================
       if (allData.notes && allData.notes.data && Array.isArray(allData.notes.data)) {
         const serverNotes = allData.notes.data;
@@ -384,24 +372,22 @@
           needsResync = true;
           store._dirty.add('notes');
         } else if (localNotes.length > 0 && serverNotes.length > 0) {
-          const allIds = new Map();
-          serverNotes.forEach(n => allIds.set(n.id, n));
-          let notesNeedSync = false;
+          const merged = new Map();
+          serverNotes.forEach(n => merged.set(n.id, n));
+          let hasNew = false;
           localNotes.forEach(n => {
-            if (!allIds.has(n.id)) { allIds.set(n.id, n); notesNeedSync = true; }
-            else {
-              // Local wins for content changes
-              const sv = allIds.get(n.id);
-              if (n.title !== sv.title || n.content !== sv.content || JSON.stringify(n.postits) !== JSON.stringify(sv.postits)) {
-                allIds.set(n.id, n); notesNeedSync = true;
-              }
-            }
+            if (!merged.has(n.id)) hasNew = true;
+            merged.set(n.id, n);
           });
-          store.set('notes', Array.from(allIds.values()), false);
-          if (notesNeedSync) { needsResync = true; store._dirty.add('notes'); }
+          const result = Array.from(merged.values());
+          store.set('notes', result, false);
+          if (hasNew || result.length !== serverNotes.length) {
+            needsResync = true;
+            store._dirty.add('notes');
+          }
           loaded++;
         }
-      } else if (localNotesBeforeSync.length > 0) {
+      } else if (store.get('notes', []).length > 0) {
         needsResync = true;
         store._dirty.add('notes');
       }
@@ -544,19 +530,54 @@
     const tD = $('tD'); if (tD) tD.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  // ═══ GOALS ═══
+  // ═══════════════════════════════════════════════
+  // GOALS — rewritten from scratch
+  // Same persistence pattern as notes
+  // ═══════════════════════════════════════════════
   let goalTab = 'today';
   let goalFilter = 'a';
   let goalPage = 1;
   const GOALS_PER_PAGE = 8;
 
+  // READ goals from localStorage
+  function getGoals() {
+    return store.get('goals', []);
+  }
+
+  // WRITE goals: save to localStorage + push to server (identical to saveNotes)
+  function saveGoals(goals) {
+    // 1. Write to localStorage immediately
+    store.set('goals', goals);
+
+    // 2. Also write raw key as backup (belt and suspenders)
+    localStorage.setItem('rms_goals', JSON.stringify(goals));
+
+    // 3. Mark dirty and flush to server
+    store._dirty.add('goals');
+    store._localModifiedAt = Date.now();
+
+    // 4. Update stats
+    loadStats();
+
+    // 5. Force immediate server save
+    store.flushNow().then(() => {
+      console.log('[Goals] ✅ Saved to server (' + goals.length + ' goals)');
+    }).catch((e) => {
+      console.error('[Goals] ❌ Server save failed:', e.message);
+      showSaveStatus('error', 'Erro ao salvar metas. Dados locais OK.');
+    });
+  }
+
   function initGoals() {
-    const addBtn = $('goalAddBtn'); const input = $('goalInput');
+    const addBtn = $('goalAddBtn');
+    const input = $('goalInput');
     if (addBtn) addBtn.onclick = addGoal;
     if (input) input.onkeydown = e => { if (e.key === 'Enter') addGoal(); };
+
     const gtC = $('gtC'), gtH = $('gtH');
     if (gtC) gtC.onclick = () => { goalTab = 'today'; goalPage = 1; renderGoalTabs(); };
     if (gtH) gtH.onclick = () => { goalTab = 'history'; goalPage = 1; renderGoalTabs(); };
+
     document.querySelectorAll('#goalFilters .goal-filter').forEach(btn => {
       btn.onclick = () => {
         goalFilter = btn.dataset.f; goalPage = 1;
@@ -564,9 +585,12 @@
         btn.classList.add('on'); renderHistory();
       };
     });
+
     const pgPrev = $('pgPrev'), pgNext = $('pgNext');
     if (pgPrev) pgPrev.onclick = () => { if (goalPage > 1) { goalPage--; renderGoals(); } };
     if (pgNext) pgNext.onclick = () => { goalPage++; renderGoals(); };
+
+    console.log('[Goals] Initialized. Current goals:', getGoals().length);
     renderGoalTabs();
   }
 
@@ -580,36 +604,41 @@
     if (goalTab === 'today') renderGoals(); else renderHistory();
   }
 
-  function getGoals() { return store.get('goals', []); }
-
-  function saveGoals(g) {
-    store.set('goals', g);
-    loadStats();
-    store.flushNow().catch(function() {
-      console.warn('[RetroMynd] Goals flush failed, will retry');
-    });
-  }
-
   function addGoal() {
-    const input = $('goalInput'); if (!input || !input.value.trim()) return;
+    const input = $('goalInput');
+    if (!input || !input.value.trim()) return;
+
     const goals = getGoals();
-    goals.push({ id: Date.now(), text: input.value.trim(), done: false, date: new Date().toISOString() });
-    saveGoals(goals); input.value = ''; renderGoals();
+    const newGoal = {
+      id: Date.now(),
+      text: input.value.trim(),
+      done: false,
+      date: new Date().toISOString()
+    };
+    goals.push(newGoal);
+
+    console.log('[Goals] Adding:', newGoal.text, '| Total:', goals.length);
+    saveGoals(goals);
+    input.value = '';
+    renderGoals();
   }
 
   function renderGoals() {
     const container = $('goalContainer'); if (!container) return;
     const todayKey = localDateKey(new Date());
     const goals = getGoals().filter(g => localDateKey(new Date(g.date)) === todayKey);
+
     if (!goals.length) {
       container.innerHTML = '<div class="goal-empty">Nenhuma meta hoje ✏️</div>';
       const pager = $('goalPager'); if (pager) pager.style.display = 'none';
       return;
     }
+
     const total = goals.length, totalPages = Math.ceil(total / GOALS_PER_PAGE);
     if (goalPage > totalPages) goalPage = totalPages;
     const start = (goalPage - 1) * GOALS_PER_PAGE;
     const pageGoals = goals.slice(start, start + GOALS_PER_PAGE);
+
     container.innerHTML = pageGoals.map(g => `
       <div class="goal-row ${g.done?'done':''}">
         <div class="gchk" onclick="window.toggleGoal(${g.id})">${g.done?'✓':''}</div>
@@ -617,6 +646,7 @@
         <span class="gx" onclick="window.deleteGoal(${g.id})">×</span>
       </div>
     `).join('');
+
     const pager = $('goalPager');
     if (pager) {
       pager.style.display = totalPages > 1 ? '' : 'none';
@@ -684,18 +714,47 @@
     container.innerHTML = html || '<div class="hist-empty">Nenhuma meta com esse filtro</div>';
   }
 
-  window.toggleGoal = function(id) { const g=getGoals(),f=g.find(x=>x.id===id); if(f)f.done=!f.done; saveGoals(g); renderGoals(); if(goalTab==='history') renderHistory(); };
-  window.deleteGoal = function(id) { saveGoals(getGoals().filter(x=>x.id!==id)); renderGoals(); if(goalTab==='history') renderHistory(); };
+  // Global handlers for goals
+  window.toggleGoal = function(id) {
+    const goals = getGoals();
+    const goal = goals.find(x => x.id === id);
+    if (goal) {
+      goal.done = !goal.done;
+      console.log('[Goals] Toggle:', goal.text, '->', goal.done ? 'DONE' : 'UNDONE');
+      saveGoals(goals);
+      renderGoals();
+      if (goalTab === 'history') renderHistory();
+    }
+  };
+
+  window.deleteGoal = function(id) {
+    const goals = getGoals().filter(x => x.id !== id);
+    console.log('[Goals] Deleted goal. Remaining:', goals.length);
+    saveGoals(goals);
+    renderGoals();
+    if (goalTab === 'history') renderHistory();
+  };
+
   window.renderGoals = renderGoals;
 
-  // ═══ NOTES ═══
+  // ═══════════════════════════════════════════════
+  // NOTES
+  // ═══════════════════════════════════════════════
   let currentNote = null;
   const postitColors = ['postit-yellow','postit-pink','postit-mint','postit-peach','postit-lilac','postit-sky'];
   let selectedPostitColor = 'postit-yellow';
 
   function initNotes() { renderNotesList(); }
   function getNotes() { return store.get('notes', []); }
-  function saveNotes(n) { store.set('notes', n); loadStats(); store.flushNow().catch(function(){}); }
+
+  function saveNotes(n) {
+    store.set('notes', n);
+    localStorage.setItem('rms_notes', JSON.stringify(n));
+    store._dirty.add('notes');
+    store._localModifiedAt = Date.now();
+    loadStats();
+    store.flushNow().catch(function(){});
+  }
 
   function renderNotesList() {
     const app = $('notesApp'); if (!app) return;
