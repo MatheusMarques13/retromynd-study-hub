@@ -16,9 +16,10 @@ class RetroMyndPlayer {
         this.isReady = false;
         this.isPlaying = false;
         
+        this.loadState();
         this.initYouTubeAPI();
         this.setupControls();
-        this.loadState();
+        this.setupRadioToggle();
     }
     
     initYouTubeAPI() {
@@ -28,18 +29,28 @@ class RetroMyndPlayer {
             return;
         }
         
-        // Load YouTube IFrame API
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        // If another instance already registered the callback, chain onto it
+        const existingCallback = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => {
+            if (existingCallback) existingCallback();
+            this.onYouTubeReady();
+        };
         
-        window.onYouTubeIframeAPIReady = () => this.onYouTubeReady();
+        // Only inject the script tag once
+        if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
     }
     
     onYouTubeReady() {
         const container = document.getElementById('yt-player');
         if (!container) return;
+        
+        // Avoid double-init if YT.Player already attached
+        if (this.player) return;
         
         this.player = new YT.Player('yt-player', {
             height: '0',
@@ -81,6 +92,7 @@ class RetroMyndPlayer {
         
         this.isPlaying = (event.data === YT.PlayerState.PLAYING);
         this.updatePlayButton();
+        this.updateRadioButtonPulse();
         this.saveState();
     }
     
@@ -90,16 +102,75 @@ class RetroMyndPlayer {
         const nextBtn = document.getElementById('rm-next');
         
         if (playBtn) {
-            playBtn.addEventListener('click', () => this.togglePlay());
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.togglePlay();
+            });
         }
         
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.prev());
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.prev();
+            });
         }
         
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.next());
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.next();
+            });
         }
+        
+        // Close button
+        const closeBtn = document.getElementById('rm-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.closePanel();
+            });
+        }
+    }
+    
+    setupRadioToggle() {
+        const btn = document.getElementById('rm-radio-btn');
+        const panel = document.getElementById('rm-radio-panel');
+        
+        if (!btn || !panel) return;
+        
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = panel.style.display === 'flex';
+            if (isOpen) {
+                this.closePanel();
+            } else {
+                this.openPanel();
+            }
+        });
+        
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#rm-player')) {
+                this.closePanel();
+            }
+        });
+    }
+    
+    openPanel() {
+        const panel = document.getElementById('rm-radio-panel');
+        if (!panel) return;
+        // Reset animation so it plays fresh each open
+        panel.style.animation = 'none';
+        panel.style.display = 'flex';
+        // Trigger reflow then re-apply animation
+        panel.offsetHeight; // eslint-disable-line no-unused-expressions
+        panel.style.animation = '';
+        this.updateDisplay();
+    }
+    
+    closePanel() {
+        const panel = document.getElementById('rm-radio-panel');
+        if (panel) panel.style.display = 'none';
     }
     
     togglePlay() {
@@ -166,6 +237,17 @@ class RetroMyndPlayer {
         }
     }
     
+    updateRadioButtonPulse() {
+        const btn = document.getElementById('rm-radio-btn');
+        if (!btn) return;
+        
+        if (this.isPlaying) {
+            btn.classList.add('playing');
+        } else {
+            btn.classList.remove('playing');
+        }
+    }
+    
     saveState() {
         const state = {
             currentIndex: this.currentIndex,
@@ -177,8 +259,12 @@ class RetroMyndPlayer {
     loadState() {
         const savedState = localStorage.getItem('rmPlayer');
         if (savedState) {
-            const state = JSON.parse(savedState);
-            this.currentIndex = state.currentIndex || 0;
+            try {
+                const state = JSON.parse(savedState);
+                this.currentIndex = state.currentIndex || 0;
+            } catch (e) {
+                // ignore malformed state
+            }
         }
     }
 }

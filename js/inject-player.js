@@ -9,28 +9,50 @@
     
     // Fetch and inject player HTML
     fetch('/music-player.html')
-        .then(response => response.text())
-        .then(html => {
-            // Create container and insert HTML
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+            // Parse fetched HTML into a temporary container
             const container = document.createElement('div');
             container.innerHTML = html;
-            // Insert the player widget (first element)
+
+            // Inject the <style> block (if any) into <head>
+            const styleEl = container.querySelector('style');
+            if (styleEl) {
+                document.head.appendChild(styleEl.cloneNode(true));
+            }
+
+            // Inject the #rm-player element
             const playerEl = container.querySelector('#rm-player');
-            if (playerEl) document.body.appendChild(playerEl);
-            // Also ensure the hidden yt-player div exists
-            if (!document.getElementById('yt-player')) {
+            if (playerEl) {
+                document.body.appendChild(playerEl);
+            }
+
+            // Inject the #yt-player div (hidden YouTube container)
+            const ytEl = container.querySelector('#yt-player');
+            if (ytEl) {
+                if (!document.getElementById('yt-player')) {
+                    document.body.appendChild(ytEl);
+                }
+            } else if (!document.getElementById('yt-player')) {
+                // Fallback: create it manually
                 const ytDiv = document.createElement('div');
                 ytDiv.id = 'yt-player';
                 ytDiv.style.display = 'none';
+                ytDiv.style.position = 'absolute';
+                ytDiv.style.width = '0';
+                ytDiv.style.height = '0';
+                ytDiv.style.overflow = 'hidden';
                 document.body.appendChild(ytDiv);
             }
+
             // Load music-player.js to initialize
             const script = document.createElement('script');
             script.src = '/js/music-player.js';
             document.body.appendChild(script);
-            console.log('🎵 RetroMynd Music Player loaded!');
+
+            console.log('RetroMynd Radio loaded!');
         })
-        .catch(error => {
+        .catch(function(error) {
             console.error('Failed to load music player:', error);
         });
 })();

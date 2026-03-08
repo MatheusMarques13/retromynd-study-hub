@@ -64,6 +64,7 @@
       pomodoros:    () => ({ type: 'timer',  data: { pomodoros: parseInt(store.getRaw('pomodoros', '0')), totalMinutes: 0 } }),
       streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
       streak_days:  () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
+      lessons:      () => ({ type: 'lessons', data: store.get('lessons', { completed: [], history: [] }) }),
     },
 
     async flush() {
@@ -388,6 +389,31 @@
         }
       }
 
+      // LESSONS SYNC
+      if (allData.lessons && allData.lessons.data) {
+        const serverLessons = allData.lessons.data;
+        const localLessons = store.get('lessons', { completed: [], history: [] });
+        // Merge completed lessons by id (local wins on conflict)
+        const merged = new Map();
+        (serverLessons.completed || []).forEach(l => merged.set(l.id, l));
+        (localLessons.completed || []).forEach(l => merged.set(l.id, l));
+        const result = {
+          completed: Array.from(merged.values()),
+          history: [...(serverLessons.history || []), ...(localLessons.history || [])]
+            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+            .filter((v, i, a) => a.findIndex(t => t.id === v.id && t.timestamp === v.timestamp) === i)
+        };
+        store.set('lessons', result, false);
+        if (result.completed.length > (serverLessons.completed || []).length) {
+          needsResync = true;
+          store._dirty.add('lessons');
+        }
+        if (result.completed.length > 0) loaded++;
+      } else if (store.get('lessons', { completed: [], history: [] }).completed.length > 0) {
+        needsResync = true;
+        store._dirty.add('lessons');
+      }
+
       // STREAK
       if (allData.streak && allData.streak.data) {
         const d = allData.streak.data;
@@ -443,6 +469,7 @@
     const goals = getGoals(), notes = getNotes();
     const streak = parseInt(store.getRaw('streak', '0'));
     const pomos = parseInt(store.getRaw('pomodoros', '0'));
+    const lessons = store.get('lessons', { completed: [], history: [] });
     const todayKey = localDateKey(new Date());
     const todayGoals = goals.filter(g => localDateKey(new Date(g.date)) === todayKey);
     const doneGoals = todayGoals.filter(g => g.done).length;
@@ -450,6 +477,7 @@
     const sN = $('sN'); if (sN) sN.textContent = notes.length;
     const sG = $('sG'); if (sG) sG.textContent = `${doneGoals}/${todayGoals.length}`;
     const sP = $('sP'); if (sP) sP.textContent = pomos;
+    const sL = $('sL'); if (sL) sL.textContent = (lessons.completed || []).length;
   }
   window.loadStats = loadStats;
 
@@ -830,9 +858,47 @@
     if (panel) panel.classList.add('open'); if (overlay) overlay.classList.add('open');
     if (iframe && !iframe.src.includes('blob:')) {
       const dataEl = $('lessonData');
-      if (dataEl) { try { const html = atob(dataEl.textContent.trim()); iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' })); } catch(e) {} }
+      if (dataEl) {
+        try {
+          const html = atob(dataEl.textContent.trim());
+          iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+        } catch(e) {}
+      }
+    }
+    // After iframe loads, send bridge init signal
+    if (iframe) {
+      iframe.onload = function() {
+        try {
+          iframe.contentWindow.postMessage({ type: 'initBridge' }, '*');
+        } catch(e) {}
+      };
     }
   };
+
+  // ═══ RETROLESSON postMessage BRIDGE ═══
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'lessonComplete') return;
+    const lessons = store.get('lessons', { completed: [], history: [] });
+    const entry = {
+      id: e.data.lessonId || Date.now(),
+      title: e.data.title || 'Lesson',
+      language: e.data.language || 'JS',
+      difficulty: e.data.difficulty || 'medium',
+      completedAt: new Date().toISOString(),
+      score: e.data.score || null,
+      timestamp: Date.now()
+    };
+    // Avoid duplicate completed entries by id
+    if (!lessons.completed.find(l => l.id === entry.id)) {
+      lessons.completed.push(entry);
+    }
+    // Always push to history (tracks every attempt)
+    lessons.history.push(entry);
+    store.set('lessons', lessons);
+    store.flushNow();
+    // Update stats display
+    try { loadStats(); } catch(e2) {}
+  });
   window.closeLesson = function() {
     const panel = $('lessonPanel'), overlay = $('lessonOverlay');
     if (panel) panel.classList.remove('open'); if (overlay) overlay.classList.remove('open');

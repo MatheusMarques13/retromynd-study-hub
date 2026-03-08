@@ -1,47 +1,220 @@
-<!-- RetroMynd Music Player -->
-<div id="rm-player" class="nb" style="position: fixed; bottom: 20px; right: 20px; width: 320px; z-index: 999; max-width: calc(100vw - 40px);">
-  <!-- Notebook holes -->
-  <div class="nb-holes">
-    <div class="nb-hole"></div>
-    <div class="nb-hole"></div>
-    <div class="nb-hole"></div>
-  </div>
-  
-  <!-- Player header -->
-  <div class="nb-header">
-    <h2 style="font-size: 14px; font-weight: 700; margin: 0;">🎵 lo-fi player</h2>
-    <span class="nb-tag tag-pink pixel">BETA</span>
-  </div>
-  
-  <!-- Player body -->
-  <div class="nb-body" style="padding: 16px 22px 16px 52px;">
-    <!-- Track title -->
-    <div id="rm-track-title" style="font-size: 12px; color: var(--text-mid); margin-bottom: 12px; line-height: 1.4; min-height: 34px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-      Loading player...
+<!-- RetroMynd Radio -->
+<style>
+  #rm-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  #rm-radio-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #5C4D3C;
+    color: #F0EAE0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.30);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* Light theme override — detect via :root or body without dark class */
+  body:not(.dark) #rm-radio-btn,
+  body[data-theme="light"] #rm-radio-btn,
+  body[data-theme="comfy"] #rm-radio-btn {
+    background: #DDD5C8;
+    color: #3A2E22;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  #rm-radio-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  }
+
+  #rm-radio-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* Pulse ring when playing */
+  #rm-radio-btn.playing::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid #A8896A;
+    animation: rm-pulse 1.8s ease-out infinite;
+    pointer-events: none;
+  }
+
+  #rm-radio-btn {
+    position: relative;
+  }
+
+  @keyframes rm-pulse {
+    0%   { opacity: 0.8; transform: scale(1); }
+    70%  { opacity: 0;   transform: scale(1.5); }
+    100% { opacity: 0;   transform: scale(1.5); }
+  }
+
+  /* Panel */
+  #rm-radio-panel {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    width: 280px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(44, 36, 28, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.40);
+    border: 1px solid rgba(255,255,255,0.08);
+    transform-origin: bottom right;
+    animation: rm-slide-up 0.22s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+    color: #F0EAE0;
+  }
+
+  body:not(.dark) #rm-radio-panel,
+  body[data-theme="light"] #rm-radio-panel,
+  body[data-theme="comfy"] #rm-radio-panel {
+    background: rgba(240, 232, 220, 0.95);
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    color: #3A2E22;
+  }
+
+  @keyframes rm-slide-up {
+    from { opacity: 0; transform: translateY(10px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  #rm-track-title {
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-family: inherit;
+  }
+
+  .rm-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rm-btn-group {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .rm-ctrl-btn {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: inherit;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.12s ease;
+    padding: 0;
+    outline: none;
+  }
+
+  body:not(.dark) .rm-ctrl-btn,
+  body[data-theme="light"] .rm-ctrl-btn,
+  body[data-theme="comfy"] .rm-ctrl-btn {
+    background: rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.10);
+  }
+
+  .rm-ctrl-btn:hover {
+    background: rgba(255,255,255,0.18);
+  }
+
+  body:not(.dark) .rm-ctrl-btn:hover,
+  body[data-theme="light"] .rm-ctrl-btn:hover,
+  body[data-theme="comfy"] .rm-ctrl-btn:hover {
+    background: rgba(0,0,0,0.12);
+  }
+
+  #rm-play.rm-ctrl-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.20);
+  }
+
+  body:not(.dark) #rm-play.rm-ctrl-btn,
+  body[data-theme="light"] #rm-play.rm-ctrl-btn,
+  body[data-theme="comfy"] #rm-play.rm-ctrl-btn {
+    background: rgba(0,0,0,0.10);
+    border-color: rgba(0,0,0,0.14);
+  }
+
+  .rm-close-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.50;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 4px;
+    transition: opacity 0.12s ease;
+    outline: none;
+  }
+
+  .rm-close-btn:hover {
+    opacity: 0.85;
+  }
+</style>
+
+<div id="rm-player">
+  <!-- Collapsed: Radio button -->
+  <button id="rm-radio-btn" aria-label="Rádio Lo-fi">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="12" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/>
+      <circle cx="12" cy="15" r="1.5" fill="currentColor"/>
+      <path d="M8 8.5C9.2 7.3 10.5 6.5 12 6.5C13.5 6.5 14.8 7.3 16 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M5.5 5.5C7.5 3.5 9.6 2.5 12 2.5C14.4 2.5 16.5 3.5 18.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- Expanded: Control panel (slides up from button) -->
+  <div id="rm-radio-panel">
+    <div id="rm-track-title">Carregando rádio...</div>
+    <div class="rm-controls">
+      <div class="rm-btn-group">
+        <button id="rm-prev" class="rm-ctrl-btn" aria-label="Anterior">⏮</button>
+        <button id="rm-play" class="rm-ctrl-btn" aria-label="Tocar">▶</button>
+        <button id="rm-next" class="rm-ctrl-btn" aria-label="Próximo">⏭</button>
+      </div>
+      <button class="rm-close-btn" id="rm-close" aria-label="Fechar">✕</button>
     </div>
-    
-    <!-- Pixel divider -->
-    <div class="px-div"></div>
-    
-    <!-- Controls -->
-    <div style="display: flex; gap: 8px; align-items: center; justify-content: center; margin-top: 12px;">
-      <button id="rm-prev" class="postit-btn" style="padding: 8px 12px; font-size: 16px; background: var(--postit-pink); color: var(--pink); border: 1px solid var(--pink); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" aria-label="Anterior">
-        ⏮
-      </button>
-      
-      <button id="rm-play" class="postit-btn" style="padding: 8px 12px; font-size: 20px; background: var(--postit-yellow); color: var(--text); border: 1px solid #E5DFC0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;" aria-label="Tocar">
-        ▶
-      </button>
-      
-      <button id="rm-next" class="postit-btn" style="padding: 8px 12px; font-size: 16px; background: var(--postit-mint); color: var(--text); border: 1px solid #A0E7C9; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" aria-label="Próximo">
-        ⏭
-      </button>
-    </div>
-    
-    <!-- YouTube player (hidden) -->
-    <div id="yt-player" style="display: none;"></div>
   </div>
 </div>
 
-<!-- Load music player script -->
-<script src="/js/music-player.js"></script>
+<!-- Hidden YouTube player container -->
+<div id="yt-player" style="display:none;position:absolute;width:0;height:0;overflow:hidden;"></div>

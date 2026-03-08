@@ -2,7 +2,7 @@
   'use strict';
   var THEME_KEY = 'rm_theme';
 
-  /* ===== INJECT GOOGLE FONTS ===== */
+  /* ===== INJECT GOOGLE FONTS (retro) ===== */
   if (!document.getElementById('rm-retro-fonts')) {
     var link = document.createElement('link');
     link.id = 'rm-retro-fonts';
@@ -284,27 +284,47 @@
   function getTheme() { return localStorage.getItem(THEME_KEY) || 'comfy'; }
   function setTheme(t) { localStorage.setItem(THEME_KEY, t); }
   function isRetro() { var t = getTheme(); return t === 'retro-dark' || t === 'retro-light'; }
+  function isCafe() { var t = getTheme(); return t === 'cafe-dark' || t === 'cafe-light'; }
 
   function applyTheme(theme) {
-    document.body.classList.remove('retro-dark','retro-light','retro-mode');
+    document.body.classList.remove('retro-dark','retro-light','retro-mode','cafe-dark','cafe-light');
     if (theme === 'retro-dark') document.body.classList.add('retro-dark');
     else if (theme === 'retro-light') document.body.classList.add('retro-light');
+    else if (theme === 'cafe-dark') document.body.classList.add('cafe-dark');
+    else if (theme === 'cafe-light') document.body.classList.add('cafe-light');
     setTheme(theme);
     updateToggleButtons(theme);
   }
 
   function updateToggleButtons(theme) {
     var isR = (theme === 'retro-dark' || theme === 'retro-light');
+    var isC = (theme === 'cafe-dark' || theme === 'cafe-light');
     document.querySelectorAll('.retro-toggle').forEach(function(btn) {
-      btn.textContent = isR ? 'COMFY' : 'RETRO';
+      if (isR) {
+        btn.textContent = 'CAFÉ';
+      } else if (isC) {
+        btn.textContent = 'COMFY';
+      } else {
+        btn.textContent = 'RETRO';
+      }
     });
   }
 
-  /* Toggle retro on/off */
+  /* Toggle cycles: comfy → retro-dark → cafe-dark → comfy */
   window.toggleRetroMode = function(force) {
     if (typeof force === 'string') { applyTheme(force); return; }
-    if (isRetro()) { applyTheme('comfy'); }
-    else { applyTheme('retro-dark'); }
+    var current = getTheme();
+    if (current === 'comfy') {
+      applyTheme('retro-dark');
+    } else if (isRetro()) {
+      /* retro → café (preserve light/dark preference) */
+      var wasDark = (current === 'retro-dark');
+      applyTheme(wasDark ? 'cafe-dark' : 'cafe-light');
+    } else if (isCafe()) {
+      applyTheme('comfy');
+    } else {
+      applyTheme('retro-dark');
+    }
   };
 
   /* ===== HOOK EXISTING LIGHT/DARK BUTTONS ===== */
@@ -321,6 +341,11 @@
             else if (val === 'dark') applyTheme('retro-dark');
             /* system: default to retro-dark */
             else applyTheme('retro-dark');
+          } else if (isCafe()) {
+            if (val === 'light') applyTheme('cafe-light');
+            else if (val === 'dark') applyTheme('cafe-dark');
+            /* system: default to cafe-dark */
+            else applyTheme('cafe-dark');
           }
         });
       });
@@ -334,7 +359,10 @@
     if (bar && !bar.querySelector('.retro-toggle')) {
       var btn = document.createElement('button');
       btn.className = 'retro-toggle';
-      btn.textContent = isRetro() ? 'COMFY' : 'RETRO';
+      var theme = getTheme();
+      var isR = (theme === 'retro-dark' || theme === 'retro-light');
+      var isC = (theme === 'cafe-dark' || theme === 'cafe-light');
+      btn.textContent = isR ? 'CAFÉ' : (isC ? 'COMFY' : 'RETRO');
       btn.onclick = function() { window.toggleRetroMode(); };
       var sairBtn = bar.querySelector('.pb-logout');
       if (sairBtn) bar.insertBefore(btn, sairBtn);
@@ -346,7 +374,10 @@
     if (hubHeader && !hubHeader.querySelector('.retro-toggle')) {
       var btn2 = document.createElement('button');
       btn2.className = 'retro-toggle';
-      btn2.textContent = isRetro() ? 'COMFY' : 'RETRO';
+      var theme2 = getTheme();
+      var isR2 = (theme2 === 'retro-dark' || theme2 === 'retro-light');
+      var isC2 = (theme2 === 'cafe-dark' || theme2 === 'cafe-light');
+      btn2.textContent = isR2 ? 'CAFÉ' : (isC2 ? 'COMFY' : 'RETRO');
       btn2.onclick = function() { window.toggleRetroMode(); };
       var themeToggle = document.getElementById('themeToggle');
       if (themeToggle) themeToggle.parentNode.insertBefore(btn2, themeToggle.nextSibling);
