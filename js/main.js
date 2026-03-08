@@ -61,6 +61,7 @@
     _serverMap: {
       goals:        () => ({ type: 'goals',  data: store.get('goals', []) }),
       notes:        () => ({ type: 'notes',  data: store.get('notes', []) }),
+      lessons:      () => ({ type: 'lessons', data: getLessonCloudData() }),
       pomodoros:    () => ({ type: 'timer',  data: { pomodoros: parseInt(store.getRaw('pomodoros', '0')), totalMinutes: 0 } }),
       streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
       streak_days:  () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
@@ -142,10 +143,24 @@
   window._store = store;
 
   window.addEventListener('beforeunload', () => {
+    // Mark lessons dirty if there's lesson data to save
+    try {
+      const ld = JSON.parse(localStorage.getItem('lesson_history_v1') || '[]');
+      const lq = JSON.parse(localStorage.getItem('lesson_quiz_v1') || '[]');
+      if (ld.length > 0 || lq.length > 0) store._dirty.add('lessons');
+    } catch(e) {}
     store.flushSync();
   });
   window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') store.flushNow();
+    if (document.visibilityState === 'hidden') {
+      // Sync lesson data when page goes hidden (tab switch, minimize, etc.)
+      try {
+        const ld = JSON.parse(localStorage.getItem('lesson_history_v1') || '[]');
+        const lq = JSON.parse(localStorage.getItem('lesson_quiz_v1') || '[]');
+        if (ld.length > 0 || lq.length > 0) store._dirty.add('lessons');
+      } catch(e) {}
+      store.flushNow();
+    }
   });
   setInterval(() => { if (store._dirty.size > 0) store.flush(); }, 30000);
 
@@ -385,6 +400,38 @@
           const localP = parseInt(store.getRaw('pomodoros', '0'));
           if (d.pomodoros > localP) { store.setRaw('pomodoros', d.pomodoros, false); loaded++; }
           else if (localP > d.pomodoros) { needsResync = true; store._dirty.add('pomodoros'); }
+        }
+      }
+
+      // LESSONS SYNC
+      // load.js returns lesson_data column as allData.lessons.data
+      // save.js stores at lesson_data.lessons, so server data could be at .data.lessons or .data directly
+      if (allData.lessons && allData.lessons.data) {
+        const raw = allData.lessons.data;
+        const serverLessons = raw.lessons || raw; // handle both nesting levels
+        if (serverLessons.codeHistory || serverLessons.quizHistory) {
+          mergeLessonFromServer(serverLessons);
+          const afterMerge = getLessonCloudData();
+          const serverCodeCount = (serverLessons.codeHistory || []).length;
+          const serverQuizCount = (serverLessons.quizHistory || []).length;
+          if (afterMerge.codeHistory.length > serverCodeCount || afterMerge.quizHistory.length > serverQuizCount) {
+            needsResync = true;
+            store._dirty.add('lessons');
+          }
+          if (serverCodeCount > 0 || serverQuizCount > 0) loaded++;
+        }
+      }
+      // If we have local lesson data but server doesn't, push to server
+      if (!store._dirty.has('lessons')) {
+        const localLessons = getLessonCloudData();
+        if (localLessons.codeHistory.length > 0 || localLessons.quizHistory.length > 0) {
+          const hasServerLessons = allData.lessons && allData.lessons.data &&
+            ((allData.lessons.data.lessons && (allData.lessons.data.lessons.codeHistory || allData.lessons.data.lessons.quizHistory)) ||
+             allData.lessons.data.codeHistory || allData.lessons.data.quizHistory);
+          if (!hasServerLessons) {
+            needsResync = true;
+            store._dirty.add('lessons');
+          }
         }
       }
 
@@ -811,6 +858,51 @@
   }
 
   // ═══ RETROLESSON ═══
+  // localStorage keys used by the lesson iframe (shared same-origin via blob URL)
+  const LESSON_HISTORY_KEY = 'lesson_history_v1';
+  const LESSON_QUIZ_KEY = 'lesson_quiz_v1';
+
+  function getLessonCloudData() {
+    try {
+      const codeHistory = JSON.parse(localStorage.getItem(LESSON_HISTORY_KEY) || '[]');
+      const quizHistory = JSON.parse(localStorage.getItem(LESSON_QUIZ_KEY) || '[]');
+      return { codeHistory, quizHistory };
+    } catch(e) { return { codeHistory: [], quizHistory: [] }; }
+  }
+
+  function syncLessonToCloud() {
+    const data = getLessonCloudData();
+    if (data.codeHistory.length > 0 || data.quizHistory.length > 0) {
+      store._dirty.add('lessons');
+      store._localModifiedAt = Date.now();
+      store.flushNow().catch(function(){});
+    }
+  }
+
+  function mergeLessonFromServer(serverData) {
+    if (!serverData || typeof serverData !== 'object') return;
+    try {
+      // Merge code challenge history
+      if (Array.isArray(serverData.codeHistory)) {
+        const local = JSON.parse(localStorage.getItem(LESSON_HISTORY_KEY) || '[]');
+        const merged = new Map();
+        serverData.codeHistory.forEach(h => merged.set(h.date, h));
+        local.forEach(h => merged.set(h.date, h)); // local wins for same date
+        const result = Array.from(merged.values()).sort((a, b) => a.date.localeCompare(b.date));
+        localStorage.setItem(LESSON_HISTORY_KEY, JSON.stringify(result));
+      }
+      // Merge quiz history
+      if (Array.isArray(serverData.quizHistory)) {
+        const local = JSON.parse(localStorage.getItem(LESSON_QUIZ_KEY) || '[]');
+        const merged = new Map();
+        serverData.quizHistory.forEach(h => merged.set(h.date, h));
+        local.forEach(h => merged.set(h.date, h)); // local wins for same date
+        const result = Array.from(merged.values()).sort((a, b) => a.date.localeCompare(b.date));
+        localStorage.setItem(LESSON_QUIZ_KEY, JSON.stringify(result));
+      }
+    } catch(e) { console.warn('[Lessons] Merge error:', e); }
+  }
+
   function initRetroLesson() {
     const container = $('rlC'); if(!container) return;
     const ch = [
@@ -836,7 +928,16 @@
   window.closeLesson = function() {
     const panel = $('lessonPanel'), overlay = $('lessonOverlay');
     if (panel) panel.classList.remove('open'); if (overlay) overlay.classList.remove('open');
+    // Sync lesson progress to cloud when closing
+    syncLessonToCloud();
   };
+
+  // Listen for messages from lesson iframe (closeLesson + session updates)
+  window.addEventListener('message', function(e) {
+    if (e.data === 'closeLesson') {
+      window.closeLesson();
+    }
+  });
 
   // ═══ THEME ═══
   window.setTheme = function(theme) {
