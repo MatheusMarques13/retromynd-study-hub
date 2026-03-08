@@ -7,9 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Preload Ghibli wallpapers -->
+<link rel="preload" as="image" href="https://www.ghibli.jp/gallery/chihiro050.jpg">
+<link rel="preload" as="image" href="https://www.ghibli.jp/gallery/howl038.jpg">
 <style>
 :root {
-  --bg-overlay: rgba(0,0,0,0.25);
+  --bg-overlay: rgba(0,0,0,0.35);
   --text-main: #fff;
   --text-dim: rgba(255,255,255,0.7);
   --text-muted: rgba(255,255,255,0.45);
@@ -31,54 +34,39 @@ body {
   position: relative;
 }
 
-/* ═══ BACKGROUND SCENES ═══ */
+/* ═══ BACKGROUND SCENES — Real Studio Ghibli wallpapers ═══ */
 .bg-scene {
   position: fixed; inset: 0; z-index: 0;
-  background-size: cover; background-position: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   transition: opacity 1.2s ease;
   opacity: 0;
 }
 .bg-scene.active { opacity: 1; }
 
+/* Day: My Neighbor Totoro — lush green countryside */
 .scene-day {
-  background:
-    radial-gradient(ellipse 80% 50% at 55% 35%, rgba(255,255,255,0.4) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 45% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
-    radial-gradient(ellipse 90% 35% at 50% 85%, #4a8c3f 0%, #3d7a35 30%, transparent 60%),
-    radial-gradient(ellipse 120% 40% at 50% 95%, #2d6b28 0%, transparent 50%),
-    linear-gradient(180deg, #1a8ca0 0%, #2ba3b5 30%, #48b8c8 50%, #7fcfdb 70%, #a8dfe8 85%, #5aab4a 90%, #3d8a35 100%);
+  background-image: url('https://www.ghibli.jp/gallery/totoro016.jpg');
+  background-color: #4a8c3f;
 }
 
+/* Sunset: Spirited Away — warm bathhouse glow */
 .scene-sunset {
-  background:
-    radial-gradient(ellipse 70% 45% at 30% 60%, rgba(255,180,100,0.3) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 30% at 50% 85%, #5a3a2a 0%, transparent 50%),
-    linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 15%, #6b2fa0 30%, #d4567a 50%, #f4a261 65%, #f7c873 75%, #8b6b4a 88%, #3d2b1a 100%);
+  background-image: url('https://www.ghibli.jp/gallery/chihiro050.jpg');
+  background-color: #d4567a;
 }
 
+/* Night: Howl's Moving Castle — starry dreamscape */
 .scene-night {
-  background:
-    radial-gradient(1px 1px at 10% 15%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 25% 8%, #fff 50%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 40% 22%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 55% 5%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 70% 18%, #fff 50%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 85% 12%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 15% 35%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 90% 30%, #fff 50%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 60% 40%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 33% 45%, #fff 50%, transparent 100%),
-    radial-gradient(1px 1px at 78% 38%, #fff 50%, transparent 100%),
-    radial-gradient(ellipse 50% 30% at 80% 15%, rgba(200,180,255,0.08) 0%, transparent 100%),
-    radial-gradient(circle at 85% 12%, #FFFDE7 0%, rgba(255,253,231,0.3) 3%, transparent 6%),
-    radial-gradient(ellipse 90% 30% at 50% 90%, #0a1628 0%, transparent 50%),
-    linear-gradient(180deg, #05080f 0%, #0a1225 25%, #111d3a 50%, #162040 70%, #0f1a30 100%);
+  background-image: url('https://www.ghibli.jp/gallery/howl038.jpg');
+  background-color: #0a1225;
 }
 
+/* Rain: The Wind Rises — overcast moody sky */
 .scene-rain {
-  background:
-    radial-gradient(ellipse 100% 30% at 50% 90%, #2a3040 0%, transparent 50%),
-    linear-gradient(180deg, #3a4050 0%, #4a5565 20%, #5a6575 40%, #6a7585 60%, #4a5565 80%, #3a4555 100%);
+  background-image: url('https://www.ghibli.jp/gallery/kazetachinu033.jpg');
+  background-color: #4a5565;
 }
 
 .bg-overlay {
@@ -144,7 +132,7 @@ body {
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.35);
+  text-shadow: 0 2px 16px rgba(0,0,0,0.45);
   margin-bottom: 0.3rem;
   line-height: 1.4;
   opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
@@ -155,7 +143,7 @@ body {
   font-size: clamp(5rem, 14vw, 10rem);
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 4px 30px rgba(0,0,0,0.35);
+  text-shadow: 0 4px 30px rgba(0,0,0,0.45);
   letter-spacing: -4px;
   line-height: 1;
   margin-bottom: 0.5rem;
@@ -248,7 +236,7 @@ body {
 .rain-container.active { display: block; }
 .raindrop {
   position: absolute; top: -20px;
-  width: 1px; background: linear-gradient(transparent, rgba(200,210,230,0.3));
+  width: 1px; background: linear-gradient(transparent, rgba(200,210,230,0.4));
   animation: rainFall linear infinite;
 }
 @keyframes rainFall {
@@ -287,7 +275,7 @@ body {
 /* ═══ LANDING RETRO OVERRIDES ═══ */
 body.retro-dark .bg-overlay,
 body.retro-light .bg-overlay {
-  background: rgba(0,0,0,0.5) !important;
+  background: rgba(0,0,0,0.55) !important;
 }
 
 body.retro-dark .clock,
