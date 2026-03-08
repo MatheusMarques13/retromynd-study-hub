@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://retromynd-study-hub.vercel.app/">
 <meta property="og:title" content="RetroMynd — Study Hub">
 <meta property="og:description" content="Your aesthetic study companion. Pomodoro timer, daily goals, notes & more — all wrapped in a beautiful Ghibli-inspired interface. ✨">
-<meta property="og:image" content="https://www.ghibli.jp/gallery/howl002.jpg">
+<meta property="og:image" content="https://www.ghibli.jp/gallery/howl048.jpg">
 <meta property="og:image:width" content="1920">
 <meta property="og:image:height" content="1038">
 <meta property="og:site_name" content="RetroMynd Study Hub">
@@ -21,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RetroMynd — Study Hub">
 <meta name="twitter:description" content="Your aesthetic study companion. Pomodoro, goals, notes & Ghibli vibes ✨">
-<meta name="twitter:image" content="https://www.ghibli.jp/gallery/howl002.jpg">
+<meta name="twitter:image" content="https://www.ghibli.jp/gallery/howl048.jpg">
 
 <!-- Theme color -->
 <meta name="theme-color" content="#FF6B9D">
@@ -580,60 +580,49 @@ body.cafe .bottom-group-left .retro-toggle:hover {
 <script>
 var GHIBLI_BASE = 'https://www.ghibli.jp/gallery/';
 
-/* Landscape-only Ghibli scenes — no character close-ups */
+/* Landscape-only Ghibli scenes — pure scenery, NO characters */
 var W = {
   day: [
-    GHIBLI_BASE + 'howl002.jpg',     /* Howl's castle meadow panorama */
-    GHIBLI_BASE + 'howl048.jpg',     /* Flower fields wide shot */
-    GHIBLI_BASE + 'totoro003.jpg',   /* Rice paddy countryside */
-    GHIBLI_BASE + 'totoro038.jpg',   /* Forest canopy */
-    GHIBLI_BASE + 'kiki009.jpg',     /* Coastal town overview */
-    GHIBLI_BASE + 'laputa015.jpg',   /* Laputa floating island */
-    GHIBLI_BASE + 'laputa039.jpg',   /* Cloud sea panorama */
+    GHIBLI_BASE + 'howl048.jpg',        /* Flower fields wide shot */
+    GHIBLI_BASE + 'laputa015.jpg',      /* Laputa floating island */
+    GHIBLI_BASE + 'laputa039.jpg',      /* Cloud sea panorama */
     GHIBLI_BASE + 'kazetachinu018.jpg', /* Mountain landscape */
-    GHIBLI_BASE + 'marnie022.jpg',   /* Marsh scenery */
-    GHIBLI_BASE + 'mononoke034.jpg', /* Forest clearing */
-    GHIBLI_BASE + 'ponyo038.jpg',    /* Ocean cliff view */
-    GHIBLI_BASE + 'chihiro049.jpg'   /* Spirit world landscape */
+    GHIBLI_BASE + 'kazetachinu002.jpg', /* Open countryside fields */
+    GHIBLI_BASE + 'marnie022.jpg',      /* Marsh scenery */
+    GHIBLI_BASE + 'mononoke034.jpg',    /* Forest clearing */
+    GHIBLI_BASE + 'mononoke036.jpg',    /* Ancient forest wide shot */
+    GHIBLI_BASE + 'chihiro049.jpg',     /* Spirit world landscape */
+    GHIBLI_BASE + 'kiki033.jpg'         /* Town panorama aerial */
   ],
   sunset: [
-    GHIBLI_BASE + 'chihiro006.jpg',  /* Spirit bathhouse at dusk */
-    GHIBLI_BASE + 'chihiro013.jpg',  /* Flooded tracks sunset */
-    GHIBLI_BASE + 'howl006.jpg',     /* Mountain sunset panorama */
-    GHIBLI_BASE + 'howl036.jpg',     /* Castle against sunset sky */
-    GHIBLI_BASE + 'howl026.jpg',     /* Golden hour meadow */
-    GHIBLI_BASE + 'laputa030.jpg',   /* Ruins at golden hour */
-    GHIBLI_BASE + 'mononoke010.jpg', /* Forest at dusk */
+    GHIBLI_BASE + 'chihiro006.jpg',     /* Spirit bathhouse at dusk */
+    GHIBLI_BASE + 'chihiro013.jpg',     /* Flooded tracks sunset */
+    GHIBLI_BASE + 'howl036.jpg',        /* Castle against sunset sky */
+    GHIBLI_BASE + 'howl026.jpg',        /* Golden hour meadow */
+    GHIBLI_BASE + 'laputa030.jpg',      /* Ruins at golden hour */
+    GHIBLI_BASE + 'mononoke010.jpg',    /* Forest at dusk */
     GHIBLI_BASE + 'kazetachinu025.jpg', /* Countryside sunset */
-    GHIBLI_BASE + 'marnie015.jpg',   /* Wetland at sunset */
-    GHIBLI_BASE + 'kiki024.jpg',     /* Town at golden hour */
-    GHIBLI_BASE + 'ponyo027.jpg'     /* Ocean sunset */
+    GHIBLI_BASE + 'marnie015.jpg'       /* Wetland at sunset */
   ],
   night: [
-    GHIBLI_BASE + 'chihiro002.jpg',  /* Spirit world night */
-    GHIBLI_BASE + 'chihiro023.jpg',  /* Night train on water */
-    GHIBLI_BASE + 'howl011.jpg',     /* Starlit sky */
-    GHIBLI_BASE + 'mononoke041.jpg', /* Night forest glow */
-    GHIBLI_BASE + 'mononoke005.jpg', /* Dark forest canopy */
-    GHIBLI_BASE + 'mononoke018.jpg', /* Moonlit forest */
-    GHIBLI_BASE + 'laputa022.jpg',   /* Night sky */
-    GHIBLI_BASE + 'totoro046.jpg',   /* Night countryside */
-    GHIBLI_BASE + 'totoro015.jpg',   /* Night forest */
-    GHIBLI_BASE + 'marnie030.jpg',   /* Night marsh */
-    GHIBLI_BASE + 'ponyo043.jpg'     /* Night ocean */
+    GHIBLI_BASE + 'howl011.jpg',        /* Starlit sky */
+    GHIBLI_BASE + 'mononoke041.jpg',    /* Night forest glow */
+    GHIBLI_BASE + 'mononoke005.jpg',    /* Dark forest canopy */
+    GHIBLI_BASE + 'mononoke018.jpg',    /* Moonlit forest */
+    GHIBLI_BASE + 'laputa022.jpg',      /* Night sky */
+    GHIBLI_BASE + 'laputa050.jpg',      /* Moonlit ruins */
+    GHIBLI_BASE + 'marnie030.jpg',      /* Night marsh */
+    GHIBLI_BASE + 'kazetachinu040.jpg'  /* Night countryside */
   ],
   rain: [
-    GHIBLI_BASE + 'totoro029.jpg',   /* Bus stop in rain */
-    GHIBLI_BASE + 'ponyo011.jpg',    /* Storm waves */
-    GHIBLI_BASE + 'ponyo019.jpg',    /* Flooded road */
-    GHIBLI_BASE + 'marnie003.jpg',   /* Misty marsh */
-    GHIBLI_BASE + 'marnie008.jpg',   /* Foggy wetland */
-    GHIBLI_BASE + 'marnie038.jpg',   /* Rain on water */
-    GHIBLI_BASE + 'mononoke033.jpg', /* Rainy forest */
+    GHIBLI_BASE + 'marnie003.jpg',      /* Misty marsh */
+    GHIBLI_BASE + 'marnie008.jpg',      /* Foggy wetland */
+    GHIBLI_BASE + 'marnie038.jpg',      /* Rain on water */
+    GHIBLI_BASE + 'mononoke033.jpg',    /* Rainy forest */
     GHIBLI_BASE + 'kazetachinu034.jpg', /* Overcast landscape */
     GHIBLI_BASE + 'kazetachinu009.jpg', /* Misty mountains */
-    GHIBLI_BASE + 'howl019.jpg',     /* Rain on town */
-    GHIBLI_BASE + 'chihiro009.jpg'   /* Misty train tracks */
+    GHIBLI_BASE + 'howl019.jpg',        /* Rain on town rooftops */
+    GHIBLI_BASE + 'chihiro040.jpg'      /* Misty spirit world */
   ]
 };
 
@@ -728,21 +717,32 @@ function resolveScene() {
 }
 
 function doApply(url, crossfade) {
-  if (crossfade) {
-    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
-    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
-    var showEl = document.getElementById(showId);
-    var hideEl = document.getElementById(hideId);
-    showEl.style.backgroundImage = 'url("' + url + '")';
-    showEl.offsetHeight;
-    showEl.classList.add('active');
-    hideEl.classList.remove('active');
-    activeLayer = activeLayer === 'A' ? 'B' : 'A';
-  } else {
-    var el = document.getElementById('wall' + activeLayer);
-    el.style.backgroundImage = 'url("' + url + '")';
-    el.classList.add('active');
-  }
+  /* Preload image BEFORE crossfading so transition is smooth */
+  var img = new Image();
+  img.onload = function() {
+    if (crossfade) {
+      var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
+      var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
+      var showEl = document.getElementById(showId);
+      var hideEl = document.getElementById(hideId);
+      /* Set bg on hidden layer first, force paint, then fade */
+      showEl.style.backgroundImage = 'url("' + url + '")';
+      showEl.offsetHeight; /* force reflow */
+      requestAnimationFrame(function() {
+        showEl.classList.add('active');
+        hideEl.classList.remove('active');
+      });
+      activeLayer = activeLayer === 'A' ? 'B' : 'A';
+    } else {
+      var el = document.getElementById('wall' + activeLayer);
+      el.style.backgroundImage = 'url("' + url + '")';
+      el.classList.add('active');
+    }
+  };
+  img.onerror = function() {
+    console.warn('[RM] failed to load wallpaper:', url);
+  };
+  img.src = url;
 }
 
 function setWallpaper(scene, crossfade) {
@@ -775,10 +775,9 @@ function setScene(scene) {
   localStorage.setItem('landingScene', scene);
   var sc = scene === 'auto' ? getAutoScene() : scene;
   wallIdx[sc] = 0;
-  validationDone[sc] = false;
-  validatedW[sc] = [];
   lastAppliedScene = '';
-  applyScene(scene, true);
+  /* initial=false so crossfade is enabled on user scene change */
+  applyScene(scene, false);
 }
 
 applyScene(currentScene, true);
