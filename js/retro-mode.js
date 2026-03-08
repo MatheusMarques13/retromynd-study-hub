@@ -288,22 +288,22 @@
   /* Emoji labels: ☁️ Comfy | 👾 Retro | 🌙 Midnight */
   function themeEmoji(theme) {
     if (theme === 'retro-dark' || theme === 'retro-light') return '👾';
-    if (theme === 'midnight') return '🌙';
+    if (theme === 'cafe') return '☕';
     return '☁️';
   }
 
   function applyTheme(theme) {
-    document.body.classList.remove('retro-dark', 'retro-light', 'retro-mode', 'midnight');
+    document.body.classList.remove('retro-dark', 'retro-light', 'retro-mode', 'cafe');
     if (theme === 'retro-dark') document.body.classList.add('retro-dark');
     else if (theme === 'retro-light') document.body.classList.add('retro-light');
-    else if (theme === 'midnight') document.body.classList.add('midnight');
+    else if (theme === 'cafe') document.body.classList.add('cafe');
     setTheme(theme);
     updateToggleButtons(theme);
   }
 
   function updateToggleButtons(theme) {
-    var nextThemeLabel = { comfy: 'Retro', 'retro-dark': 'Midnight', 'retro-light': 'Midnight', midnight: 'Comfy' };
-    var themeName = theme.charAt(0).toUpperCase() + theme.replace('-dark','').replace('-light','').slice(1);
+    var nextThemeLabel = { comfy: 'Retro', 'retro-dark': 'Café', 'retro-light': 'Café', cafe: 'Comfy' };
+    var themeName = theme === 'cafe' ? 'Café' : theme.charAt(0).toUpperCase() + theme.replace('-dark','').replace('-light','').slice(1);
     var next = nextThemeLabel[theme] || 'Retro';
     document.querySelectorAll('.retro-toggle').forEach(function(btn) {
       btn.textContent = themeEmoji(theme);
@@ -311,12 +311,12 @@
     });
   }
 
-  /* Cycle: comfy → retro-dark → midnight → comfy */
+  /* Cycle: comfy → retro-dark → cafe → comfy */
   window.toggleRetroMode = function(force) {
     if (typeof force === 'string') { applyTheme(force); return; }
     var current = getTheme();
     if (current === 'comfy') { applyTheme('retro-dark'); }
-    else if (current === 'retro-dark' || current === 'retro-light') { applyTheme('midnight'); }
+    else if (current === 'retro-dark' || current === 'retro-light') { applyTheme('cafe'); }
     else { applyTheme('comfy'); }
   };
 

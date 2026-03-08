@@ -1,0 +1,638 @@
+/* =====================================================
+   CAFÉ THEME — css/cafe-theme.css
+   Lo-fi coffee shop aesthetic for RetroMynd Study Hub
+   Applied via body.cafe class
+   ===================================================== */
+
+/* DM Serif Display + Source Sans 3 fonts */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+/* ===== CSS VARIABLES ===== */
+body.cafe {
+  --bg: #F5F0E8;
+  --paper: #FFFDF7;
+  --paper-line: #E8DFD0;
+  --paper-margin: #C17950;
+  --pink: #C17950;
+  --pink-soft: rgba(193,121,80,0.12);
+  --pink-hover: #A8653E;
+  --blue: #8B6F47;
+  --blue-soft: rgba(139,111,71,0.08);
+  --blue-deep: #6B5B4F;
+  --lavender: #D4A574;
+  --lavender-soft: rgba(212,165,116,0.08);
+  --mint: #7D9B76;
+  --mint-soft: rgba(125,155,118,0.1);
+  --text: #3B2F2F;
+  --text-mid: #6B5B4F;
+  --text-light: #A89888;
+  --border: #E0D5C5;
+  --shadow: 0 2px 8px rgba(139,111,71,0.08), 0 1px 3px rgba(139,111,71,0.05);
+  --shadow-hover: 0 6px 20px rgba(139,111,71,0.14), 0 2px 6px rgba(139,111,71,0.08);
+  /* café-specific extras */
+  --c-brown: #8B6F47;
+  --c-terracotta: #C17950;
+  --c-caramel: #D4A574;
+  --c-success: #7D9B76;
+  --c-error: #C0665A;
+  --c-surface: #FFFDF7;
+  --c-card: #FFFDF7;
+  --c-border: #D4C5A9;
+  --c-brown-glow: rgba(139,111,71,0.2);
+  --c-caramel-glow: rgba(212,165,116,0.25);
+}
+
+/* ===== GLOBAL ===== */
+body.cafe {
+  background: #F5F0E8 !important;
+  color: #3B2F2F !important;
+  font-family: 'Source Sans 3', system-ui, sans-serif !important;
+}
+
+body.cafe * {
+  font-family: 'Source Sans 3', system-ui, sans-serif !important;
+}
+
+/* Keep pixel font for tags/badges */
+body.cafe [class*="pixel"],
+body.cafe .pixel,
+body.cafe [class*="tag"],
+body.cafe [class*="badge"] {
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+/* Headings use DM Serif Display */
+body.cafe h1:not(#rmLoginOverlay h1),
+body.cafe h2:not(#rmLoginOverlay *),
+body.cafe h3,
+body.cafe h4,
+body.cafe h5,
+body.cafe h6 {
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  font-weight: 400 !important;
+  color: #3B2F2F !important;
+  text-shadow: none !important;
+  letter-spacing: 0 !important;
+}
+
+/* ===== SELECTION & SCROLLBAR ===== */
+body.cafe ::selection {
+  background: var(--c-caramel) !important;
+  color: #fff !important;
+}
+
+body.cafe ::-webkit-scrollbar { width: 6px; height: 6px; }
+body.cafe ::-webkit-scrollbar-track { background: #F5F0E8; }
+body.cafe ::-webkit-scrollbar-thumb { background: #D4C5A9; border-radius: 3px; }
+body.cafe ::-webkit-scrollbar-thumb:hover { background: var(--c-brown); }
+
+/* ===== BACKGROUND AREAS ===== */
+body.cafe main,
+body.cafe [class*="main"],
+body.cafe [class*="content"],
+body.cafe [class*="wrapper"],
+body.cafe [class*="layout"],
+body.cafe [class*="page"],
+body.cafe [class*="grid"],
+body.cafe [class*="body"],
+body.cafe [class*="container"]:not(#rmLoginOverlay):not(#rmLoginOverlay *),
+body.cafe [class*="section"]:not(#rmProfilePanel *) {
+  background: transparent !important;
+  color: #3B2F2F !important;
+}
+
+/* ===== HEADER / NAV ===== */
+body.cafe header,
+body.cafe [class*="header"]:not(#rmProfilePanel *):not(#rmProfileBar *),
+body.cafe nav,
+body.cafe [class*="nav"]:not(#rmProfilePanel *),
+body.cafe [class*="toolbar"],
+body.cafe [class*="topbar"] {
+  background: rgba(245,240,232,0.92) !important;
+  border-color: #E0D5C5 !important;
+  backdrop-filter: blur(8px) !important;
+  color: #3B2F2F !important;
+}
+
+/* ===== CARDS ===== */
+body.cafe [class*="card"],
+body.cafe [class*="Card"],
+body.cafe [class*="widget"],
+body.cafe [class*="panel"]:not(#rmProfilePanel),
+body.cafe [class*="box"]:not(input):not(select) {
+  background: #FFFDF7 !important;
+  border: 1px solid #D4C5A9 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(139,111,71,0.08), 0 1px 3px rgba(139,111,71,0.05) !important;
+  color: #3B2F2F !important;
+}
+
+/* ===== NOTEBOOK LINES — warm brown instead of gray ===== */
+body.cafe [class*="ruled"],
+body.cafe [class*="paper"],
+body.cafe [class*="notebook"],
+body.cafe [class*="lined"] {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    #E8DFD0 27px,
+    #E8DFD0 28px
+  ) !important;
+  background-color: #FFFDF7 !important;
+}
+
+/* Margin line: warm terracotta */
+body.cafe [class*="margin"] {
+  border-color: #C17950 !important;
+}
+
+/* Notebook holes in cream/brown tones */
+body.cafe [class*="hole"],
+body.cafe [class*="punch"] {
+  background: #E8DFD0 !important;
+  border: 2px solid #D4C5A9 !important;
+}
+
+/* ===== TEXT ===== */
+body.cafe p,
+body.cafe li,
+body.cafe td,
+body.cafe th,
+body.cafe label,
+body.cafe [class*="desc"],
+body.cafe [class*="info"]:not(#rmProfileBar *) {
+  color: #3B2F2F !important;
+}
+
+body.cafe [class*="muted"],
+body.cafe [class*="secondary"],
+body.cafe [class*="gray"],
+body.cafe [class*="grey"],
+body.cafe [class*="hint"],
+body.cafe [class*="caption"],
+body.cafe small,
+body.cafe [class*="placeholder"],
+body.cafe [class*="sub"] {
+  color: #A89888 !important;
+}
+
+body.cafe [class*="card"] span,
+body.cafe [class*="card"] div,
+body.cafe main span,
+body.cafe main div,
+body.cafe [class*="content"] span,
+body.cafe [class*="content"] div {
+  color: #3B2F2F !important;
+}
+
+/* ===== BUTTONS ===== */
+body.cafe button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),
+body.cafe [type="button"]:not(#rmLoginOverlay *),
+body.cafe [type="submit"]:not(#rmLoginOverlay *) {
+  background: var(--c-brown) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #FFFDF7 !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  padding: 7px 14px !important;
+  transition: box-shadow 0.2s, background 0.2s !important;
+  box-shadow: 0 2px 6px rgba(139,111,71,0.2) !important;
+}
+
+body.cafe button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover,
+body.cafe [type="button"]:not(#rmLoginOverlay *):hover,
+body.cafe [type="submit"]:not(#rmLoginOverlay *):hover {
+  background: #A07840 !important;
+  box-shadow: 0 4px 12px var(--c-brown-glow) !important;
+}
+
+body.cafe button.active:not(#rmLoginOverlay button):not(.rm-tb):not(.pb-btn),
+body.cafe [class*="selected"]:not(#rmLoginOverlay *),
+body.cafe [aria-selected="true"]:not(#rmLoginOverlay *) {
+  background: var(--c-brown) !important;
+  color: #FFFDF7 !important;
+  box-shadow: 0 2px 8px var(--c-brown-glow) !important;
+}
+
+body.cafe [class*="danger"],
+body.cafe [class*="reset"],
+body.cafe [class*="delete"] {
+  background: transparent !important;
+  border: 1px solid var(--c-error) !important;
+  color: var(--c-error) !important;
+}
+
+/* Post-it style buttons → warm café tones */
+body.cafe .postit,
+body.cafe [class*="postit"],
+body.cafe .lesson-btn {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(139,111,71,0.1) !important;
+  color: #3B2F2F !important;
+}
+
+body.cafe .postit:nth-child(5n+1),
+body.cafe [class*="postit"]:nth-child(5n+1) { background: #FFF8E7 !important; border: 1px solid #E8DFD0 !important; }
+body.cafe .postit:nth-child(5n+2),
+body.cafe [class*="postit"]:nth-child(5n+2) { background: #F0E6D4 !important; border: 1px solid #D4C5A9 !important; }
+body.cafe .postit:nth-child(5n+3),
+body.cafe [class*="postit"]:nth-child(5n+3) { background: #E8EDE4 !important; border: 1px solid #D0DAC9 !important; }
+body.cafe .postit:nth-child(5n+4),
+body.cafe [class*="postit"]:nth-child(5n+4) { background: #F5E6E0 !important; border: 1px solid #E0C8BF !important; }
+body.cafe .postit:nth-child(5n),
+body.cafe [class*="postit"]:nth-child(5n)   { background: #EDE6F0 !important; border: 1px solid #D8CFDE !important; }
+
+/* ===== INPUTS ===== */
+body.cafe input:not(.rm-f):not(.pp-input):not(#rmLoginOverlay input),
+body.cafe textarea:not(#rmLoginOverlay textarea),
+body.cafe select:not(#rmLoginOverlay select) {
+  background: #FFFDF7 !important;
+  border: 1px solid #D4C5A9 !important;
+  border-radius: 8px !important;
+  color: #3B2F2F !important;
+  caret-color: var(--c-brown) !important;
+  font-size: 0.9rem !important;
+}
+
+body.cafe input:not(#rmLoginOverlay input):focus,
+body.cafe textarea:not(#rmLoginOverlay textarea):focus {
+  border-color: var(--c-caramel) !important;
+  box-shadow: 0 0 0 3px rgba(212,165,116,0.2) !important;
+  outline: none !important;
+}
+
+body.cafe input::placeholder,
+body.cafe textarea::placeholder { color: #A89888 !important; }
+
+/* ===== CHECKBOXES ===== */
+body.cafe input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  border: 2px solid #D4C5A9 !important;
+  border-radius: 4px !important;
+  background: #FFFDF7 !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+body.cafe input[type="checkbox"]:checked {
+  background: var(--c-brown) !important;
+  border-color: var(--c-brown) !important;
+}
+
+body.cafe input[type="checkbox"]:checked::after {
+  content: "\2713";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: #FFFDF7;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+/* ===== TABS ===== */
+body.cafe [class*="tab"]:not(.rm-tb):not(#rmLoginOverlay *),
+body.cafe [role="tab"] {
+  background: #F5F0E8 !important;
+  color: #6B5B4F !important;
+  border: 1px solid #E0D5C5 !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 5px 12px !important;
+}
+
+body.cafe [class*="tab"].active:not(.rm-tb),
+body.cafe [class*="tab"][class*="active"]:not(.rm-tb),
+body.cafe [role="tab"][aria-selected="true"] {
+  background: var(--c-brown) !important;
+  color: #FFFDF7 !important;
+  border-color: var(--c-brown) !important;
+}
+
+/* ===== PROGRESS ===== */
+body.cafe [class*="progress"],
+body.cafe progress {
+  background: #EDE5D8 !important;
+  border: 1px solid #E0D5C5 !important;
+  border-radius: 4px !important;
+}
+
+body.cafe [class*="progress"] [class*="fill"] {
+  background: var(--c-brown) !important;
+  box-shadow: 0 1px 4px var(--c-brown-glow) !important;
+}
+
+/* ===== STAT CARDS ===== */
+body.cafe [class*="stat"],
+body.cafe .stat-card {
+  background: #FFFDF7 !important;
+  border: 1px solid #D4C5A9 !important;
+  border-radius: 12px !important;
+  color: #3B2F2F !important;
+}
+
+body.cafe [class*="stat"] [class*="val"],
+body.cafe [class*="stat"] [class*="num"],
+body.cafe [class*="stat"] [class*="count"],
+body.cafe [class*="streak"],
+body.cafe [class*="score"] {
+  color: var(--c-brown) !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: 2rem !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
+}
+
+body.cafe [class*="stat"] [class*="label"],
+body.cafe [class*="stat"] [class*="title"],
+body.cafe [class*="stat"] small {
+  color: #A89888 !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+/* Stat icon backgrounds — warm tones */
+body.cafe [class*="stat"] [class*="icon"],
+body.cafe [class*="stat"] svg {
+  background: rgba(212,165,116,0.15) !important;
+  border-radius: 8px !important;
+  padding: 4px !important;
+  color: var(--c-caramel) !important;
+}
+
+/* ===== TIMER ===== */
+body.cafe [class*="timer"] [class*="display"],
+body.cafe [class*="timer"] [class*="time"],
+body.cafe [class*="clock"],
+body.cafe [class*="countdown"],
+body.cafe [class*="digit"],
+body.cafe #timerDisplay,
+body.cafe .timer-display {
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 400 !important;
+  color: #3B2F2F !important;
+}
+
+/* ===== LINKS ===== */
+body.cafe a:not(#rmLoginOverlay a) { color: var(--c-terracotta) !important; }
+body.cafe a:hover { text-decoration: underline !important; color: var(--c-brown) !important; }
+
+/* ===== DIVIDERS ===== */
+body.cafe hr,
+body.cafe [class*="divider"],
+body.cafe [class*="separator"] {
+  border-color: #E0D5C5 !important;
+  background: #E0D5C5 !important;
+}
+
+/* ===== MODALS / DROPDOWNS ===== */
+body.cafe [class*="tooltip"],
+body.cafe [class*="popup"],
+body.cafe [class*="modal"]:not(#rmLoginOverlay),
+body.cafe [class*="dropdown"] {
+  background: #FFFDF7 !important;
+  border: 1px solid #D4C5A9 !important;
+  color: #3B2F2F !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(139,111,71,0.12) !important;
+}
+
+/* ===== TAGS / BADGES ===== */
+body.cafe [class*="tag"]:not(#rmLoginOverlay *),
+body.cafe [class*="badge"]:not(#rmLoginOverlay *) {
+  background: rgba(212,165,116,0.15) !important;
+  border: 1px solid #D4C5A9 !important;
+  color: var(--c-brown) !important;
+  border-radius: 4px !important;
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+}
+
+/* ===== MUSIC PLAYER ===== */
+body.cafe #music-player-widget,
+body.cafe [class*="music"],
+body.cafe [class*="player"] {
+  background: #FFFDF7 !important;
+  border: 1px solid #D4C5A9 !important;
+  border-radius: 12px !important;
+  color: #3B2F2F !important;
+  box-shadow: 0 2px 8px rgba(139,111,71,0.08) !important;
+}
+
+body.cafe [class*="music"] button,
+body.cafe [class*="player"] button {
+  background: transparent !important;
+  border: 1px solid #D4C5A9 !important;
+  border-radius: 6px !important;
+  color: var(--c-brown) !important;
+}
+
+body.cafe [class*="music"] button:hover,
+body.cafe [class*="player"] button:hover {
+  border-color: var(--c-brown) !important;
+  background: rgba(139,111,71,0.08) !important;
+  box-shadow: 0 2px 8px var(--c-brown-glow) !important;
+}
+
+/* ===== RETRO TOGGLE BUTTON (café state) ===== */
+body.cafe .retro-toggle {
+  border: 1px solid #D4C5A9 !important;
+  color: var(--c-brown) !important;
+  background: transparent !important;
+  border-radius: 12px !important;
+  font-family: 'Source Sans 3', sans-serif !important;
+}
+
+body.cafe .retro-toggle:hover {
+  background: rgba(139,111,71,0.08) !important;
+  border-color: var(--c-brown) !important;
+  box-shadow: 0 2px 10px var(--c-brown-glow) !important;
+}
+
+/* ===== SMOOTH TRANSITIONS ===== */
+body.cafe { transition: background 0.5s ease, color 0.5s ease; }
+body.cafe [class*="card"],
+body.cafe [class*="Card"],
+body.cafe header,
+body.cafe nav,
+body.cafe main,
+body.cafe button,
+body.cafe input,
+body.cafe textarea,
+body.cafe select,
+body.cafe [class*="tab"] {
+  transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* =====================================================
+   LANDING PAGE — café overrides
+   ===================================================== */
+body.cafe .bg-overlay {
+  background: rgba(245,240,232,0.5) !important;
+}
+
+body.cafe .clock {
+  color: #3B2F2F !important;
+}
+
+body.cafe .greeting {
+  color: var(--c-brown) !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
+}
+
+body.cafe .brand-name {
+  color: var(--c-brown) !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  text-shadow: 1px 1px 4px rgba(139,111,71,0.15) !important;
+}
+
+body.cafe .brand-sub {
+  color: #6B5B4F !important;
+  font-family: 'Source Sans 3', sans-serif !important;
+}
+
+body.cafe .quote-box {
+  background: rgba(255,253,247,0.8) !important;
+  border: 1px solid #D4C5A9 !important;
+  color: #3B2F2F !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+body.cafe .enter-btn {
+  background: var(--c-brown) !important;
+  color: #FFFDF7 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px var(--c-brown-glow) !important;
+  font-weight: 700 !important;
+  font-family: 'Source Sans 3', sans-serif !important;
+}
+
+body.cafe .enter-btn:hover {
+  background: #A07840 !important;
+  box-shadow: 0 6px 20px rgba(139,111,71,0.3) !important;
+}
+
+body.cafe .enter-btn svg {
+  stroke: #FFFDF7 !important;
+}
+
+body.cafe .glass-pill {
+  background: rgba(255,253,247,0.8) !important;
+  border: 1px solid #D4C5A9 !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+body.cafe .pill-opt {
+  color: #6B5B4F !important;
+}
+
+body.cafe .pill-opt.active {
+  color: var(--c-brown) !important;
+  background: rgba(139,111,71,0.1) !important;
+}
+
+body.cafe .pill-opt:hover {
+  color: var(--c-brown) !important;
+}
+
+body.cafe .theme-label {
+  color: #A89888 !important;
+}
+
+body.cafe .bottom-group-left .retro-toggle {
+  border-color: #D4C5A9 !important;
+  color: var(--c-brown) !important;
+}
+
+body.cafe .bottom-group-left .retro-toggle:hover {
+  background: rgba(139,111,71,0.08) !important;
+  border-color: var(--c-brown) !important;
+  box-shadow: 0 2px 10px var(--c-brown-glow) !important;
+}
+
+/* Pixel heart → caramel/terracotta/brown tones */
+body.cafe .ph { background: var(--c-caramel) !important; }
+body.cafe .ph.amber { background: var(--c-terracotta) !important; }
+
+/* Pixel stars → warm brown and caramel */
+body.cafe .pixel-star { background: var(--c-brown) !important; }
+body.cafe .pixel-star.alt { background: var(--c-caramel) !important; }
+
+/* Retro scan lines and neon border hidden in café */
+body.cafe .retro-scanlines,
+body.cafe .retro-neon-border { display: none !important; }
+
+/* Splash screen warm gradient */
+body.cafe #splash-screen,
+body.cafe .splash,
+body.cafe [class*="splash"] {
+  background: linear-gradient(135deg, #F5F0E8 0%, #FFF8F0 100%) !important;
+}
+
+/* Splash title */
+body.cafe [class*="splash"] h1,
+body.cafe [class*="splash"] .title,
+body.cafe #splash-screen h1 {
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  color: #3B2F2F !important;
+  text-shadow: 1px 2px 6px rgba(139,111,71,0.12) !important;
+}
+
+/* Splash subtitle */
+body.cafe [class*="splash"] .subtitle,
+body.cafe [class*="splash"] p {
+  font-family: 'Source Sans 3', sans-serif !important;
+  color: #6B5B4F !important;
+}
+
+/* Splash lyric text */
+body.cafe [class*="splash"] [class*="lyric"],
+body.cafe [class*="splash"] [class*="quote"] {
+  color: #A89888 !important;
+  font-style: italic !important;
+}
+
+/* =====================================================
+   LOGIN PAGE — café overrides
+   ===================================================== */
+body.cafe .pixel-heart .ph {
+  background: var(--c-caramel) !important;
+}
+
+body.cafe .pixel-heart .ph.amber {
+  background: var(--c-terracotta) !important;
+}
+
+/* Login card */
+body.cafe [class*="login-card"],
+body.cafe [class*="auth-card"],
+body.cafe [class*="login-box"],
+body.cafe [class*="auth-box"] {
+  background: #FFFDF7 !important;
+  border: 1px solid #D4C5A9 !important;
+  box-shadow: 0 4px 20px rgba(139,111,71,0.1) !important;
+}
+
+/* Social login buttons */
+body.cafe [class*="social-btn"],
+body.cafe [class*="oauth"],
+body.cafe [class*="google-btn"],
+body.cafe [class*="github-btn"] {
+  background: #F5F0E8 !important;
+  border: 1px solid #D4C5A9 !important;
+  color: #3B2F2F !important;
+}
+
+body.cafe [class*="social-btn"]:hover,
+body.cafe [class*="oauth"]:hover {
+  background: #EDE5D8 !important;
+  border-color: var(--c-brown) !important;
+}
