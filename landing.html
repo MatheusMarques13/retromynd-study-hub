@@ -6,34 +6,42 @@
 <title>RetroMynd — Study Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Code+Pro:wght@400;500;600&family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="https://www.ghibli.jp/gallery/chihiro050.jpg">
 <link rel="preload" as="image" href="https://www.ghibli.jp/gallery/howl038.jpg">
 <style>
 :root {
+  /* Hub colors */
+  --paper: #FFFDF8;
+  --paper-line: #E8E4DF;
+  --pink: #FF6B9D;
+  --pink-soft: #FFE4EE;
+  --pink-hover: #FF4F88;
+  --blue: #6DBDE8;
+  --blue-soft: #E3F2FD;
+  --blue-deep: #4A9BC7;
+  --lavender: #C4B5FD;
+  --lavender-soft: #F0ECFF;
+  --text-hub: #1E293B;
+  --text-mid: #475569;
+  --text-light: #94A3B8;
+  --border-hub: #E2E8F0;
+  --shadow-hub: 0 1px 3px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.04);
+  --shadow-hover-hub: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.05);
+  --postit-yellow: #FFF9C4;
+  --postit-pink: #FFE4EE;
+  --postit-peach: #FFE5D9;
+  /* Landing overlay */
   --bg-overlay: rgba(0,0,0,0.3);
-  --text-main: #fff;
-  --text-dim: rgba(255,255,255,0.7);
-  --text-muted: rgba(255,255,255,0.45);
-  --accent: #FF6B9D;
-  --comfy-warm: rgba(255,180,120,0.15);
-  --comfy-warm-border: rgba(255,180,120,0.25);
-  --comfy-warm-hover: rgba(255,180,120,0.3);
-  --comfy-glow: rgba(255,200,150,0.2);
-  --comfy-rose: rgba(255,140,160,0.15);
-  --comfy-amber: rgba(255,190,100,0.12);
-  --glass: rgba(255,255,255,0.06);
-  --glass-border: rgba(255,255,255,0.1);
-  --glass-hover: rgba(255,255,255,0.12);
-  --radius: 16px;
+  --radius: 6px;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { height:100%; overflow:hidden; }
 
 body {
-  font-family: 'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif;
-  color: var(--text-main);
+  font-family: 'Kalam', 'Caveat', cursive;
+  color: #fff;
   position: relative;
 }
 
@@ -65,12 +73,9 @@ body {
   background-color: #4a5565;
 }
 
-/* Warm comfy overlay — adds cozy tint */
 .bg-overlay {
   position: fixed; inset: 0; z-index: 1;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 100%),
-    linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(20,10,5,0.35) 100%);
+  background: var(--bg-overlay);
   pointer-events: none;
 }
 
@@ -96,86 +101,80 @@ body {
   display: flex; flex-direction: column; gap: 2px;
 }
 .brand-name {
-  font-family: 'Source Code Pro', monospace;
-  font-size: 0.8rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
   font-weight: 600;
-  color: rgba(255,220,180,0.95);
-  text-shadow: 0 0 20px rgba(255,180,120,0.3), 0 2px 12px rgba(0,0,0,0.5);
-  letter-spacing: 3px;
+  color: var(--pink);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 .brand-sub {
-  font-family: 'Source Code Pro', monospace;
-  font-size: 0.5rem;
+  font-family: 'Kalam', 'Caveat', cursive;
+  font-size: 0.75rem;
   font-weight: 400;
-  color: rgba(255,200,160,0.5);
-  letter-spacing: 2px;
-  text-transform: lowercase;
+  color: rgba(255,255,255,0.7);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
 }
 
 .quote-box {
-  max-width: 280px;
+  max-width: 260px;
   text-align: right;
-  font-family: 'Source Serif 4', 'Georgia', serif;
-  font-size: 1rem;
-  font-weight: 500;
+  font-family: 'Kalam', 'Caveat', cursive;
+  font-size: 0.95rem;
+  font-weight: 400;
   font-style: italic;
-  color: rgba(255,235,210,0.9);
-  text-shadow: 0 0 16px rgba(255,180,120,0.2), 0 2px 12px rgba(0,0,0,0.4);
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
   line-height: 1.5;
 }
 
 /* ═══ CENTER CONTENT ═══ */
 .greeting {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Kalam', 'Caveat', cursive;
   font-size: 1.4rem;
-  font-weight: 500;
-  font-style: italic;
-  color: rgba(255,230,200,0.9);
-  text-shadow: 0 0 24px rgba(255,180,120,0.25), 0 2px 16px rgba(0,0,0,0.4);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.5);
   margin-bottom: 0.3rem;
   line-height: 1.4;
   opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
 }
 
 .clock {
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'Kalam', 'Caveat', cursive;
   font-size: clamp(5rem, 14vw, 10rem);
   font-weight: 700;
-  color: rgba(255,245,235,0.95);
-  text-shadow:
-    0 0 60px rgba(255,180,120,0.2),
-    0 0 30px rgba(255,150,100,0.15),
-    0 4px 30px rgba(0,0,0,0.4);
+  color: #fff;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.45);
   letter-spacing: -4px;
   line-height: 1;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards;
 }
 
+/* ═══ ENTER BUTTON — Hub notebook style ═══ */
 .enter-btn {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 600;
-  padding: 14px 48px;
-  border: 1.5px solid rgba(255,180,120,0.35);
-  border-radius: 50px;
-  background: linear-gradient(135deg, rgba(255,180,120,0.1) 0%, rgba(255,140,160,0.08) 100%);
-  color: rgba(255,235,210,0.95);
+  font-family: 'Kalam', 'Caveat', cursive;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 14px 44px;
+  border: 1px solid #E5E0DA;
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--text-hub);
   cursor: pointer;
-  backdrop-filter: blur(16px);
-  transition: all 0.35s ease;
+  transition: all 0.2s;
   text-decoration: none;
   display: inline-flex; align-items: center; gap: 8px;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.25);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+  box-shadow: var(--shadow-hub);
   opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards;
 }
+.enter-btn svg { stroke: var(--pink); }
 .enter-btn:hover {
-  background: linear-gradient(135deg, rgba(255,180,120,0.2) 0%, rgba(255,140,160,0.15) 100%);
-  border-color: rgba(255,180,120,0.5);
+  box-shadow: var(--shadow-hover-hub);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(255,150,100,0.15), 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  border-color: var(--pink);
 }
 .enter-btn:active { transform: translateY(0); }
 
@@ -188,42 +187,47 @@ body {
 }
 .bottom-bar > * { pointer-events: auto; }
 
+/* ═══ SCENE PILL — Hub notebook style ═══ */
 .glass-pill {
   display: flex; align-items: center; gap: 4px;
-  background: linear-gradient(135deg, rgba(255,180,120,0.06) 0%, rgba(255,140,160,0.04) 100%);
-  border: 1px solid rgba(255,180,120,0.15);
-  border-radius: 24px;
+  background: var(--paper);
+  border: 1px solid #E5E0DA;
+  border-radius: var(--radius);
   padding: 4px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-hub);
+  transition: all 0.2s;
+}
+.glass-pill:hover {
+  box-shadow: var(--shadow-hover-hub);
 }
 .pill-opt {
-  width: 36px; height: 36px;
+  width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; border: none;
+  border-radius: 4px; border: none;
   background: transparent;
-  color: rgba(255,200,170,0.5);
+  color: var(--text-light);
   cursor: pointer;
   font-size: 0.85rem;
-  transition: all 0.25s ease;
+  transition: all 0.15s ease;
 }
-.pill-opt:hover { color: rgba(255,220,180,0.9); background: rgba(255,180,120,0.1); }
+.pill-opt:hover { color: var(--text-hub); background: var(--blue-soft); }
 .pill-opt.active {
-  background: rgba(255,180,120,0.18);
-  color: rgba(255,230,200,0.95);
-  box-shadow: 0 0 12px rgba(255,150,100,0.15), 0 2px 8px rgba(0,0,0,0.1);
+  background: var(--pink);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255,107,157,0.3);
 }
 .pill-opt svg { width: 16px; height: 16px; }
 
 .theme-label {
-  font-family: 'Source Code Pro', monospace;
-  font-size: 0.5rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
   font-weight: 500;
-  color: rgba(255,180,120,0.35);
+  color: var(--text-light);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   text-align: center;
   margin-top: 6px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
 .bottom-group {
@@ -231,6 +235,30 @@ body {
 }
 .bottom-group-left {
   display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+}
+
+/* ═══ RETRO TOGGLE — Hub post-it style ═══ */
+.bottom-group-left .retro-toggle {
+  font-family: 'Kalam', 'Caveat', cursive !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  padding: 8px 20px !important;
+  border: 1px solid #E5E0DA !important;
+  border-radius: var(--radius) !important;
+  background: var(--postit-peach) !important;
+  color: var(--text-mid) !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  transition: all 0.15s ease !important;
+  margin-left: 0 !important;
+}
+.bottom-group-left .retro-toggle:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+  background: var(--postit-pink) !important;
+  color: var(--pink-hover) !important;
 }
 
 /* ═══ RAIN EFFECT ═══ */
@@ -254,31 +282,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ═══ RETRO TOGGLE — Comfy style ═══ */
-.bottom-group-left .retro-toggle {
-  font-family: 'Source Code Pro', monospace !important;
-  font-size: 0.6rem !important;
-  font-weight: 600 !important;
-  padding: 8px 20px !important;
-  border: 1px solid rgba(255,180,120,0.2) !important;
-  border-radius: 24px !important;
-  background: linear-gradient(135deg, rgba(255,180,120,0.06) 0%, rgba(255,140,160,0.04) 100%) !important;
-  color: rgba(255,200,170,0.6) !important;
-  cursor: pointer !important;
-  backdrop-filter: blur(16px) !important;
-  letter-spacing: 1.5px !important;
-  text-transform: uppercase !important;
-  transition: all 0.25s ease !important;
-  margin-left: 0 !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important;
-}
-.bottom-group-left .retro-toggle:hover {
-  background: rgba(255,180,120,0.12) !important;
-  color: rgba(255,230,200,0.9) !important;
-  border-color: rgba(255,180,120,0.35) !important;
-  box-shadow: 0 0 16px rgba(255,150,100,0.15), 0 4px 16px rgba(0,0,0,0.1) !important;
-}
-
 /* ═══ LANDING RETRO OVERRIDES ═══ */
 body.retro-dark .bg-overlay,
 body.retro-light .bg-overlay {
@@ -295,7 +298,6 @@ body.retro-light .clock {
 body.retro-dark .greeting,
 body.retro-light .greeting {
   font-family: 'Space Mono', monospace !important;
-  font-style: normal !important;
   color: var(--rpixel, #e8f0ff) !important;
 }
 
@@ -316,18 +318,21 @@ body.retro-dark .quote-box,
 body.retro-light .quote-box {
   font-family: 'Space Mono', monospace !important;
   font-style: normal !important;
-  color: var(--rpixel, #e8f0ff) !important;
 }
 
 body.retro-dark .enter-btn,
 body.retro-light .enter-btn {
-  font-family: 'Space Mono', monospace !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 0.6rem !important;
   background: transparent !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
   border-radius: 0 !important;
-  backdrop-filter: none !important;
   color: var(--rpixel, #e8f0ff) !important;
   box-shadow: none !important;
+}
+body.retro-dark .enter-btn svg,
+body.retro-light .enter-btn svg {
+  stroke: var(--rgold, #f5c518) !important;
 }
 
 body.retro-dark .enter-btn:hover,
@@ -343,7 +348,6 @@ body.retro-light .glass-pill {
   background: transparent !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
   border-radius: 0 !important;
-  backdrop-filter: none !important;
   box-shadow: none !important;
 }
 
@@ -374,10 +378,11 @@ body.retro-light .theme-label {
 
 body.retro-dark .bottom-group-left .retro-toggle,
 body.retro-light .bottom-group-left .retro-toggle {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 0.55rem !important;
   border-radius: 0 !important;
-  backdrop-filter: none !important;
   background: transparent !important;
-  border-color: var(--rborder, #1e3a6e) !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
   color: var(--rdim, #7a8faa) !important;
   box-shadow: none !important;
 }
@@ -387,6 +392,7 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
   border-color: var(--rgold, #f5c518) !important;
   color: var(--rgold, #f5c518) !important;
   box-shadow: 0 0 8px rgba(245,197,24,.3) !important;
+  transform: none !important;
 }
 
 @media (max-width: 600px) {
@@ -432,7 +438,7 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 <!-- Bottom Bar -->
 <div class="bottom-bar">
   <div class="bottom-group-left">
-    <button class="retro-toggle" onclick="toggleRetroMode()">RETRO</button>
+    <button class="retro-toggle" onclick="toggleRetroMode()">Retro ✨</button>
     <div class="theme-label">ESTILO</div>
   </div>
 
@@ -507,7 +513,7 @@ function updateGreeting() {
     } catch(e) {}
   }
   const nameStr = name ? ', ' + name.split(' ')[0] : '';
-  document.getElementById('greeting').innerHTML = period + nameStr + '!<br>Ready for ' + day + '? You\'ve got this!';
+  document.getElementById('greeting').innerHTML = period + nameStr + '!<br>Ready for ' + day + '? You\'ve got this ❤️';
 }
 
 updateClock();
