@@ -36,7 +36,6 @@ body {
   position: relative;
 }
 
-/* ═══ WALLPAPER SLIDESHOW ═══ */
 .wallpaper-layer {
   position: fixed; inset: 0; z-index: 0;
   background-size: cover;
@@ -53,7 +52,6 @@ body {
   pointer-events: none;
 }
 
-/* ═══ AMBIENT PARTICLES ═══ */
 .particles-container {
   position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden;
 }
@@ -105,7 +103,6 @@ body {
   to { transform: translateY(110vh); }
 }
 
-/* ═══ RETRO AMBIENT EFFECTS ═══ */
 .retro-scanlines {
   display: none;
   position: fixed; inset: 0; z-index: 3; pointer-events: none;
@@ -128,7 +125,6 @@ body.retro-light .retro-neon-border { display: block; }
   50% { border-color: rgba(245,197,24,0.08); box-shadow: inset 0 0 60px rgba(245,197,24,0.03); }
 }
 
-/* ═══ LAYOUT ═══ */
 .landing-container {
   position: relative; z-index: 5;
   display: flex; flex-direction: column;
@@ -171,7 +167,6 @@ body.retro-light .retro-neon-border { display: block; }
   line-height: 1.5;
 }
 
-/* ═══ CENTER ═══ */
 .greeting {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.4rem; font-weight: 500;
@@ -191,7 +186,6 @@ body.retro-light .retro-neon-border { display: block; }
   opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards;
 }
 
-/* ═══ ENTER BUTTON ═══ */
 .enter-btn {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.05rem; font-weight: 600;
@@ -214,7 +208,6 @@ body.retro-light .retro-neon-border { display: block; }
 }
 .enter-btn:active { transform: translateY(0); }
 
-/* ═══ BOTTOM BAR ═══ */
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
   display: flex; justify-content: space-between; align-items: flex-end;
@@ -287,36 +280,29 @@ body.retro-light .retro-neon-border { display: block; }
 /* ═══ RETRO OVERRIDES ═══ */
 body.retro-dark .bg-overlay,
 body.retro-light .bg-overlay { background: rgba(0,0,0,0.55) !important; }
-
-body.retro-dark .clock,
-body.retro-light .clock {
+body.retro-dark .clock, body.retro-light .clock {
   font-family: VT323, monospace !important;
   color: var(--rgold, #f5c518) !important;
   text-shadow: 0 0 30px rgba(245,197,24,.4), 0 4px 30px rgba(0,0,0,.5) !important;
 }
-body.retro-dark .greeting,
-body.retro-light .greeting {
+body.retro-dark .greeting, body.retro-light .greeting {
   font-family: 'Space Mono', monospace !important;
   color: var(--rpixel, #e8f0ff) !important;
 }
-body.retro-dark .brand-name,
-body.retro-light .brand-name {
+body.retro-dark .brand-name, body.retro-light .brand-name {
   font-family: VT323, monospace !important;
   color: var(--rgold, #f5c518) !important;
   text-shadow: 0 0 20px rgba(245,197,24,.4) !important;
 }
-body.retro-dark .brand-sub,
-body.retro-light .brand-sub {
+body.retro-dark .brand-sub, body.retro-light .brand-sub {
   font-family: 'Space Mono', monospace !important;
   color: var(--rdim, #7a8faa) !important;
 }
-body.retro-dark .quote-box,
-body.retro-light .quote-box {
+body.retro-dark .quote-box, body.retro-light .quote-box {
   font-family: 'Space Mono', monospace !important;
   font-style: normal !important;
 }
-body.retro-dark .enter-btn,
-body.retro-light .enter-btn {
+body.retro-dark .enter-btn, body.retro-light .enter-btn {
   font-family: 'Press Start 2P', monospace !important;
   font-size: 0.6rem !important;
   background: transparent !important;
@@ -325,48 +311,39 @@ body.retro-light .enter-btn {
   color: var(--rpixel, #e8f0ff) !important;
   box-shadow: none !important;
 }
-body.retro-dark .enter-btn svg,
-body.retro-light .enter-btn svg { stroke: var(--rgold, #f5c518) !important; }
-body.retro-dark .enter-btn:hover,
-body.retro-light .enter-btn:hover {
+body.retro-dark .enter-btn svg, body.retro-light .enter-btn svg { stroke: var(--rgold, #f5c518) !important; }
+body.retro-dark .enter-btn:hover, body.retro-light .enter-btn:hover {
   border-color: var(--rgold, #f5c518) !important;
   color: var(--rgold, #f5c518) !important;
   box-shadow: 0 0 12px rgba(245,197,24,.4), 4px 4px 0 rgba(245,197,24,.3) !important;
   transform: none !important;
 }
-body.retro-dark .glass-pill,
-body.retro-light .glass-pill {
+body.retro-dark .glass-pill, body.retro-light .glass-pill {
   background: transparent !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
   border-radius: 0 !important; box-shadow: none !important;
 }
-body.retro-dark .pill-opt,
-body.retro-light .pill-opt { border-radius: 0 !important; color: var(--rdim, #7a8faa) !important; }
-body.retro-dark .pill-opt.active,
-body.retro-light .pill-opt.active {
+body.retro-dark .pill-opt, body.retro-light .pill-opt { border-radius: 0 !important; color: var(--rdim, #7a8faa) !important; }
+body.retro-dark .pill-opt.active, body.retro-light .pill-opt.active {
   background: var(--rgold, #f5c518) !important; color: #000 !important;
   box-shadow: 0 0 8px rgba(245,197,24,.4) !important;
 }
-body.retro-dark .pill-opt:hover,
-body.retro-light .pill-opt:hover {
+body.retro-dark .pill-opt:hover, body.retro-light .pill-opt:hover {
   color: var(--rgold, #f5c518) !important;
   background: rgba(245,197,24,.1) !important;
 }
-body.retro-dark .theme-label,
-body.retro-light .theme-label {
+body.retro-dark .theme-label, body.retro-light .theme-label {
   font-family: 'Space Mono', monospace !important;
   color: var(--rdim, #7a8faa) !important;
 }
-body.retro-dark .bottom-group-left .retro-toggle,
-body.retro-light .bottom-group-left .retro-toggle {
+body.retro-dark .bottom-group-left .retro-toggle, body.retro-light .bottom-group-left .retro-toggle {
   font-family: 'Press Start 2P', monospace !important;
   font-size: 0.55rem !important; border-radius: 0 !important;
   background: transparent !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
   color: var(--rdim, #7a8faa) !important; box-shadow: none !important;
 }
-body.retro-dark .bottom-group-left .retro-toggle:hover,
-body.retro-light .bottom-group-left .retro-toggle:hover {
+body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom-group-left .retro-toggle:hover {
   border-color: var(--rgold, #f5c518) !important;
   color: var(--rgold, #f5c518) !important;
   box-shadow: 0 0 8px rgba(245,197,24,.3) !important;
@@ -385,19 +362,13 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 </head>
 <body>
 
-<!-- Wallpaper layers for crossfade -->
 <div class="wallpaper-layer active" id="wallA"></div>
 <div class="wallpaper-layer" id="wallB"></div>
 <div class="bg-overlay"></div>
-
-<!-- Ambient particles -->
 <div class="particles-container" id="particles"></div>
-
-<!-- Retro ambient -->
 <div class="retro-scanlines"></div>
 <div class="retro-neon-border"></div>
 
-<!-- Top Bar -->
 <div class="top-bar">
   <div class="brand">
     <div class="brand-name">RETROMYND</div>
@@ -406,7 +377,6 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
   <div class="quote-box" id="quoteBox"></div>
 </div>
 
-<!-- Center -->
 <div class="landing-container">
   <div class="greeting" id="greeting"></div>
   <div class="clock" id="clock"></div>
@@ -416,7 +386,6 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
   </a>
 </div>
 
-<!-- Bottom Bar -->
 <div class="bottom-bar">
   <div class="bottom-group-left">
     <button class="retro-toggle" onclick="toggleRetroMode()">Retro ✨</button>
@@ -445,39 +414,62 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 </div>
 
 <script>
-/* ═══ STUDIO GHIBLI WALLPAPERS (official gallery) + Unsplash fallbacks ═══ */
+/*
+ * STUDIO GHIBLI — LANDSCAPE-ONLY wallpapers (no characters in focus)
+ * All from official gallery: ghibli.jp/gallery/{film}{number}.jpg
+ *
+ * Number guide for scenery shots (backgrounds, establishing shots):
+ * - Totoro: 008 (rice fields), 013 (camphor tree), 023 (bus stop scene bg), 033 (forest path)
+ * - Laputa: 002 (floating castle far), 010 (clouds), 015 (ruins overgrown), 040 (sky fortress)
+ * - Spirited Away: 005 (tunnel entrance), 019 (bathhouse exterior), 027 (spirit town night), 045 (ocean railway)
+ * - Howl: 006 (flower meadow), 017 (moving castle landscape), 025 (town rooftops), 041 (sky clouds)
+ * - Mononoke: 005 (ancient forest), 011 (forest lake), 020 (mountain panorama), 049 (nightfall forest)
+ * - Kiki: 003 (coastal town panorama), 020 (town from above), 036 (bakery street)
+ * - Ponyo: 005 (seaside town), 020 (ocean waves), 040 (flooded town)
+ * - Wind Rises: 006 (countryside fields), 020 (airplane hangar landscape), 035 (mountain hotel)
+ * - Marnie: 003 (marsh house), 015 (wetland landscape), 040 (mansion at dusk)
+ * - Nausicaa: 005 (toxic jungle), 020 (valley landscape), 035 (windswept fields)
+ * - Arrietty: 010 (garden close), 025 (house exterior nature), 040 (garden wide)
+ * - Kokurikozaka: 005 (port town), 018 (school rooftop view), 030 (harbor sunset)
+ */
+
 var GHIBLI = {
   day: [
-    'https://www.ghibli.jp/gallery/totoro016.jpg',
-    'https://www.ghibli.jp/gallery/totoro032.jpg',
-    'https://www.ghibli.jp/gallery/totoro050.jpg',
-    'https://www.ghibli.jp/gallery/karigurashi038.jpg',
-    'https://www.ghibli.jp/gallery/marnie034.jpg',
-    'https://www.ghibli.jp/gallery/kokurikozaka033.jpg'
+    'https://www.ghibli.jp/gallery/totoro008.jpg',
+    'https://www.ghibli.jp/gallery/totoro033.jpg',
+    'https://www.ghibli.jp/gallery/laputa015.jpg',
+    'https://www.ghibli.jp/gallery/karigurashi010.jpg',
+    'https://www.ghibli.jp/gallery/howl006.jpg',
+    'https://www.ghibli.jp/gallery/majo003.jpg',
+    'https://www.ghibli.jp/gallery/nausicaa020.jpg',
+    'https://www.ghibli.jp/gallery/kokurikozaka005.jpg'
   ],
   sunset: [
-    'https://www.ghibli.jp/gallery/chihiro050.jpg',
-    'https://www.ghibli.jp/gallery/chihiro044.jpg',
-    'https://www.ghibli.jp/gallery/mononoke030.jpg',
-    'https://www.ghibli.jp/gallery/mononoke036.jpg',
-    'https://www.ghibli.jp/gallery/ponyo033.jpg',
-    'https://www.ghibli.jp/gallery/gedsenki035.jpg'
+    'https://www.ghibli.jp/gallery/chihiro019.jpg',
+    'https://www.ghibli.jp/gallery/mononoke011.jpg',
+    'https://www.ghibli.jp/gallery/howl017.jpg',
+    'https://www.ghibli.jp/gallery/kokurikozaka030.jpg',
+    'https://www.ghibli.jp/gallery/marnie040.jpg',
+    'https://www.ghibli.jp/gallery/gedsenki020.jpg',
+    'https://www.ghibli.jp/gallery/ponyo005.jpg'
   ],
   night: [
-    'https://www.ghibli.jp/gallery/howl038.jpg',
-    'https://www.ghibli.jp/gallery/howl050.jpg',
-    'https://www.ghibli.jp/gallery/chihiro038.jpg',
-    'https://www.ghibli.jp/gallery/ponyo036.jpg',
-    'https://www.ghibli.jp/gallery/kaze042.jpg',
-    'https://www.ghibli.jp/gallery/mononoke050.jpg'
+    'https://www.ghibli.jp/gallery/chihiro027.jpg',
+    'https://www.ghibli.jp/gallery/chihiro005.jpg',
+    'https://www.ghibli.jp/gallery/howl025.jpg',
+    'https://www.ghibli.jp/gallery/howl041.jpg',
+    'https://www.ghibli.jp/gallery/laputa040.jpg',
+    'https://www.ghibli.jp/gallery/mononoke049.jpg',
+    'https://www.ghibli.jp/gallery/totoro013.jpg'
   ],
   rain: [
-    'https://www.ghibli.jp/gallery/kazetachinu033.jpg',
-    'https://www.ghibli.jp/gallery/totoro019.jpg',
-    'https://www.ghibli.jp/gallery/kaze036.jpg',
-    'https://www.ghibli.jp/gallery/marnie030.jpg',
-    'https://www.ghibli.jp/gallery/karigurashi034.jpg',
-    'https://www.ghibli.jp/gallery/chihiro033.jpg'
+    'https://www.ghibli.jp/gallery/totoro023.jpg',
+    'https://www.ghibli.jp/gallery/kazetachinu006.jpg',
+    'https://www.ghibli.jp/gallery/ponyo040.jpg',
+    'https://www.ghibli.jp/gallery/ponyo020.jpg',
+    'https://www.ghibli.jp/gallery/marnie003.jpg',
+    'https://www.ghibli.jp/gallery/nausicaa005.jpg',
+    'https://www.ghibli.jp/gallery/kazetachinu035.jpg'
   ]
 };
 
@@ -500,12 +492,9 @@ var FALLBACK = {
   ]
 };
 
-/* Use Ghibli as primary */
 var W = {};
 var scKeys = ['day','sunset','night','rain'];
-for (var k = 0; k < scKeys.length; k++) {
-  W[scKeys[k]] = GHIBLI[scKeys[k]].slice();
-}
+for (var k = 0; k < scKeys.length; k++) W[scKeys[k]] = GHIBLI[scKeys[k]].slice();
 
 var quotes = [
   '"The only way to do great work is to love what you do."',
@@ -518,16 +507,13 @@ var quotes = [
   '"First, solve the problem. Then, write the code."',
   '"Talk is cheap. Show me the code."'
 ];
-
 document.getElementById('quoteBox').textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
-/* ═══ CLOCK & GREETING ═══ */
 function updateClock() {
   var now = new Date();
   document.getElementById('clock').textContent =
     String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 }
-
 function updateGreeting() {
   var now = new Date();
   var h = now.getHours();
@@ -538,17 +524,14 @@ function updateGreeting() {
   var n = name ? ', ' + name.split(' ')[0] : '';
   document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this ❤️';
 }
-
 updateClock(); updateGreeting();
 setInterval(updateClock, 1000);
 setInterval(updateGreeting, 60000);
 
-/* ═══ SCENE + WALLPAPER ROTATION ═══ */
 var currentScene = localStorage.getItem('landingScene') || 'auto';
 var wallIdx = { day: 0, sunset: 0, night: 0, rain: 0 };
 var activeLayer = 'A';
 var lastAppliedScene = '';
-var failedUrls = {};
 
 function getAutoScene() {
   var h = new Date().getHours();
@@ -556,13 +539,8 @@ function getAutoScene() {
   if (h >= 17 && h < 20) return 'sunset';
   return 'night';
 }
-
 function resolveScene() {
   return currentScene === 'auto' ? getAutoScene() : currentScene;
-}
-
-function applyBg(el, url) {
-  el.style.backgroundImage = 'url("' + url + '")';
 }
 
 function setWallpaper(scene, crossfade) {
@@ -570,181 +548,136 @@ function setWallpaper(scene, crossfade) {
   if (!imgs || !imgs.length) return;
   var idx = wallIdx[scene] % imgs.length;
   var url = imgs[idx];
-
-  console.log('[RM] wallpaper:', scene, idx, url.substring(0, 50));
+  console.log('[RM] wallpaper:', scene, idx, url);
 
   var img = new Image();
   img.onload = function() {
-    console.log('[RM] loaded OK:', url.substring(0, 50));
-    if (crossfade) {
-      var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
-      var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
-      var showEl = document.getElementById(showId);
-      var hideEl = document.getElementById(hideId);
-      applyBg(showEl, url);
-      showEl.offsetHeight;
-      showEl.classList.add('active');
-      hideEl.classList.remove('active');
-      activeLayer = activeLayer === 'A' ? 'B' : 'A';
-    } else {
-      var el = document.getElementById('wall' + activeLayer);
-      applyBg(el, url);
-      el.classList.add('active');
-    }
+    console.log('[RM] ✅ loaded:', url.split('/').pop());
+    doApply(url, crossfade);
   };
   img.onerror = function() {
-    console.warn('[RM] FAILED:', url);
-    failedUrls[url] = true;
-    /* Try fallback */
+    console.warn('[RM] ❌ failed:', url.split('/').pop());
     var fb = FALLBACK[scene];
     if (fb && fb.length) {
-      var fbIdx = idx % fb.length;
-      var fbUrl = fb[fbIdx];
-      console.log('[RM] Using fallback:', fbUrl.substring(0, 50));
-      if (crossfade) {
-        var sId = activeLayer === 'A' ? 'wallB' : 'wallA';
-        var hId = activeLayer === 'A' ? 'wallA' : 'wallB';
-        var sEl = document.getElementById(sId);
-        var hEl = document.getElementById(hId);
-        applyBg(sEl, fbUrl);
-        sEl.offsetHeight;
-        sEl.classList.add('active');
-        hEl.classList.remove('active');
-        activeLayer = activeLayer === 'A' ? 'B' : 'A';
-      } else {
-        var el2 = document.getElementById('wall' + activeLayer);
-        applyBg(el2, fbUrl);
-        el2.classList.add('active');
-      }
+      var fbUrl = fb[idx % fb.length];
+      console.log('[RM] fallback:', fbUrl.substring(0,50));
+      doApply(fbUrl, crossfade);
     }
   };
   img.src = url;
 
-  /* Preload next */
   var nextIdx = (idx + 1) % imgs.length;
-  var preImg = new Image();
-  preImg.src = imgs[nextIdx];
+  (new Image()).src = imgs[nextIdx];
+}
+
+function doApply(url, crossfade) {
+  if (crossfade) {
+    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
+    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
+    var showEl = document.getElementById(showId);
+    var hideEl = document.getElementById(hideId);
+    showEl.style.backgroundImage = 'url("' + url + '")';
+    showEl.offsetHeight;
+    showEl.classList.add('active');
+    hideEl.classList.remove('active');
+    activeLayer = activeLayer === 'A' ? 'B' : 'A';
+  } else {
+    var el = document.getElementById('wall' + activeLayer);
+    el.style.backgroundImage = 'url("' + url + '")';
+    el.classList.add('active');
+  }
 }
 
 function applyScene(scene, initial) {
   var actual = scene === 'auto' ? getAutoScene() : scene;
-  console.log('[RM] applyScene:', scene, '->', actual, 'initial:', initial);
-
+  console.log('[RM] scene:', scene, '->', actual);
   if (initial || lastAppliedScene !== actual) {
     setWallpaper(actual, !initial);
     createParticles(actual);
     lastAppliedScene = actual;
   }
-
   var opts = document.querySelectorAll('#scenePill .pill-opt');
-  for (var i = 0; i < opts.length; i++) {
+  for (var i = 0; i < opts.length; i++)
     opts[i].classList.toggle('active', opts[i].getAttribute('data-sc') === scene);
-  }
 }
 
 function setScene(scene) {
   currentScene = scene;
   localStorage.setItem('landingScene', scene);
-  var actual = resolveScene();
-  wallIdx[actual] = 0;
+  wallIdx[resolveScene()] = 0;
   lastAppliedScene = '';
   applyScene(scene, true);
 }
 
-/* Preload first wallpaper of each scene */
-for (var s = 0; s < scKeys.length; s++) {
-  var preImg = new Image();
-  preImg.src = W[scKeys[s]][0];
-}
-
-/* Initial apply */
+for (var s = 0; s < scKeys.length; s++) (new Image()).src = W[scKeys[s]][0];
 applyScene(currentScene, true);
 
-/* Rotate wallpaper every 30s */
 setInterval(function() {
   var sc = resolveScene();
   wallIdx[sc] = (wallIdx[sc] + 1) % W[sc].length;
   setWallpaper(sc, true);
 }, 30000);
 
-/* Auto scene check every 5min */
 setInterval(function() {
   if (currentScene === 'auto') applyScene('auto');
 }, 300000);
 
-/* ═══ AMBIENT PARTICLES ═══ */
 var currentParticleScene = '';
-
 function createParticles(scene) {
   var c = document.getElementById('particles');
   if (currentParticleScene === scene) return;
   currentParticleScene = scene;
   c.innerHTML = '';
-
-  console.log('[RM] particles:', scene);
   var i, p, sz;
-
   if (scene === 'day') {
     for (i = 0; i < 25; i++) {
-      p = document.createElement('div');
-      p.className = 'particle-dust';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.top = Math.random() * 100 + '%';
-      p.style.setProperty('--dx', (Math.random() * 100 - 50) + 'px');
-      p.style.setProperty('--dy', -(50 + Math.random() * 100) + 'px');
-      p.style.animationDuration = (8 + Math.random() * 12) + 's';
-      p.style.animationDelay = Math.random() * 8 + 's';
-      sz = (2 + Math.random() * 3) + 'px';
-      p.style.width = sz; p.style.height = sz;
+      p = document.createElement('div'); p.className = 'particle-dust';
+      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
+      p.style.setProperty('--dx',(Math.random()*100-50)+'px');
+      p.style.setProperty('--dy',-(50+Math.random()*100)+'px');
+      p.style.animationDuration = (8+Math.random()*12)+'s';
+      p.style.animationDelay = Math.random()*8+'s';
+      sz=(2+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'sunset') {
     for (i = 0; i < 15; i++) {
-      p = document.createElement('div');
-      p.className = 'particle-firefly';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.top = 20 + Math.random() * 70 + '%';
-      p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
-      p.style.setProperty('--dy', -(15 + Math.random() * 40) + 'px');
-      p.style.setProperty('--dx2', (Math.random() * 60 - 30) + 'px');
-      p.style.setProperty('--dy2', -(25 + Math.random() * 50) + 'px');
-      p.style.setProperty('--dx3', (Math.random() * 70 - 35) + 'px');
-      p.style.setProperty('--dy3', -(5 + Math.random() * 25) + 'px');
-      p.style.animationDuration = (5 + Math.random() * 7) + 's';
-      p.style.animationDelay = Math.random() * 5 + 's';
-      sz = (4 + Math.random() * 5) + 'px';
-      p.style.width = sz; p.style.height = sz;
+      p = document.createElement('div'); p.className = 'particle-firefly';
+      p.style.left = Math.random()*100+'%'; p.style.top = 20+Math.random()*70+'%';
+      p.style.setProperty('--dx',(Math.random()*80-40)+'px');
+      p.style.setProperty('--dy',-(15+Math.random()*40)+'px');
+      p.style.setProperty('--dx2',(Math.random()*60-30)+'px');
+      p.style.setProperty('--dy2',-(25+Math.random()*50)+'px');
+      p.style.setProperty('--dx3',(Math.random()*70-35)+'px');
+      p.style.setProperty('--dy3',-(5+Math.random()*25)+'px');
+      p.style.animationDuration = (5+Math.random()*7)+'s';
+      p.style.animationDelay = Math.random()*5+'s';
+      sz=(4+Math.random()*5)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'night') {
     for (i = 0; i < 50; i++) {
-      p = document.createElement('div');
-      p.className = 'particle-star';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.top = Math.random() * 70 + '%';
-      p.style.setProperty('--bright', (0.4 + Math.random() * 0.5).toFixed(2));
-      p.style.animationDuration = (2 + Math.random() * 4) + 's';
-      p.style.animationDelay = Math.random() * 4 + 's';
-      sz = (1.5 + Math.random() * 2.5) + 'px';
-      p.style.width = sz; p.style.height = sz;
+      p = document.createElement('div'); p.className = 'particle-star';
+      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*70+'%';
+      p.style.setProperty('--bright',(0.4+Math.random()*0.5).toFixed(2));
+      p.style.animationDuration = (2+Math.random()*4)+'s';
+      p.style.animationDelay = Math.random()*4+'s';
+      sz=(1.5+Math.random()*2.5)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'rain') {
     for (i = 0; i < 80; i++) {
-      p = document.createElement('div');
-      p.className = 'particle-rain';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.height = (12 + Math.random() * 20) + 'px';
-      p.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
-      p.style.animationDelay = Math.random() * 2 + 's';
-      p.style.opacity = (0.15 + Math.random() * 0.25).toFixed(2);
+      p = document.createElement('div'); p.className = 'particle-rain';
+      p.style.left = Math.random()*100+'%';
+      p.style.height = (12+Math.random()*20)+'px';
+      p.style.animationDuration = (0.4+Math.random()*0.5)+'s';
+      p.style.animationDelay = Math.random()*2+'s';
+      p.style.opacity = (0.15+Math.random()*0.25).toFixed(2);
       c.appendChild(p);
     }
   }
-  console.log('[RM] particles count:', c.children.length);
 }
 
-/* ═══ AUTH CHECK ═══ */
 (function() {
   var token = localStorage.getItem('token');
   var session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
