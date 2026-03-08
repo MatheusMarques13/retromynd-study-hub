@@ -6,12 +6,9 @@
 <title>RetroMynd — Study Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Code+Pro:wght@400;500;600&family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="https://www.ghibli.jp/gallery/chihiro050.jpg">
-<link rel="preload" as="image" href="https://www.ghibli.jp/gallery/howl038.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@400;500;600;700&family=Press+Start+2P&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Hub colors */
   --paper: #FFFDF8;
   --paper-line: #E8E4DF;
   --pink: #FF6B9D;
@@ -21,18 +18,14 @@
   --blue-soft: #E3F2FD;
   --blue-deep: #4A9BC7;
   --lavender: #C4B5FD;
-  --lavender-soft: #F0ECFF;
   --text-hub: #1E293B;
   --text-mid: #475569;
   --text-light: #94A3B8;
-  --border-hub: #E2E8F0;
   --shadow-hub: 0 1px 3px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.04);
   --shadow-hover-hub: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.05);
-  --postit-yellow: #FFF9C4;
-  --postit-pink: #FFE4EE;
   --postit-peach: #FFE5D9;
-  /* Landing overlay */
-  --bg-overlay: rgba(0,0,0,0.3);
+  --postit-pink: #FFE4EE;
+  --bg-overlay: rgba(0,0,0,0.28);
   --radius: 6px;
 }
 
@@ -40,38 +33,21 @@
 html, body { height:100%; overflow:hidden; }
 
 body {
-  font-family: 'Kalam', 'Caveat', cursive;
+  font-family: 'Nunito', sans-serif;
   color: #fff;
   position: relative;
 }
 
-/* ═══ BACKGROUND SCENES — Real Studio Ghibli wallpapers ═══ */
-.bg-scene {
+/* ═══ WALLPAPER SLIDESHOW ═══ */
+.wallpaper-layer {
   position: fixed; inset: 0; z-index: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: opacity 1.2s ease;
+  transition: opacity 2s ease;
   opacity: 0;
 }
-.bg-scene.active { opacity: 1; }
-
-.scene-day {
-  background-image: url('https://www.ghibli.jp/gallery/totoro016.jpg');
-  background-color: #4a8c3f;
-}
-.scene-sunset {
-  background-image: url('https://www.ghibli.jp/gallery/chihiro050.jpg');
-  background-color: #d4567a;
-}
-.scene-night {
-  background-image: url('https://www.ghibli.jp/gallery/howl038.jpg');
-  background-color: #0a1225;
-}
-.scene-rain {
-  background-image: url('https://www.ghibli.jp/gallery/kazetachinu033.jpg');
-  background-color: #4a5565;
-}
+.wallpaper-layer.active { opacity: 1; }
 
 .bg-overlay {
   position: fixed; inset: 0; z-index: 1;
@@ -79,16 +55,103 @@ body {
   pointer-events: none;
 }
 
-/* ═══ MAIN LAYOUT ═══ */
+/* ═══ AMBIENT PARTICLES ═══ */
+.particles-container {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden;
+}
+
+/* Floating dust (day) */
+.particle-dust {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: rgba(255,255,240,0.35);
+  border-radius: 50%;
+  animation: floatDust linear infinite;
+}
+@keyframes floatDust {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  15% { opacity: 0.35; }
+  85% { opacity: 0.3; }
+  100% { transform: translate(var(--dx, 60px), var(--dy, -120px)) scale(0.5); opacity: 0; }
+}
+
+/* Fireflies (sunset) */
+.particle-firefly {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: radial-gradient(circle, rgba(255,200,80,0.7) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatFirefly ease-in-out infinite;
+}
+@keyframes floatFirefly {
+  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+  25% { transform: translate(var(--dx, 30px), var(--dy, -20px)); opacity: 0.5; }
+  50% { transform: translate(var(--dx2, -15px), var(--dy2, -40px)); opacity: 0.15; }
+  75% { transform: translate(var(--dx3, 20px), var(--dy3, -10px)); opacity: 0.45; }
+}
+
+/* Stars (night) */
+.particle-star {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkleStar ease-in-out infinite;
+}
+@keyframes twinkleStar {
+  0%, 100% { opacity: 0.08; transform: scale(1); }
+  50% { opacity: var(--bright, 0.45); transform: scale(1.4); }
+}
+
+/* Rain */
+.particle-rain {
+  position: absolute; top: -20px;
+  width: 1px;
+  background: linear-gradient(transparent, rgba(200,215,240,0.35));
+  animation: rainDrop linear infinite;
+}
+@keyframes rainDrop {
+  to { transform: translateY(105vh); }
+}
+
+/* ═══ RETRO AMBIENT ═══ */
+.retro-scanlines {
+  display: none;
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+}
+body.retro-dark .retro-scanlines,
+body.retro-light .retro-scanlines { display: block; }
+
+.retro-neon-border {
+  display: none;
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  border: 1px solid transparent;
+  animation: neonPulse 6s ease-in-out infinite;
+}
+body.retro-dark .retro-neon-border,
+body.retro-light .retro-neon-border { display: block; }
+
+@keyframes neonPulse {
+  0%, 100% { border-color: rgba(245,197,24,0); }
+  50% { border-color: rgba(245,197,24,0.06); }
+}
+
+/* ═══ LAYOUT ═══ */
 .landing-container {
-  position: relative; z-index: 2;
+  position: relative; z-index: 3;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   height: 100vh; padding: 2rem;
   text-align: center;
 }
 
-/* ═══ TOP BAR ═══ */
 .top-bar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 10;
   display: flex; justify-content: space-between; align-items: flex-start;
@@ -97,74 +160,62 @@ body {
 }
 .top-bar > * { pointer-events: auto; }
 
-.brand {
-  display: flex; flex-direction: column; gap: 2px;
-}
+.brand { display: flex; flex-direction: column; gap: 2px; }
 .brand-name {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.55rem;
-  font-weight: 600;
+  font-size: 0.55rem; font-weight: 600;
   color: var(--pink);
   text-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  letter-spacing: 2px; text-transform: uppercase;
 }
 .brand-sub {
-  font-family: 'Kalam', 'Caveat', cursive;
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem; font-weight: 500;
   color: rgba(255,255,255,0.7);
   text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+  letter-spacing: 1px;
 }
 
 .quote-box {
-  max-width: 260px;
-  text-align: right;
-  font-family: 'Kalam', 'Caveat', cursive;
-  font-size: 0.95rem;
-  font-weight: 400;
+  max-width: 260px; text-align: right;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 500;
   font-style: italic;
   color: rgba(255,255,255,0.85);
   text-shadow: 0 2px 12px rgba(0,0,0,0.5);
   line-height: 1.5;
 }
 
-/* ═══ CENTER CONTENT ═══ */
+/* ═══ CENTER ═══ */
 .greeting {
-  font-family: 'Kalam', 'Caveat', cursive;
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600;
   color: #fff;
   text-shadow: 0 2px 16px rgba(0,0,0,0.5);
-  margin-bottom: 0.3rem;
-  line-height: 1.4;
+  margin-bottom: 0.3rem; line-height: 1.4;
   opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
 }
 
 .clock {
-  font-family: 'Kalam', 'Caveat', cursive;
+  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(5rem, 14vw, 10rem);
-  font-weight: 700;
-  color: #fff;
+  font-weight: 700; color: #fff;
   text-shadow: 0 4px 30px rgba(0,0,0,0.45);
-  letter-spacing: -4px;
-  line-height: 1;
+  letter-spacing: -2px; line-height: 1;
   margin-bottom: 0.8rem;
   opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards;
 }
 
-/* ═══ ENTER BUTTON — Hub notebook style ═══ */
+/* ═══ ENTER BUTTON ═══ */
 .enter-btn {
-  font-family: 'Kalam', 'Caveat', cursive;
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.05rem; font-weight: 700;
   padding: 14px 44px;
   border: 1px solid #E5E0DA;
   border-radius: var(--radius);
   background: var(--paper);
   color: var(--text-hub);
-  cursor: pointer;
-  transition: all 0.2s;
+  cursor: pointer; transition: all 0.2s;
   text-decoration: none;
   display: inline-flex; align-items: center; gap: 8px;
   box-shadow: var(--shadow-hub);
@@ -182,12 +233,10 @@ body {
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
   display: flex; justify-content: space-between; align-items: flex-end;
-  padding: 1.5rem 2rem;
-  pointer-events: none;
+  padding: 1.5rem 2rem; pointer-events: none;
 }
 .bottom-bar > * { pointer-events: auto; }
 
-/* ═══ SCENE PILL — Hub notebook style ═══ */
 .glass-pill {
   display: flex; align-items: center; gap: 4px;
   background: var(--paper);
@@ -197,51 +246,38 @@ body {
   box-shadow: var(--shadow-hub);
   transition: all 0.2s;
 }
-.glass-pill:hover {
-  box-shadow: var(--shadow-hover-hub);
-}
+.glass-pill:hover { box-shadow: var(--shadow-hover-hub); }
 .pill-opt {
   width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 4px; border: none;
   background: transparent;
   color: var(--text-light);
-  cursor: pointer;
-  font-size: 0.85rem;
+  cursor: pointer; font-size: 0.85rem;
   transition: all 0.15s ease;
 }
 .pill-opt:hover { color: var(--text-hub); background: var(--blue-soft); }
 .pill-opt.active {
-  background: var(--pink);
-  color: #fff;
+  background: var(--pink); color: #fff;
   box-shadow: 0 2px 8px rgba(255,107,157,0.3);
 }
 .pill-opt svg { width: 16px; height: 16px; }
 
 .theme-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: 6px;
-  font-weight: 500;
+  font-size: 6px; font-weight: 500;
   color: var(--text-light);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-align: center;
-  margin-top: 6px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  text-align: center; margin-top: 6px;
   text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
-.bottom-group {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-}
-.bottom-group-left {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-}
+.bottom-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bottom-group-left { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 
-/* ═══ RETRO TOGGLE — Hub post-it style ═══ */
 .bottom-group-left .retro-toggle {
-  font-family: 'Kalam', 'Caveat', cursive !important;
-  font-size: 0.95rem !important;
-  font-weight: 600 !important;
+  font-family: 'Nunito', sans-serif !important;
+  font-size: 0.9rem !important; font-weight: 700 !important;
   padding: 8px 20px !important;
   border: 1px solid #E5E0DA !important;
   border-radius: var(--radius) !important;
@@ -249,10 +285,8 @@ body {
   color: var(--text-mid) !important;
   cursor: pointer !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
-  letter-spacing: 0 !important;
-  text-transform: none !important;
-  transition: all 0.15s ease !important;
-  margin-left: 0 !important;
+  letter-spacing: 0 !important; text-transform: none !important;
+  transition: all 0.15s ease !important; margin-left: 0 !important;
 }
 .bottom-group-left .retro-toggle:hover {
   transform: translateY(-1px) !important;
@@ -261,32 +295,15 @@ body {
   color: var(--pink-hover) !important;
 }
 
-/* ═══ RAIN EFFECT ═══ */
-.rain-container {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  overflow: hidden; display: none;
-}
-.rain-container.active { display: block; }
-.raindrop {
-  position: absolute; top: -20px;
-  width: 1px; background: linear-gradient(transparent, rgba(200,210,230,0.4));
-  animation: rainFall linear infinite;
-}
-@keyframes rainFall {
-  to { transform: translateY(105vh); }
-}
-
 /* ═══ ANIMATIONS ═══ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ═══ LANDING RETRO OVERRIDES ═══ */
+/* ═══ RETRO OVERRIDES ═══ */
 body.retro-dark .bg-overlay,
-body.retro-light .bg-overlay {
-  background: rgba(0,0,0,0.55) !important;
-}
+body.retro-light .bg-overlay { background: rgba(0,0,0,0.55) !important; }
 
 body.retro-dark .clock,
 body.retro-light .clock {
@@ -331,10 +348,7 @@ body.retro-light .enter-btn {
   box-shadow: none !important;
 }
 body.retro-dark .enter-btn svg,
-body.retro-light .enter-btn svg {
-  stroke: var(--rgold, #f5c518) !important;
-}
-
+body.retro-light .enter-btn svg { stroke: var(--rgold, #f5c518) !important; }
 body.retro-dark .enter-btn:hover,
 body.retro-light .enter-btn:hover {
   border-color: var(--rgold, #f5c518) !important;
@@ -347,46 +361,33 @@ body.retro-dark .glass-pill,
 body.retro-light .glass-pill {
   background: transparent !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  border-radius: 0 !important; box-shadow: none !important;
 }
-
 body.retro-dark .pill-opt,
-body.retro-light .pill-opt {
-  border-radius: 0 !important;
-  color: var(--rdim, #7a8faa) !important;
-}
-
+body.retro-light .pill-opt { border-radius: 0 !important; color: var(--rdim, #7a8faa) !important; }
 body.retro-dark .pill-opt.active,
 body.retro-light .pill-opt.active {
-  background: var(--rgold, #f5c518) !important;
-  color: #000 !important;
+  background: var(--rgold, #f5c518) !important; color: #000 !important;
   box-shadow: 0 0 8px rgba(245,197,24,.4) !important;
 }
-
 body.retro-dark .pill-opt:hover,
 body.retro-light .pill-opt:hover {
   color: var(--rgold, #f5c518) !important;
   background: rgba(245,197,24,.1) !important;
 }
-
 body.retro-dark .theme-label,
 body.retro-light .theme-label {
   font-family: 'Space Mono', monospace !important;
   color: var(--rdim, #7a8faa) !important;
 }
-
 body.retro-dark .bottom-group-left .retro-toggle,
 body.retro-light .bottom-group-left .retro-toggle {
   font-family: 'Press Start 2P', monospace !important;
-  font-size: 0.55rem !important;
-  border-radius: 0 !important;
+  font-size: 0.55rem !important; border-radius: 0 !important;
   background: transparent !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
-  color: var(--rdim, #7a8faa) !important;
-  box-shadow: none !important;
+  color: var(--rdim, #7a8faa) !important; box-shadow: none !important;
 }
-
 body.retro-dark .bottom-group-left .retro-toggle:hover,
 body.retro-light .bottom-group-left .retro-toggle:hover {
   border-color: var(--rgold, #f5c518) !important;
@@ -397,24 +398,27 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 
 @media (max-width: 600px) {
   .top-bar { padding: 1.2rem 1.2rem; }
-  .quote-box { font-size: 0.85rem; max-width: 180px; }
+  .quote-box { font-size: 0.9rem; max-width: 180px; }
   .greeting { font-size: 1.2rem; }
-  .clock { letter-spacing: -2px; }
-  .enter-btn { padding: 12px 36px; font-size: 1rem; }
+  .clock { letter-spacing: -1px; }
+  .enter-btn { padding: 12px 36px; font-size: 0.95rem; }
   .bottom-bar { padding: 1rem 1.2rem; }
 }
 </style>
 </head>
 <body data-scene="auto">
 
-<!-- Background Scenes -->
-<div class="bg-scene scene-day" id="sceneDay"></div>
-<div class="bg-scene scene-sunset" id="sceneSunset"></div>
-<div class="bg-scene scene-night active" id="sceneNight"></div>
-<div class="bg-scene scene-rain" id="sceneRain"></div>
+<!-- Wallpaper layers (2 for crossfade) -->
+<div class="wallpaper-layer active" id="wallA"></div>
+<div class="wallpaper-layer" id="wallB"></div>
 <div class="bg-overlay"></div>
 
-<div class="rain-container" id="rainContainer"></div>
+<!-- Ambient particles -->
+<div class="particles-container" id="particles"></div>
+
+<!-- Retro ambient effects -->
+<div class="retro-scanlines"></div>
+<div class="retro-neon-border"></div>
 
 <!-- Top Bar -->
 <div class="top-bar">
@@ -441,7 +445,6 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
     <button class="retro-toggle" onclick="toggleRetroMode()">Retro ✨</button>
     <div class="theme-label">ESTILO</div>
   </div>
-
   <div class="bottom-group">
     <div class="glass-pill" id="scenePill">
       <button class="pill-opt active" data-sc="auto" title="Auto" onclick="setScene('auto')">
@@ -465,63 +468,88 @@ body.retro-light .bottom-group-left .retro-toggle:hover {
 </div>
 
 <script>
+/* ═══ GHIBLI LANDSCAPE WALLPAPERS (official gallery, high-res) ═══ */
+const wallpapers = {
+  day: [
+    'https://www.ghibli.jp/gallery/totoro016.jpg',
+    'https://www.ghibli.jp/gallery/totoro032.jpg',
+    'https://www.ghibli.jp/gallery/totoro050.jpg',
+    'https://www.ghibli.jp/gallery/karigurashi038.jpg',
+    'https://www.ghibli.jp/gallery/marnie034.jpg',
+    'https://www.ghibli.jp/gallery/kokurikozaka033.jpg',
+  ],
+  sunset: [
+    'https://www.ghibli.jp/gallery/chihiro050.jpg',
+    'https://www.ghibli.jp/gallery/chihiro044.jpg',
+    'https://www.ghibli.jp/gallery/mononoke030.jpg',
+    'https://www.ghibli.jp/gallery/mononoke036.jpg',
+    'https://www.ghibli.jp/gallery/ponyo033.jpg',
+    'https://www.ghibli.jp/gallery/gedsenki035.jpg',
+  ],
+  night: [
+    'https://www.ghibli.jp/gallery/howl038.jpg',
+    'https://www.ghibli.jp/gallery/howl050.jpg',
+    'https://www.ghibli.jp/gallery/chihiro038.jpg',
+    'https://www.ghibli.jp/gallery/ponyo036.jpg',
+    'https://www.ghibli.jp/gallery/kaze042.jpg',
+    'https://www.ghibli.jp/gallery/mononoke050.jpg',
+  ],
+  rain: [
+    'https://www.ghibli.jp/gallery/kazetachinu033.jpg',
+    'https://www.ghibli.jp/gallery/totoro019.jpg',
+    'https://www.ghibli.jp/gallery/kaze036.jpg',
+    'https://www.ghibli.jp/gallery/marnie030.jpg',
+    'https://www.ghibli.jp/gallery/karigurashi034.jpg',
+    'https://www.ghibli.jp/gallery/chihiro033.jpg',
+  ]
+};
+
+// Preload first images
+Object.values(wallpapers).forEach(arr => {
+  const img = new Image(); img.src = arr[0];
+});
+
 const quotes = [
   '"Success all depends on the second letter."',
   '"The only way to do great work is to love what you do."',
   '"Don\'t watch the clock; do what it does. Keep going."',
-  '"Study hard what interests you the most in the most undisciplined, irreverent way possible."',
   '"The beautiful thing about learning is that nobody can take it away from you."',
   '"It does not matter how slowly you go as long as you do not stop."',
   '"A person who never made a mistake never tried anything new."',
-  '"Education is the most powerful weapon you can use to change the world."',
   '"The expert in anything was once a beginner."',
-  '"Push yourself, because no one else is going to do it for you."',
   '"Dream big. Start small. Act now."',
-  '"Code is like humor. When you have to explain it, it\'s bad."',
   '"First, solve the problem. Then, write the code."',
   '"Talk is cheap. Show me the code."',
 ];
 
-function setQuote() {
-  const q = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById('quoteBox').textContent = q;
-}
-setQuote();
+document.getElementById('quoteBox').textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
 function updateClock() {
   const now = new Date();
-  const h = now.getHours().toString().padStart(2, '0');
-  const m = now.getMinutes().toString().padStart(2, '0');
-  document.getElementById('clock').textContent = h + ':' + m;
-  return now;
+  document.getElementById('clock').textContent =
+    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
 }
 
 function updateGreeting() {
   const now = new Date();
   const h = now.getHours();
   const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const day = days[now.getDay()];
-  let period = 'Boa noite';
-  if (h >= 5 && h < 12) period = 'Bom dia';
-  else if (h >= 12 && h < 18) period = 'Boa tarde';
-
+  let period = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
   let name = localStorage.getItem('rmUserName') || '';
-  if (!name) {
-    try {
-      const rmsUser = JSON.parse(localStorage.getItem('rms_user') || '{}');
-      name = rmsUser.name || '';
-    } catch(e) {}
-  }
-  const nameStr = name ? ', ' + name.split(' ')[0] : '';
-  document.getElementById('greeting').innerHTML = period + nameStr + '!<br>Ready for ' + day + '? You\'ve got this ❤️';
+  if (!name) { try { name = JSON.parse(localStorage.getItem('rms_user') || '{}').name || ''; } catch(e){} }
+  const n = name ? ', ' + name.split(' ')[0] : '';
+  document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this ❤️';
 }
 
-updateClock();
-updateGreeting();
+updateClock(); updateGreeting();
 setInterval(updateClock, 1000);
 setInterval(updateGreeting, 60000);
 
+/* ═══ SCENE + WALLPAPER ROTATION ═══ */
 let currentScene = localStorage.getItem('landingScene') || 'auto';
+let wallIdx = {};
+Object.keys(wallpapers).forEach(k => wallIdx[k] = 0);
+let activeWall = 'A';
 
 function getAutoScene() {
   const h = new Date().getHours();
@@ -530,19 +558,37 @@ function getAutoScene() {
   return 'night';
 }
 
-function applyScene(scene) {
-  const actual = scene === 'auto' ? getAutoScene() : scene;
-  document.querySelectorAll('.bg-scene').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('scene' + actual.charAt(0).toUpperCase() + actual.slice(1));
-  if (el) el.classList.add('active');
+function resolveScene() {
+  return currentScene === 'auto' ? getAutoScene() : currentScene;
+}
 
-  const rc = document.getElementById('rainContainer');
-  if (actual === 'rain') {
-    rc.classList.add('active');
-    if (!rc.children.length) createRain();
+function setWallpaper(scene, animate) {
+  const imgs = wallpapers[scene];
+  if (!imgs || !imgs.length) return;
+  const url = imgs[wallIdx[scene] % imgs.length];
+
+  if (animate) {
+    const from = activeWall === 'A' ? 'wallA' : 'wallB';
+    const to = activeWall === 'A' ? 'wallB' : 'wallA';
+    document.getElementById(to).style.backgroundImage = 'url(' + url + ')';
+    document.getElementById(to).classList.add('active');
+    document.getElementById(from).classList.remove('active');
+    activeWall = activeWall === 'A' ? 'B' : 'A';
   } else {
-    rc.classList.remove('active');
+    const el = document.getElementById('wall' + activeWall);
+    el.style.backgroundImage = 'url(' + url + ')';
+    el.classList.add('active');
   }
+
+  // Preload next
+  const next = imgs[(wallIdx[scene] + 1) % imgs.length];
+  const pre = new Image(); pre.src = next;
+}
+
+function applyScene(scene, force) {
+  const actual = scene === 'auto' ? getAutoScene() : scene;
+  setWallpaper(actual, !force);
+  createParticles(actual);
 
   document.querySelectorAll('#scenePill .pill-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.sc === scene);
@@ -552,26 +598,93 @@ function applyScene(scene) {
 function setScene(scene) {
   currentScene = scene;
   localStorage.setItem('landingScene', scene);
-  applyScene(scene);
+  const actual = resolveScene();
+  wallIdx[actual] = 0;
+  applyScene(scene, true);
 }
 
-function createRain() {
-  const rc = document.getElementById('rainContainer');
-  for (let i = 0; i < 80; i++) {
-    const drop = document.createElement('div');
-    drop.className = 'raindrop';
-    drop.style.left = Math.random() * 100 + '%';
-    drop.style.height = (15 + Math.random() * 20) + 'px';
-    drop.style.animationDuration = (0.4 + Math.random() * 0.6) + 's';
-    drop.style.animationDelay = Math.random() * 2 + 's';
-    drop.style.opacity = 0.2 + Math.random() * 0.3;
-    rc.appendChild(drop);
+// Initial
+applyScene(currentScene, true);
+
+// Rotate wallpaper every 30s
+setInterval(() => {
+  const sc = resolveScene();
+  wallIdx[sc] = (wallIdx[sc] + 1) % wallpapers[sc].length;
+  setWallpaper(sc, true);
+}, 30000);
+
+// Auto scene check
+setInterval(() => { if (currentScene === 'auto') applyScene('auto'); }, 300000);
+
+/* ═══ AMBIENT PARTICLES ═══ */
+let currentParticleType = '';
+
+function createParticles(scene) {
+  const c = document.getElementById('particles');
+  if (currentParticleType === scene) return;
+  currentParticleType = scene;
+  c.innerHTML = '';
+
+  if (scene === 'day') {
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-dust';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+      p.style.setProperty('--dy', -(40 + Math.random() * 80) + 'px');
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = Math.random() * 10 + 's';
+      p.style.width = (2 + Math.random() * 2) + 'px';
+      p.style.height = p.style.width;
+      c.appendChild(p);
+    }
+  } else if (scene === 'sunset') {
+    for (let i = 0; i < 15; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-firefly';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = 30 + Math.random() * 60 + '%';
+      p.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
+      p.style.setProperty('--dy', -(10 + Math.random() * 30) + 'px');
+      p.style.setProperty('--dx2', (Math.random() * 40 - 20) + 'px');
+      p.style.setProperty('--dy2', -(20 + Math.random() * 40) + 'px');
+      p.style.setProperty('--dx3', (Math.random() * 50 - 25) + 'px');
+      p.style.setProperty('--dy3', -(5 + Math.random() * 20) + 'px');
+      p.style.animationDuration = (6 + Math.random() * 8) + 's';
+      p.style.animationDelay = Math.random() * 6 + 's';
+      p.style.width = (3 + Math.random() * 3) + 'px';
+      p.style.height = p.style.width;
+      c.appendChild(p);
+    }
+  } else if (scene === 'night') {
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-star';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 70 + '%';
+      p.style.setProperty('--bright', (0.2 + Math.random() * 0.4).toFixed(2));
+      p.style.animationDuration = (3 + Math.random() * 5) + 's';
+      p.style.animationDelay = Math.random() * 5 + 's';
+      const sz = (1 + Math.random() * 2) + 'px';
+      p.style.width = sz; p.style.height = sz;
+      c.appendChild(p);
+    }
+  } else if (scene === 'rain') {
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-rain';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.height = (12 + Math.random() * 18) + 'px';
+      p.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+      p.style.animationDelay = Math.random() * 2 + 's';
+      p.style.opacity = (0.15 + Math.random() * 0.2).toFixed(2);
+      c.appendChild(p);
+    }
   }
 }
 
-applyScene(currentScene);
-setInterval(() => { if (currentScene === 'auto') applyScene('auto'); }, 300000);
-
+/* ═══ AUTH CHECK ═══ */
 (function() {
   const token = localStorage.getItem('token');
   const session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
