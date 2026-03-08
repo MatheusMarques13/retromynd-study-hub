@@ -572,72 +572,55 @@ body.cafe-dark .bottom-group-left .retro-toggle:hover {
 </div>
 
 <script>
-var GHIBLI_BASE = 'https://www.ghibli.jp/gallery/';
+/* ═══════════════════════════════════════════════════
+   GHIBLI LANDSCAPE WALLPAPERS — VERIFIED SCENERY ONLY
+   Every URL has been visually confirmed as a landscape
+   with NO prominent character figures.
+   ═══════════════════════════════════════════════════ */
+var G = 'https://www.ghibli.jp/gallery/';
 
 var W = {
-  // DAY: bright, green, sunny landscapes
   day: [
-    GHIBLI_BASE + 'howl002.jpg',      // Howl's castle green fields
-    GHIBLI_BASE + 'howl048.jpg',      // Howl's castle scenery
-    GHIBLI_BASE + 'laputa015.jpg',    // Laputa floating castle sky
-    GHIBLI_BASE + 'laputa039.jpg',    // Laputa ruins/garden
-    GHIBLI_BASE + 'kazetachinu002.jpg', // Wind Rises countryside
-    GHIBLI_BASE + 'kazetachinu018.jpg', // Wind Rises pastoral scene
-    GHIBLI_BASE + 'totoro038.jpg',    // Totoro forest path
-    GHIBLI_BASE + 'marnie022.jpg',    // Marnie marsh/wetland
-    GHIBLI_BASE + 'kaze037.jpg',      // Valley scenery
-    GHIBLI_BASE + 'ponyo006.jpg',     // Ponyo seaside town
-    GHIBLI_BASE + 'arrietty002.jpg',  // Arrietty garden
-    GHIBLI_BASE + 'arrietty036.jpg'   // Arrietty nature
+    G+'laputa036.jpg',       // Laputa floating castle — blue sky, clouds
+    G+'laputa039.jpg',       // Laputa garden ruins from above — green
+    G+'marnie009.jpg',       // Mansion by lake — golden light, trees
+    G+'karigurashi001.jpg',  // Overgrown cottage in garden
+    G+'marnie037.jpg',       // Forest with pond and bridge — lush green
+    G+'ponyo013.jpg',        // Seaside town — aerial architecture view
+    G+'kimitachi019.jpg',    // Autumn lake with reflections
+    G+'majo002.jpg'          // Cottage with garden — bright green
   ],
-  // SUNSET: orange/golden hue landscapes
   sunset: [
-    GHIBLI_BASE + 'chihiro006.jpg',   // Spirited Away sunset town
-    GHIBLI_BASE + 'chihiro009.jpg',   // Spirited Away evening scene
-    GHIBLI_BASE + 'howl006.jpg',      // Howl sunset sky
-    GHIBLI_BASE + 'howl036.jpg',      // Howl dramatic sky
-    GHIBLI_BASE + 'laputa030.jpg',    // Laputa sunset clouds
-    GHIBLI_BASE + 'mononoke010.jpg',  // Mononoke forest dusk
-    GHIBLI_BASE + 'ponyo027.jpg',     // Ponyo sunset ocean
-    GHIBLI_BASE + 'marnie015.jpg',    // Marnie sunset marsh
-    GHIBLI_BASE + 'kazetachinu025.jpg', // Wind Rises sunset
-    GHIBLI_BASE + 'kiki024.jpg',      // Kiki delivery sunset city
-    GHIBLI_BASE + 'howl026.jpg'       // Howl sunset landscape
+    G+'marnie021.jpg',       // Sunset over calm water — pink sky
+    G+'marnie009.jpg',       // Lakeside mansion — warm golden light
+    G+'howl011.jpg',         // Moving castle at dusk — mountains
+    G+'kimitachi020.jpg',    // Dramatic cloud formations — golden
+    G+'ponyo006.jpg',        // Seaside green island — warm light
+    G+'kimitachi019.jpg'     // Autumn lake — warm tones
   ],
-  // NIGHT: dark blue/purple landscapes
   night: [
-    GHIBLI_BASE + 'chihiro002.jpg',   // Spirited Away bathhouse night
-    GHIBLI_BASE + 'chihiro023.jpg',   // Spirited Away night town
-    GHIBLI_BASE + 'howl011.jpg',      // Howl night sky
-    GHIBLI_BASE + 'mononoke041.jpg',  // Mononoke night forest
-    GHIBLI_BASE + 'laputa022.jpg',    // Laputa night sky
-    GHIBLI_BASE + 'totoro046.jpg',    // Totoro night scene
-    GHIBLI_BASE + 'kiki044.jpg',      // Kiki night city
-    GHIBLI_BASE + 'ponyo043.jpg',     // Ponyo night sea
-    GHIBLI_BASE + 'marnie030.jpg',    // Marnie night
-    GHIBLI_BASE + 'mononoke018.jpg',  // Mononoke night forest
-    GHIBLI_BASE + 'totoro015.jpg'     // Totoro night
+    G+'chihiro011.jpg',      // Bathhouse at night — glowing lanterns
+    G+'ponyo038.jpg',        // Full moon over dark ocean
+    G+'mononoke024.jpg',     // Kodama forest — blue night mountains
+    G+'howl011.jpg',         // Moving castle — twilight mountains
+    G+'marnie027.jpg',       // Mansion by water at night — moonlight
+    G+'nausicaa001.jpg'      // Fire horizon — dark dramatic sky
   ],
-  // RAIN: gray/stormy landscapes
   rain: [
-    GHIBLI_BASE + 'totoro029.jpg',    // Totoro rain bus stop
-    GHIBLI_BASE + 'ponyo011.jpg',     // Ponyo stormy ocean
-    GHIBLI_BASE + 'ponyo019.jpg',     // Ponyo underwater/storm
-    GHIBLI_BASE + 'ponyo004.jpg',     // Ponyo seaside
-    GHIBLI_BASE + 'marnie003.jpg',    // Marnie rainy marsh
-    GHIBLI_BASE + 'marnie008.jpg',    // Marnie rainy landscape
-    GHIBLI_BASE + 'marnie038.jpg',    // Marnie weather
-    GHIBLI_BASE + 'mononoke033.jpg',  // Mononoke rain forest
-    GHIBLI_BASE + 'kazetachinu034.jpg', // Wind Rises overcast
-    GHIBLI_BASE + 'kazetachinu009.jpg', // Wind Rises rainy
-    GHIBLI_BASE + 'howl019.jpg'       // Howl rainy scene
+    G+'marnie038.jpg',       // Lightning over dark mansion tower
+    G+'mononoke024.jpg',     // Dark forest with spirits — overcast
+    G+'marnie010.jpg',       // Misty marsh — foggy atmosphere
+    G+'ponyo011.jpg',        // Stormy ocean — dark waves
+    G+'kazetachinu032.jpg',  // Overcast green countryside
+    G+'marnie037.jpg'        // Dense forest — moody green atmosphere
   ]
 };
 
-var FALLBACK = {
+var FB = {
   day: [
     'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920&q=80',
-    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80'
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80',
+    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80'
   ],
   sunset: [
     'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920&q=80',
@@ -653,67 +636,62 @@ var FALLBACK = {
   ]
 };
 
-var validatedW = { day: [], sunset: [], night: [], rain: [] };
-var validationDone = { day: false, sunset: false, night: false, rain: false };
+/* --- wallpaper state --- */
+var readyPool = { day:[], sunset:[], night:[], rain:[] };
+var validated  = { day:false, sunset:false, night:false, rain:false };
+var wallIdx    = { day:0, sunset:0, night:0, rain:0 };
+var activeLayer = 'A';
+var lastScene   = '';
+var currentScene = localStorage.getItem('landingScene') || 'auto';
 
+/* --- preload & validate each scene's images once --- */
 function validateScene(scene, cb) {
-  if (validationDone[scene]) return cb(validatedW[scene]);
-  var urls = W[scene];
-  var pending = urls.length;
+  if (validated[scene]) return cb(readyPool[scene]);
+  var urls = W[scene], pending = urls.length;
   urls.forEach(function(url) {
     var img = new Image();
     img.onload = function() {
-      if (img.naturalWidth > 100) {
-        validatedW[scene].push(url);
-        console.log('[RM] \u2705 valid:', url.split('/').pop());
-      }
-      if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
+      if (img.naturalWidth > 100) readyPool[scene].push(url);
+      if (--pending === 0) { validated[scene] = true; cb(readyPool[scene]); }
     };
     img.onerror = function() {
-      console.warn('[RM] \u274c dead:', url.split('/').pop());
-      if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
+      if (--pending === 0) { validated[scene] = true; cb(readyPool[scene]); }
     };
     img.src = url;
   });
 }
 
-var quotes = [
-  '"The only way to do great work is to love what you do."',
-  '"Don\'t watch the clock; do what it does. Keep going."',
-  '"The beautiful thing about learning is that nobody can take it away from you."',
-  '"It does not matter how slowly you go as long as you do not stop."',
-  '"A person who never made a mistake never tried anything new."',
-  '"The expert in anything was once a beginner."',
-  '"Dream big. Start small. Act now."',
-  '"First, solve the problem. Then, write the code."',
-  '"Talk is cheap. Show me the code."'
-];
-document.getElementById('quoteBox').textContent = quotes[Math.floor(Math.random() * quotes.length)];
-
-function updateClock() {
-  var now = new Date();
-  document.getElementById('clock').textContent =
-    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+/* --- crossfade between wallA / wallB layers --- */
+function doApply(url, crossfade) {
+  if (crossfade) {
+    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
+    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
+    var show = document.getElementById(showId);
+    var hide = document.getElementById(hideId);
+    show.style.backgroundImage = 'url("' + url + '")';
+    show.offsetHeight;
+    show.classList.add('active');
+    hide.classList.remove('active');
+    activeLayer = activeLayer === 'A' ? 'B' : 'A';
+  } else {
+    var el = document.getElementById('wall' + activeLayer);
+    el.style.backgroundImage = 'url("' + url + '")';
+    el.classList.add('active');
+  }
 }
-function updateGreeting() {
-  var now = new Date();
-  var h = now.getHours();
-  var days = ['Domingo','Segunda','Ter\u00e7a','Quarta','Quinta','Sexta','S\u00e1bado'];
-  var period = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
-  var name = localStorage.getItem('rmUserName') || '';
-  if (!name) { try { name = JSON.parse(localStorage.getItem('rms_user') || '{}').name || ''; } catch(e){} }
-  var n = name ? ', ' + name.split(' ')[0] : '';
-  document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this \u2764\ufe0f';
+
+function showWall(scene, crossfade) {
+  validateScene(scene, function(pool) {
+    if (pool.length === 0) pool = FB[scene];
+    var idx = wallIdx[scene] % pool.length;
+    doApply(pool[idx], crossfade);
+    // preload next
+    var next = pool[(idx + 1) % pool.length];
+    (new Image()).src = next;
+  });
 }
-updateClock(); updateGreeting();
-setInterval(updateClock, 1000);
-setInterval(updateGreeting, 60000);
 
-var currentScene = localStorage.getItem('landingScene') || 'auto';
-var wallIdx = { day: 0, sunset: 0, night: 0, rain: 0 };
-var activeLayer = 'A';
-var lastAppliedScene = '';
-
+/* --- scene management --- */
 function getAutoScene() {
   var h = new Date().getHours();
   if (h >= 6 && h < 17) return 'day';
@@ -724,43 +702,12 @@ function resolveScene() {
   return currentScene === 'auto' ? getAutoScene() : currentScene;
 }
 
-function doApply(url, crossfade) {
-  if (crossfade) {
-    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
-    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
-    var showEl = document.getElementById(showId);
-    var hideEl = document.getElementById(hideId);
-    showEl.style.backgroundImage = 'url("' + url + '")';
-    showEl.offsetHeight;
-    showEl.classList.add('active');
-    hideEl.classList.remove('active');
-    activeLayer = activeLayer === 'A' ? 'B' : 'A';
-  } else {
-    var el = document.getElementById('wall' + activeLayer);
-    el.style.backgroundImage = 'url("' + url + '")';
-    el.classList.add('active');
-  }
-}
-
-function setWallpaper(scene, crossfade) {
-  validateScene(scene, function(valid) {
-    var pool = valid.length > 0 ? valid : FALLBACK[scene];
-    var idx = wallIdx[scene] % pool.length;
-    var url = pool[idx];
-    console.log('[RM] showing:', scene, url.split('/').pop(), '(pool:', pool.length, 'valid)');
-    doApply(url, crossfade);
-    var nextUrl = pool[(idx + 1) % pool.length];
-    (new Image()).src = nextUrl;
-  });
-}
-
 function applyScene(scene, initial) {
   var actual = scene === 'auto' ? getAutoScene() : scene;
-  console.log('[RM] scene:', scene, '->', actual);
-  if (initial || lastAppliedScene !== actual) {
-    setWallpaper(actual, !initial);
+  if (initial || lastScene !== actual) {
+    showWall(actual, !initial);
     createParticles(actual);
-    lastAppliedScene = actual;
+    lastScene = actual;
   }
   var opts = document.querySelectorAll('#scenePill .pill-opt');
   for (var i = 0; i < opts.length; i++)
@@ -772,23 +719,27 @@ function setScene(scene) {
   localStorage.setItem('landingScene', scene);
   var sc = scene === 'auto' ? getAutoScene() : scene;
   wallIdx[sc] = 0;
-  validationDone[sc] = false;
-  validatedW[sc] = [];
-  lastAppliedScene = '';
+  validated[sc] = false;
+  readyPool[sc] = [];
+  lastScene = '';
   applyScene(scene, true);
 }
 
+/* --- boot & timers --- */
 applyScene(currentScene, true);
 
+// Cycle wallpaper every 30s
 setInterval(function() {
   var sc = resolveScene();
   wallIdx[sc] = (wallIdx[sc] || 0) + 1;
-  setWallpaper(sc, true);
+  showWall(sc, true);
 }, 30000);
 
+// Re-check auto scene every 5 min
 setInterval(function() {
   if (currentScene === 'auto') applyScene('auto');
 }, 300000);
+
 
 var currentParticleScene = '';
 function createParticles(scene) {

@@ -1282,3 +1282,72 @@ body.cafe-dark .login-card,
 body.cafe-dark .card-body {
   background: var(--cafe-card) !important;
 }
+
+/* ========== LESSON PANEL — CAFÉ ========== */
+
+body.cafe-light .lesson-panel {
+  background: var(--cafe-bg) !important;
+}
+
+body.cafe-dark .lesson-panel {
+  background: var(--cafe-bg) !important;
+}
+
+body.cafe-light .lesson-overlay {
+  background: rgba(93,77,60,0.20) !important;
+}
+
+body.cafe-dark .lesson-overlay {
+  background: rgba(0,0,0,0.40) !important;
+}
+
+/* ========== RADIO PLAYER — CAFÉ ========== */
+
+body.cafe-dark #rm-radio-btn {
+  background: #3E372E !important;
+  color: #F0E8DC !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35) !important;
+}
+
+body.cafe-light #rm-radio-btn {
+  background: #DDD5C8 !important;
+  color: #3D3329 !important;
+  box-shadow: 0 2px 8px rgba(93,77,60,0.15) !important;
+}
+
+body.cafe-dark #rm-radio-panel {
+  background: rgba(36,32,25,0.95) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #F0E8DC !important;
+}
+
+body.cafe-light #rm-radio-panel {
+  background: rgba(237,230,218,0.96) !important;
+  border-color: rgba(93,77,60,0.12) !important;
+  color: #3D3329 !important;
+}
+
+body.cafe-dark .rm-ctrl-btn {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+
+body.cafe-light .rm-ctrl-btn {
+  background: rgba(93,77,60,0.06) !important;
+  border-color: rgba(93,77,60,0.10) !important;
+}
+
+body.cafe-dark #rm-play.rm-ctrl-btn {
+  background: rgba(196,168,130,0.20) !important;
+  border-color: rgba(196,168,130,0.30) !important;
+}
+
+body.cafe-light #rm-play.rm-ctrl-btn {
+  background: rgba(93,77,60,0.10) !important;
+  border-color: rgba(93,77,60,0.15) !important;
+}
+
+body.cafe-dark #rm-radio-btn.playing::before,
+body.cafe-light #rm-radio-btn.playing::before {
+  border-color: var(--cafe-highlight) !important;
+}

@@ -189,6 +189,81 @@
   .rm-close-btn:hover {
     opacity: 0.85;
   }
+
+  /* ===== RETRO THEME ===== */
+  body.retro-dark #rm-radio-btn {
+    background: #2a2520;
+    color: #FFD700;
+    border: 1px solid #444;
+    box-shadow: 0 0 8px rgba(255,215,0,0.15), 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  body.retro-light #rm-radio-btn {
+    background: #e8e0d2;
+    color: #5c4d3c;
+    border: 1px solid #c4b8a4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  body.retro-dark #rm-radio-panel {
+    background: rgba(30,25,20,0.96);
+    border: 1px solid rgba(255,215,0,0.15);
+    color: #FFD700;
+    box-shadow: 0 0 12px rgba(255,215,0,0.08), 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  body.retro-light #rm-radio-panel {
+    background: rgba(232,224,210,0.96);
+    border: 1px solid rgba(92,77,60,0.15);
+    color: #3a2e22;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  body.retro-dark .rm-ctrl-btn {
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.20);
+    color: #FFD700;
+  }
+
+  body.retro-light .rm-ctrl-btn {
+    background: rgba(92,77,60,0.06);
+    border: 1px solid rgba(92,77,60,0.15);
+    color: #5c4d3c;
+  }
+
+  body.retro-dark .rm-ctrl-btn:hover {
+    background: rgba(255,215,0,0.15);
+  }
+
+  body.retro-light .rm-ctrl-btn:hover {
+    background: rgba(92,77,60,0.12);
+  }
+
+  body.retro-dark #rm-play.rm-ctrl-btn {
+    background: rgba(255,215,0,0.15);
+    border-color: rgba(255,215,0,0.30);
+  }
+
+  body.retro-light #rm-play.rm-ctrl-btn {
+    background: rgba(92,77,60,0.10);
+    border-color: rgba(92,77,60,0.20);
+  }
+
+  body.retro-dark #rm-radio-btn.playing::before {
+    border-color: #FFD700;
+  }
+
+  body.retro-light #rm-radio-btn.playing::before {
+    border-color: #A8896A;
+  }
+
+  body.retro-dark #rm-track-title {
+    color: rgba(255,215,0,0.75);
+  }
+
+  body.retro-dark .rm-close-btn {
+    color: #FFD700;
+  }
 </style>
 
 <div id="rm-player">
