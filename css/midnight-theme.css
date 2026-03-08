@@ -1,0 +1,561 @@
+/* =====================================================
+   MIDNIGHT THEME — css/midnight-theme.css
+   Clean, modern dark mode for RetroMynd Study Hub
+   Applied via body.midnight class
+   ===================================================== */
+
+/* Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ===== CSS VARIABLES ===== */
+body.midnight {
+  --bg: #0F172A;
+  --paper: #1E293B;
+  --paper-line: #334155;
+  --paper-margin: #22D3EE;
+  --pink: #22D3EE;
+  --pink-soft: rgba(34,211,238,0.12);
+  --pink-hover: #06B6D4;
+  --blue: #22D3EE;
+  --blue-soft: rgba(34,211,238,0.08);
+  --blue-deep: #0891B2;
+  --lavender: #22D3EE;
+  --lavender-soft: rgba(34,211,238,0.08);
+  --mint: #34D399;
+  --mint-soft: rgba(52,211,153,0.1);
+  --text: #F1F5F9;
+  --text-mid: #94A3B8;
+  --text-light: #64748B;
+  --border: #334155;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  /* midnight-specific extras */
+  --m-cyan: #22D3EE;
+  --m-amber: #F59E0B;
+  --m-success: #34D399;
+  --m-error: #F87171;
+  --m-surface: #1E293B;
+  --m-card: #1E293B;
+  --m-border: #334155;
+  --m-cyan-glow: rgba(34,211,238,0.3);
+  --m-amber-glow: rgba(245,158,11,0.3);
+}
+
+/* ===== GLOBAL ===== */
+body.midnight {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+  background-attachment: fixed !important;
+  color: #F1F5F9 !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+body.midnight * {
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* Keep pixel font for tags/badges */
+body.midnight [class*="pixel"],
+body.midnight .pixel,
+body.midnight [class*="tag"],
+body.midnight [class*="badge"] {
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+/* ===== SELECTION & SCROLLBAR ===== */
+body.midnight ::selection {
+  background: var(--m-cyan) !important;
+  color: #0F172A !important;
+}
+
+body.midnight ::-webkit-scrollbar { width: 6px; height: 6px; }
+body.midnight ::-webkit-scrollbar-track { background: #0F172A; }
+body.midnight ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+body.midnight ::-webkit-scrollbar-thumb:hover { background: var(--m-cyan); }
+
+/* ===== BACKGROUND AREAS ===== */
+body.midnight main,
+body.midnight [class*="main"],
+body.midnight [class*="content"],
+body.midnight [class*="wrapper"],
+body.midnight [class*="layout"],
+body.midnight [class*="page"],
+body.midnight [class*="grid"],
+body.midnight [class*="body"],
+body.midnight [class*="container"]:not(#rmLoginOverlay):not(#rmLoginOverlay *),
+body.midnight [class*="section"]:not(#rmProfilePanel *) {
+  background: transparent !important;
+  color: #F1F5F9 !important;
+}
+
+/* ===== HEADER / NAV ===== */
+body.midnight header,
+body.midnight [class*="header"]:not(#rmProfilePanel *):not(#rmProfileBar *),
+body.midnight nav,
+body.midnight [class*="nav"]:not(#rmProfilePanel *),
+body.midnight [class*="toolbar"],
+body.midnight [class*="topbar"] {
+  background: rgba(15,23,42,0.9) !important;
+  border-color: #334155 !important;
+  backdrop-filter: blur(12px) !important;
+  color: #F1F5F9 !important;
+}
+
+/* ===== CARDS (glass-morphism) ===== */
+body.midnight [class*="card"],
+body.midnight [class*="Card"],
+body.midnight [class*="widget"],
+body.midnight [class*="panel"]:not(#rmProfilePanel),
+body.midnight [class*="box"]:not(input):not(select) {
+  backdrop-filter: blur(12px) !important;
+  background: rgba(30,41,59,0.8) !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+  color: #F1F5F9 !important;
+}
+
+/* ===== REMOVE NOTEBOOK DECORATIONS ===== */
+body.midnight [class*="ruled"],
+body.midnight [class*="paper"],
+body.midnight [class*="notebook"],
+body.midnight [class*="lined"] {
+  background-image: none !important;
+  background: rgba(30,41,59,0.8) !important;
+}
+
+body.midnight [class*="card"]::before,
+body.midnight [class*="card"]::after,
+body.midnight [class*="paper"]::before,
+body.midnight [class*="paper"]::after,
+body.midnight [class*="note"]::before,
+body.midnight [class*="note"]::after,
+body.midnight .nb-line,
+body.midnight [class*="margin"] {
+  background: none !important;
+  background-image: none !important;
+  border: none !important;
+  display: none !important;
+}
+
+/* ===== HEADINGS ===== */
+body.midnight h1:not(#rmLoginOverlay h1),
+body.midnight h2:not(#rmLoginOverlay *),
+body.midnight h3,
+body.midnight h4,
+body.midnight h5,
+body.midnight h6 {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  color: #F1F5F9 !important;
+  text-shadow: none !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ===== TEXT ===== */
+body.midnight p,
+body.midnight li,
+body.midnight td,
+body.midnight th,
+body.midnight label,
+body.midnight [class*="desc"],
+body.midnight [class*="info"]:not(#rmProfileBar *) {
+  color: #F1F5F9 !important;
+}
+
+body.midnight [class*="muted"],
+body.midnight [class*="secondary"],
+body.midnight [class*="gray"],
+body.midnight [class*="grey"],
+body.midnight [class*="hint"],
+body.midnight [class*="caption"],
+body.midnight small,
+body.midnight [class*="placeholder"],
+body.midnight [class*="sub"] {
+  color: #94A3B8 !important;
+}
+
+body.midnight [class*="card"] span,
+body.midnight [class*="card"] div,
+body.midnight main span,
+body.midnight main div,
+body.midnight [class*="content"] span,
+body.midnight [class*="content"] div {
+  color: #F1F5F9 !important;
+}
+
+/* ===== BUTTONS ===== */
+body.midnight button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),
+body.midnight [type="button"]:not(#rmLoginOverlay *),
+body.midnight [type="submit"]:not(#rmLoginOverlay *) {
+  background: var(--m-cyan) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #0F172A !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  padding: 7px 14px !important;
+  transition: box-shadow 0.2s, background 0.2s !important;
+}
+
+body.midnight button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover,
+body.midnight [type="button"]:not(#rmLoginOverlay *):hover,
+body.midnight [type="submit"]:not(#rmLoginOverlay *):hover {
+  background: #06B6D4 !important;
+  box-shadow: 0 0 20px var(--m-cyan-glow) !important;
+}
+
+body.midnight button.active:not(#rmLoginOverlay button):not(.rm-tb):not(.pb-btn),
+body.midnight [class*="selected"]:not(#rmLoginOverlay *),
+body.midnight [aria-selected="true"]:not(#rmLoginOverlay *) {
+  background: var(--m-cyan) !important;
+  color: #0F172A !important;
+  box-shadow: 0 0 12px var(--m-cyan-glow) !important;
+}
+
+body.midnight [class*="danger"],
+body.midnight [class*="reset"],
+body.midnight [class*="delete"] {
+  background: transparent !important;
+  border: 1px solid var(--m-error) !important;
+  color: var(--m-error) !important;
+}
+
+/* Post-it style buttons → sleek dark with colored border */
+body.midnight .postit,
+body.midnight [class*="postit"],
+body.midnight .lesson-btn {
+  background: rgba(30,41,59,0.9) !important;
+  border: 1px solid #334155 !important;
+  color: #F1F5F9 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+}
+
+/* ===== INPUTS ===== */
+body.midnight input:not(.rm-f):not(.pp-input):not(#rmLoginOverlay input),
+body.midnight textarea:not(#rmLoginOverlay textarea),
+body.midnight select:not(#rmLoginOverlay select) {
+  background: rgba(15,23,42,0.6) !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+  color: #F1F5F9 !important;
+  caret-color: var(--m-cyan) !important;
+  font-size: 0.9rem !important;
+}
+
+body.midnight input:not(#rmLoginOverlay input):focus,
+body.midnight textarea:not(#rmLoginOverlay textarea):focus {
+  border-color: var(--m-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.12) !important;
+  outline: none !important;
+}
+
+body.midnight input::placeholder,
+body.midnight textarea::placeholder { color: #64748B !important; }
+
+/* ===== CHECKBOXES ===== */
+body.midnight input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  border: 2px solid #334155 !important;
+  border-radius: 4px !important;
+  background: rgba(15,23,42,0.6) !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+body.midnight input[type="checkbox"]:checked {
+  background: var(--m-cyan) !important;
+  border-color: var(--m-cyan) !important;
+  box-shadow: 0 0 8px var(--m-cyan-glow) !important;
+}
+
+body.midnight input[type="checkbox"]:checked::after {
+  content: "\2713";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: #0F172A;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+/* ===== TABS ===== */
+body.midnight [class*="tab"]:not(.rm-tb):not(#rmLoginOverlay *),
+body.midnight [role="tab"] {
+  background: rgba(15,23,42,0.4) !important;
+  color: #94A3B8 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 5px 12px !important;
+}
+
+body.midnight [class*="tab"].active:not(.rm-tb),
+body.midnight [class*="tab"][class*="active"]:not(.rm-tb),
+body.midnight [role="tab"][aria-selected="true"] {
+  background: var(--m-cyan) !important;
+  color: #0F172A !important;
+  border-color: var(--m-cyan) !important;
+  box-shadow: 0 0 12px var(--m-cyan-glow) !important;
+}
+
+/* ===== PROGRESS ===== */
+body.midnight [class*="progress"],
+body.midnight progress {
+  background: rgba(15,23,42,0.6) !important;
+  border: 1px solid #334155 !important;
+  border-radius: 4px !important;
+}
+
+body.midnight [class*="progress"] [class*="fill"] {
+  background: var(--m-cyan) !important;
+  box-shadow: 0 0 8px var(--m-cyan-glow) !important;
+}
+
+/* ===== STAT CARDS ===== */
+body.midnight [class*="stat"],
+body.midnight .stat-card {
+  background: rgba(30,41,59,0.8) !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  border-radius: 12px !important;
+  color: #F1F5F9 !important;
+}
+
+body.midnight [class*="stat"] [class*="val"],
+body.midnight [class*="stat"] [class*="num"],
+body.midnight [class*="stat"] [class*="count"],
+body.midnight [class*="streak"],
+body.midnight [class*="score"] {
+  color: var(--m-cyan) !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: 2rem !important;
+  text-shadow: 0 0 16px var(--m-cyan-glow) !important;
+}
+
+body.midnight [class*="stat"] [class*="label"],
+body.midnight [class*="stat"] [class*="title"],
+body.midnight [class*="stat"] small {
+  color: #94A3B8 !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+/* Stat icon glow */
+body.midnight [class*="stat"] [class*="icon"],
+body.midnight [class*="stat"] svg {
+  filter: drop-shadow(0 0 6px var(--m-cyan)) !important;
+}
+
+/* ===== TIMER ===== */
+body.midnight [class*="timer"] [class*="display"],
+body.midnight [class*="timer"] [class*="time"],
+body.midnight [class*="clock"],
+body.midnight [class*="countdown"],
+body.midnight [class*="digit"],
+body.midnight #timerDisplay,
+body.midnight .timer-display {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 700 !important;
+  color: var(--m-cyan) !important;
+  text-shadow: 0 0 30px var(--m-cyan-glow) !important;
+}
+
+/* ===== LINKS ===== */
+body.midnight a:not(#rmLoginOverlay a) { color: var(--m-cyan) !important; }
+body.midnight a:hover { color: var(--m-amber) !important; }
+
+/* ===== DIVIDERS ===== */
+body.midnight hr,
+body.midnight [class*="divider"],
+body.midnight [class*="separator"] {
+  border-color: #334155 !important;
+  background: #334155 !important;
+}
+
+/* ===== MODALS / DROPDOWNS ===== */
+body.midnight [class*="tooltip"],
+body.midnight [class*="popup"],
+body.midnight [class*="modal"]:not(#rmLoginOverlay),
+body.midnight [class*="dropdown"] {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #F1F5F9 !important;
+  border-radius: 10px !important;
+}
+
+/* ===== TAGS / BADGES ===== */
+body.midnight [class*="tag"]:not(#rmLoginOverlay *),
+body.midnight [class*="badge"]:not(#rmLoginOverlay *) {
+  background: transparent !important;
+  border: 1px solid var(--m-cyan) !important;
+  color: var(--m-cyan) !important;
+  border-radius: 4px !important;
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+}
+
+/* ===== MUSIC PLAYER ===== */
+body.midnight #music-player-widget,
+body.midnight [class*="music"],
+body.midnight [class*="player"] {
+  background: rgba(30,41,59,0.9) !important;
+  border: 1px solid #334155 !important;
+  border-radius: 12px !important;
+  color: #F1F5F9 !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+body.midnight [class*="music"] button,
+body.midnight [class*="player"] button {
+  background: transparent !important;
+  border: 1px solid #334155 !important;
+  border-radius: 6px !important;
+  color: var(--m-cyan) !important;
+}
+
+body.midnight [class*="music"] button:hover,
+body.midnight [class*="player"] button:hover {
+  border-color: var(--m-cyan) !important;
+  box-shadow: 0 0 10px var(--m-cyan-glow) !important;
+}
+
+/* ===== RETRO TOGGLE BUTTON (midnight state) ===== */
+body.midnight .retro-toggle {
+  border: 1px solid #334155 !important;
+  color: var(--m-cyan) !important;
+  background: transparent !important;
+  border-radius: 12px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+body.midnight .retro-toggle:hover {
+  background: rgba(34,211,238,0.1) !important;
+  border-color: var(--m-cyan) !important;
+  box-shadow: 0 0 12px var(--m-cyan-glow) !important;
+}
+
+/* ===== SMOOTH TRANSITIONS ===== */
+body.midnight { transition: background 0.5s ease, color 0.5s ease; }
+body.midnight [class*="card"],
+body.midnight [class*="Card"],
+body.midnight header,
+body.midnight nav,
+body.midnight main,
+body.midnight button,
+body.midnight input,
+body.midnight textarea,
+body.midnight select,
+body.midnight [class*="tab"] {
+  transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* =====================================================
+   LANDING PAGE — midnight overrides
+   ===================================================== */
+body.midnight .bg-overlay {
+  background: rgba(0,0,0,0.6) !important;
+}
+
+body.midnight .clock {
+  color: #F1F5F9 !important;
+  text-shadow: 0 0 20px var(--m-cyan-glow) !important;
+}
+
+body.midnight .greeting {
+  color: var(--m-cyan) !important;
+  text-shadow: 0 0 16px var(--m-cyan-glow) !important;
+}
+
+body.midnight .brand-name {
+  color: var(--m-cyan) !important;
+  text-shadow: 0 2px 8px var(--m-cyan-glow) !important;
+}
+
+body.midnight .brand-sub {
+  color: #94A3B8 !important;
+}
+
+body.midnight .quote-box {
+  background: rgba(30,41,59,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  color: #F1F5F9 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+body.midnight .enter-btn {
+  background: var(--m-cyan) !important;
+  color: #0F172A !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 20px var(--m-cyan-glow) !important;
+  font-weight: 700 !important;
+}
+
+body.midnight .enter-btn:hover {
+  background: #06B6D4 !important;
+  box-shadow: 0 0 32px var(--m-cyan-glow) !important;
+}
+
+body.midnight .enter-btn svg {
+  stroke: #0F172A !important;
+}
+
+body.midnight .glass-pill {
+  background: rgba(30,41,59,0.7) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+body.midnight .pill-opt {
+  color: #94A3B8 !important;
+}
+
+body.midnight .pill-opt.active {
+  color: var(--m-cyan) !important;
+  background: rgba(34,211,238,0.12) !important;
+}
+
+body.midnight .pill-opt:hover {
+  color: var(--m-cyan) !important;
+}
+
+body.midnight .theme-label {
+  color: #64748B !important;
+}
+
+body.midnight .bottom-group-left .retro-toggle {
+  border-color: #334155 !important;
+  color: var(--m-cyan) !important;
+}
+
+body.midnight .bottom-group-left .retro-toggle:hover {
+  background: rgba(34,211,238,0.12) !important;
+  border-color: var(--m-cyan) !important;
+  box-shadow: 0 0 12px var(--m-cyan-glow) !important;
+}
+
+/* Pixel heart → cyan/amber */
+body.midnight .ph { background: var(--m-cyan) !important; }
+
+/* Retro scan lines and neon border hidden in midnight */
+body.midnight .retro-scanlines,
+body.midnight .retro-neon-border { display: none !important; }
+
+/* =====================================================
+   LOGIN PAGE — midnight overrides
+   ===================================================== */
+body.midnight .pixel-heart .ph {
+  background: var(--m-cyan) !important;
+}
+
+body.midnight .pixel-heart .ph.amber {
+  background: var(--m-amber) !important;
+}
