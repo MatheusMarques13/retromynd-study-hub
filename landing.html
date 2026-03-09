@@ -205,6 +205,9 @@ body.retro-light .retro-neon-border { display: block; }
   letter-spacing: 1px;
 }
 
+.top-right-group {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+}
 .quote-box {
   max-width: 260px; text-align: right;
   font-family: 'DM Sans', sans-serif;
@@ -517,6 +520,7 @@ body.cafe .bottom-group-left .retro-toggle:hover {
 @media (max-width: 600px) {
   .top-bar { padding: 1.2rem 1.2rem; }
   .quote-box { font-size: 0.85rem; max-width: 180px; }
+  .top-right-group .glass-pill .pill-opt { width: 30px; height: 30px; }
   .greeting { font-size: 1.2rem; }
   .clock { letter-spacing: -1px; }
   .enter-btn { padding: 12px 36px; font-size: 0.95rem; }
@@ -538,7 +542,23 @@ body.cafe .bottom-group-left .retro-toggle:hover {
     <div class="brand-name">RETROMYND</div>
     <div class="brand-sub">study hub</div>
   </div>
-  <div class="quote-box" id="quoteBox"></div>
+  <div class="top-right-group">
+    <div class="glass-pill" id="navPill">
+      <button class="pill-opt" title="Study Hub" onclick="document.getElementById('enterBtn').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </button>
+      <button class="pill-opt" title="Pomodoro" onclick="window.location.href='/login.html#pomodoro'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/><line x1="12" y1="1" x2="12" y2="3"/></svg>
+      </button>
+      <button class="pill-opt" title="Configurações" onclick="window.location.href='/login.html#settings'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="pill-opt" title="Sobre" onclick="alert('RetroMynd Study Hub v1.0\nFeito com ❤️')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </button>
+    </div>
+    <div class="quote-box" id="quoteBox"></div>
+  </div>
 </div>
 
 <div class="landing-container">
