@@ -744,44 +744,61 @@ body.cafe-dark .about-modal-desc   { color: #B0A898 !important; }
 body.cafe-dark .about-modal-footer { color: #7A7068 !important; }
 
 .rm-footer {
-  position: fixed;
-  bottom: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  z-index: 50;
   text-align: center;
-  padding: 4px 16px;
-  border-radius: 12px;
-  opacity: 0.6;
+  padding: 12px 24px;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
   transition: opacity 0.3s ease;
-  color: rgba(255,255,255,0.7);
   font-family: 'Kalam', 'Caveat', cursive;
+  margin-top: 20px;
+  color: #475569;
 }
 .rm-footer:hover { opacity: 1; }
-.rm-footer a { color: rgba(255,255,255,0.85); text-decoration: none; }
+.rm-footer-inner {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+}
+.rm-footer a { color: #FF6B9D; text-decoration: none; }
 .rm-footer a:hover { text-decoration: underline; }
+
+/* Dark mode comfy */
+[data-theme="dark"] .rm-footer { color: rgba(232,224,240,0.6); }
+[data-theme="dark"] .rm-footer-inner { background: rgba(42,36,53,0.6); backdrop-filter: blur(8px); }
+[data-theme="dark"] .rm-footer a { color: var(--pink); }
 
 /* Retro theme */
 body.retro-dark .rm-footer, body.retro-light .rm-footer {
   color: var(--rdim, #4a6fa5);
   font-family: 'Space Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.06em;
 }
-body.retro-dark .rm-footer a, body.retro-light .rm-footer a { color: var(--rgold, #f5c518); }
+body.retro-dark .rm-footer-inner, body.retro-light .rm-footer-inner {
+  background: rgba(13,31,60,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 0;
+  border: 1px solid var(--rborder, #1e3a6e);
+}
+body.retro-dark .rm-footer a, body.retro-light .rm-footer a { color: var(--rgold, #f5c518); text-decoration: none; }
+body.retro-dark .rm-footer a:hover, body.retro-light .rm-footer a:hover { text-decoration: underline; }
 
 /* Café theme */
 body.cafe-dark .rm-footer, body.cafe-light .rm-footer {
   color: #8B7E76;
   font-family: 'DM Sans', sans-serif;
 }
-body.cafe-dark .rm-footer a, body.cafe-light .rm-footer a { color: #C17950; }
-
-/* Dark mode comfy */
-[data-theme="dark"] .rm-footer { color: rgba(232,224,240,0.5); }
-[data-theme="dark"] .rm-footer a { color: var(--pink); }
+body.cafe-dark .rm-footer-inner, body.cafe-light .rm-footer-inner {
+  background: rgba(255,253,247,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212,197,169,0.3);
+  border-radius: 12px;
+}
+body.cafe-dark .rm-footer a, body.cafe-light .rm-footer a { color: #C17950; text-decoration: none; }
+body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-decoration: underline; }
 
 </style>
 </head>
@@ -1365,7 +1382,9 @@ function createParticles(scene) {
 <script src="/js/retro-mode.js"></script>
 <script src="/js/inject-player.js"></script>
 <footer class="rm-footer">
-  feito por Matheus Marques · conheça meu trabalho: <a href="https://mmarques.dev" target="_blank" rel="noopener noreferrer">mmarques.dev</a>
+  <span class="rm-footer-inner">
+    feito por Matheus Marques · conheça meu trabalho: <a href="https://mmarques.dev" target="_blank" rel="noopener noreferrer">mmarques.dev</a>
+  </span>
 </footer>
 </body>
 </html>
