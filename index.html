@@ -380,6 +380,9 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 [data-theme="dark"] .pp-stat-card{background:rgba(42,36,53,.7);border-color:var(--border);}
 [data-theme="dark"] .gchk{background:#332D40;border-color:#443D52;}
 
+.home-btn{background:transparent;border:1.5px solid #f2d6d0;color:#d4726a;border-radius:12px;padding:4px 10px;font-size:1.1rem;cursor:pointer;transition:all 0.2s;}
+.home-btn:hover{background:#f9e8e5;border-color:#d4726a;}
+
 </style>
 </head>
 <body><div class="stars-container" id="starsContainer"></div><div class="moon"></div>
@@ -404,7 +407,7 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 
 <div id="hub">
 
-<header class="hub-header"><div class="hub-logo"><div class="hub-logo-pixel" id="pxLogo"></div><div class="hub-logo-text"><h1>Study Hub</h1><span class="pixel">RETROMYND</span></div></div><div style="display:flex;align-items:center;gap:14px"><div class="theme-toggle" id="themeToggle">
+<header class="hub-header"><div class="hub-logo"><div class="hub-logo-pixel" id="pxLogo"></div><div class="hub-logo-text"><h1>Study Hub</h1><span class="pixel">RETROMYND</span></div></div><div style="display:flex;align-items:center;gap:14px"><button class="home-btn" title="Home" onclick="window.location.href='landing.html'">&#127968;</button><div class="theme-toggle" id="themeToggle">
 <div class="theme-toggle-opt" data-theme-val="light" title="Light" onclick="setTheme('light')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
 <div class="theme-toggle-opt" data-theme-val="system" title="System" onclick="setTheme('system')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
 <div class="theme-toggle-opt" data-theme-val="dark" title="Dark" onclick="setTheme('dark')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>

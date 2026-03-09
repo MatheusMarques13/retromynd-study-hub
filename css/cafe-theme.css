@@ -344,10 +344,10 @@ body.cafe-dark [class*="digit"] {
 }
 
 /* ========== BUTTONS ========== */
-body.cafe-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),
+body.cafe-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn),
 body.cafe-light [type="button"]:not(#rmLoginOverlay *),
 body.cafe-light [type="submit"]:not(#rmLoginOverlay *),
-body.cafe-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),
+body.cafe-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn),
 body.cafe-dark [type="button"]:not(#rmLoginOverlay *),
 body.cafe-dark [type="submit"]:not(#rmLoginOverlay *) {
   background: var(--cafe-surface) !important;
@@ -363,8 +363,8 @@ body.cafe-dark [type="submit"]:not(#rmLoginOverlay *) {
   transition: all 0.2s ease !important;
 }
 
-body.cafe-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover,
-body.cafe-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover {
+body.cafe-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn):hover,
+body.cafe-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn):hover {
   background: var(--cafe-accent-soft) !important;
   border-color: var(--cafe-highlight) !important;
   color: var(--cafe-accent) !important;
@@ -382,6 +382,28 @@ body.cafe-dark [aria-selected="true"]:not(#rmLoginOverlay *) {
   color: #fff !important;
   border-color: var(--cafe-highlight) !important;
   box-shadow: 0 2px 8px rgba(196,168,130,0.3) !important;
+}
+
+/* Home button */
+body.cafe-light .home-btn,
+body.cafe-dark .home-btn {
+  background: transparent !important;
+  border: 1.5px solid #D4C5A9 !important;
+  color: #6B5344 !important;
+  border-radius: 10px !important;
+  padding: 4px 10px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
+}
+
+body.cafe-light .home-btn:hover,
+body.cafe-dark .home-btn:hover {
+  background: rgba(139,111,71,0.05) !important;
+  border-color: #8B6F47 !important;
+  color: #6B5344 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
 }
 
 /* Danger buttons */

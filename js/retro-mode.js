@@ -154,19 +154,19 @@
 
   /* --- Buttons --- */
   + 'body.retro-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout)'
-  + ':not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),'
+  + ':not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn),'
   + 'body.retro-dark [type="button"]:not(#rmLoginOverlay *), body.retro-dark [type="submit"]:not(#rmLoginOverlay *),'
   + 'body.retro-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout)'
-  + ':not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),'
+  + ':not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn),'
   + 'body.retro-light [type="button"]:not(#rmLoginOverlay *), body.retro-light [type="submit"]:not(#rmLoginOverlay *) {'
   + '  background:var(--rsurface)!important; border:2px solid var(--rborder)!important;'
   + '  color:var(--rpixel)!important; border-radius:0!important; cursor:pointer!important;'
   + '  font-weight:700!important; font-size:.7rem!important; letter-spacing:.06em!important; padding:6px 12px!important; }'
 
   + 'body.retro-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn)'
-  + ':not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover,'
+  + ':not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn):hover,'
   + 'body.retro-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn)'
-  + ':not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover {'
+  + ':not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):not(.home-btn):hover {'
   + '  border-color:var(--rgold)!important; color:var(--rgold)!important;'
   + '  box-shadow:0 0 8px var(--rgold-glow),2px 2px 0 var(--rgold)!important; }'
 
@@ -271,6 +271,15 @@
   + 'body.retro-light .retro-toggle { border-color:#1e3a6e!important; color:#1e3a6e!important;'
   + '  border-radius:0!important; font-family:"Space Mono",monospace!important; }'
   + 'body.retro-light .retro-toggle:hover { background:var(--rgold)!important; color:#000!important; border-color:var(--rgold)!important; }'
+
+  /* ========== HOME BUTTON ========== */
+  + 'body.retro-dark .home-btn, body.retro-light .home-btn {'
+  + '  background:var(--rsurface)!important; border:2px solid var(--rborder)!important;'
+  + '  color:var(--rpixel)!important; border-radius:0!important;'
+  + '  font-family:"Space Mono",monospace!important; font-size:.8rem!important; padding:4px 10px!important; }'
+  + 'body.retro-dark .home-btn:hover, body.retro-light .home-btn:hover {'
+  + '  border-color:var(--rgold)!important; color:var(--rgold)!important;'
+  + '  box-shadow:0 0 8px var(--rgold-glow)!important; }'
 
   /* ========== SMOOTH TRANSITIONS ========== */
   + 'body { transition:background .5s ease,color .5s ease; }'
