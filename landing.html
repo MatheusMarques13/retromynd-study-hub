@@ -584,19 +584,22 @@ body.cafe-dark .jp-src  { color: #7A7068 !important; }
 /* ======== LANDING NAV BUTTONS (top-right) ======== */
 .landing-nav {
   position: fixed; top: 20px; right: 20px;
-  display: flex; gap: 8px; z-index: 100;
+  display: flex; align-items: center; gap: 4px; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 6px 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 .landing-nav-btn {
   display: flex; align-items: center; justify-content: center;
   width: 40px; height: 40px;
-  border-radius: 10px; border: none;
+  border-radius: 14px; border: none;
   cursor: pointer;
-  transition: all 0.25s ease;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #888;
   text-decoration: none;
   position: relative;
 }
@@ -606,44 +609,57 @@ body.cafe-dark .jp-src  { color: #7A7068 !important; }
   pointer-events: none;
 }
 .landing-nav-btn:hover {
-  background: rgba(255,255,255,0.25);
-  transform: translateY(-2px);
+  background: #FF6B8A;
+  color: #fff;
+  transform: none;
 }
 
-/* Retro nav button overrides */
+/* Retro nav container + button overrides */
+body.retro-dark .landing-nav,
+body.retro-light .landing-nav {
+  background: rgba(13,31,60,0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
 body.retro-dark .landing-nav-btn,
 body.retro-light .landing-nav-btn {
-  background: var(--rsurface, #0d1b2a) !important;
-  border: 2px solid var(--rborder, #1e3a6e) !important;
+  background: transparent !important;
+  border: none !important;
   color: var(--rpixel, #e8f0ff) !important;
   border-radius: 0 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 body.retro-dark .landing-nav-btn:hover,
 body.retro-light .landing-nav-btn:hover {
-  border-color: var(--rgold, #f5c518) !important;
   color: var(--rgold, #f5c518) !important;
-  box-shadow: 0 0 8px var(--rgold-glow, rgba(245,197,24,0.3)) !important;
+  background: rgba(245,197,24,0.1) !important;
   transform: none !important;
-  background: var(--rsurface, #0d1b2a) !important;
 }
 
-/* Café nav button overrides */
+/* Café nav container + button overrides */
+body.cafe-light .landing-nav,
+body.cafe-dark .landing-nav {
+  background: rgba(255,253,247,0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(212,197,169,0.3) !important;
+  box-shadow: 0 2px 12px rgba(139,111,71,0.06) !important;
+}
 body.cafe-light .landing-nav-btn,
 body.cafe-dark .landing-nav-btn {
-  background: rgba(255,253,247,0.1) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  border: 1.5px solid rgba(212,197,169,0.3) !important;
-  color: #FFFDF7 !important;
-  border-radius: 10px !important;
+  background: transparent !important;
+  border: none !important;
+  color: #6B5344 !important;
+  border-radius: 14px !important;
 }
 body.cafe-light .landing-nav-btn:hover,
 body.cafe-dark .landing-nav-btn:hover {
-  background: rgba(255,253,247,0.2) !important;
-  border-color: #D4A574 !important;
-  transform: translateY(-1px) !important;
+  background: rgba(139,111,71,0.08) !important;
+  color: #8B6F47 !important;
+  transform: none !important;
 }
 
 /* Tooltip */
