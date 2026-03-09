@@ -516,6 +516,216 @@ body.cafe-dark .bottom-group-left .retro-toggle:hover {
   transform: none !important;
   box-shadow: none !important;
 }
+
+/* ======== JAPANESE QUOTES ======== */
+.jp-quote {
+  margin-top: 0.85rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.jp-quote.visible { opacity: 1; }
+.jp-quote.fading  { opacity: 0; }
+
+.jp-jp {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+}
+.jp-rom {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.65);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+  margin-top: 0.15rem;
+}
+.jp-src {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  margin-top: 0.25rem;
+}
+
+/* Retro theme overrides */
+body.retro-dark .jp-jp,
+body.retro-light .jp-jp {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rpixel, #e8f0ff) !important;
+}
+body.retro-dark .jp-rom,
+body.retro-light .jp-rom {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rdim, #7a8faa) !important;
+  font-style: normal !important;
+}
+body.retro-dark .jp-src,
+body.retro-light .jp-src {
+  color: var(--rdim, #7a8faa) !important;
+}
+
+/* Café theme overrides */
+body.cafe-light .jp-jp,
+body.cafe-dark .jp-jp {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+body.cafe-light .jp-jp  { color: #3D3329 !important; }
+body.cafe-dark .jp-jp   { color: #F0E8DC !important; }
+body.cafe-light .jp-rom { color: #7A6E64 !important; }
+body.cafe-dark .jp-rom  { color: #A09488 !important; }
+body.cafe-light .jp-src { color: #9A8E82 !important; }
+body.cafe-dark .jp-src  { color: #7A7068 !important; }
+
+/* ======== LANDING NAV BUTTONS (top-right) ======== */
+.landing-nav {
+  position: fixed; top: 20px; right: 20px;
+  display: flex; gap: 8px; z-index: 100;
+}
+.landing-nav-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 10px; border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+}
+.landing-nav-btn svg {
+  width: 20px; height: 20px;
+  stroke-width: 1.8; fill: none; stroke: currentColor;
+  pointer-events: none;
+}
+.landing-nav-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+
+/* Retro nav button overrides */
+body.retro-dark .landing-nav-btn,
+body.retro-light .landing-nav-btn {
+  background: var(--rsurface, #0d1b2a) !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
+  color: var(--rpixel, #e8f0ff) !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+body.retro-dark .landing-nav-btn:hover,
+body.retro-light .landing-nav-btn:hover {
+  border-color: var(--rgold, #f5c518) !important;
+  color: var(--rgold, #f5c518) !important;
+  box-shadow: 0 0 8px var(--rgold-glow, rgba(245,197,24,0.3)) !important;
+  transform: none !important;
+  background: var(--rsurface, #0d1b2a) !important;
+}
+
+/* Café nav button overrides */
+body.cafe-light .landing-nav-btn,
+body.cafe-dark .landing-nav-btn {
+  background: rgba(255,253,247,0.1) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1.5px solid rgba(212,197,169,0.3) !important;
+  color: #FFFDF7 !important;
+  border-radius: 10px !important;
+}
+body.cafe-light .landing-nav-btn:hover,
+body.cafe-dark .landing-nav-btn:hover {
+  background: rgba(255,253,247,0.2) !important;
+  border-color: #D4A574 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Tooltip */
+.landing-nav-btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* About modal */
+.about-modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+}
+.about-modal-overlay.open { display: flex; }
+.about-modal-box {
+  background: var(--paper, #FFFDF8);
+  border-radius: 12px;
+  padding: 32px 28px;
+  max-width: 340px; width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  text-align: center; position: relative;
+}
+.about-modal-close {
+  position: absolute; top: 10px; right: 14px;
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--text-light, #94A3B8);
+}
+.about-modal-close:hover { color: var(--pink, #FF6B9D); }
+.about-modal-brand {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; color: var(--pink, #FF6B9D);
+  letter-spacing: 2px; margin-bottom: 8px;
+}
+.about-modal-title {
+  font-size: 15px; font-weight: 700;
+  color: var(--text-hub, #1E293B); margin-bottom: 6px;
+}
+.about-modal-desc {
+  font-size: 13px; color: var(--text-mid, #475569); line-height: 1.6;
+}
+.about-modal-footer {
+  margin-top: 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px; color: var(--text-light, #94A3B8); letter-spacing: 1px;
+}
+body.retro-dark .about-modal-box,
+body.retro-light .about-modal-box {
+  background: var(--rsurface, #0d1b2a) !important;
+  border: 2px solid var(--rborder, #1e3a6e);
+  border-radius: 0 !important;
+}
+body.retro-dark .about-modal-brand,
+body.retro-light .about-modal-brand { color: var(--rgold, #f5c518) !important; }
+body.retro-dark .about-modal-title,
+body.retro-light .about-modal-title { color: var(--rpixel, #e8f0ff) !important; }
+body.retro-dark .about-modal-desc,
+body.retro-light .about-modal-desc  { color: var(--rdim, #7a8faa) !important; }
+body.retro-dark .about-modal-footer,
+body.retro-light .about-modal-footer { color: var(--rdim, #7a8faa) !important; }
+body.cafe-dark .about-modal-box,
+body.cafe-light .about-modal-box {
+  background: rgba(255,253,247,0.95) !important;
+}
+body.cafe-dark .about-modal-box {
+  background: rgba(30,24,18,0.97) !important;
+}
+body.cafe-dark .about-modal-title  { color: #F0E8DC !important; }
+body.cafe-dark .about-modal-desc   { color: #B0A898 !important; }
+body.cafe-dark .about-modal-footer { color: #7A7068 !important; }
 </style>
 </head>
 <body>
@@ -535,8 +745,40 @@ body.cafe-dark .bottom-group-left .retro-toggle:hover {
   <div class="quote-box" id="quoteBox"></div>
 </div>
 
+<!-- Top-right navigation buttons -->
+<div class="landing-nav" id="landingNav">
+  <a href="/index.html#retrolesson" class="landing-nav-btn" title="RetroLesson" id="navLesson">
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  </a>
+  <a href="/login.html" class="landing-nav-btn" title="Entrar" id="navAuth">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </a>
+  <button class="landing-nav-btn" title="Configurações" onclick="alert('Configurações em breve!')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+  <button class="landing-nav-btn" title="Sobre" id="navAbout" onclick="document.getElementById('aboutModal').classList.add('open')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  </button>
+</div>
+
+<!-- About modal -->
+<div id="aboutModal" class="about-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="about-modal-box">
+    <button class="about-modal-close" onclick="document.getElementById('aboutModal').classList.remove('open')">&#215;</button>
+    <div class="about-modal-brand">RETROMYND</div>
+    <div class="about-modal-title">Study Hub</div>
+    <div class="about-modal-desc">Seu companheiro estético de estudos. Pomodoro, metas diárias, notas e muito mais — tudo em uma interface com vibes Ghibli.</div>
+    <div class="about-modal-footer">CRUEL SUMMER EDITION &bull; 2026</div>
+  </div>
+</div>
+
 <div class="landing-container">
   <div class="greeting" id="greeting"></div>
+  <div id="jpQuote" class="jp-quote">
+    <div class="jp-jp" id="jpJp"></div>
+    <div class="jp-rom" id="jpRom"></div>
+    <div class="jp-src" id="jpSrc"></div>
+  </div>
   <div class="clock" id="clock"></div>
   <a href="/login.html" class="enter-btn" id="enterBtn">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -964,6 +1206,103 @@ function createParticles(scene) {
     document.getElementById('enterBtn').href = '/index.html';
     document.getElementById('enterBtn').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Abrir Study Hub';
   }
+})();
+
+/* ============================================================
+   AUTH-AWARE NAV BUTTON
+   ============================================================ */
+(function() {
+  var navAuth = document.getElementById('navAuth');
+  if (!navAuth) return;
+  var isLoggedIn = false;
+  try {
+    var u = JSON.parse(localStorage.getItem('rms_user') || 'null');
+    var token = localStorage.getItem('token');
+    var session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
+    isLoggedIn = !!(u || token || session);
+  } catch(e) {}
+
+  if (isLoggedIn) {
+    navAuth.title = 'Sair';
+    navAuth.href = '#';
+    navAuth.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+    navAuth.onclick = function(e) {
+      e.preventDefault();
+      try {
+        localStorage.removeItem('token');
+        localStorage.removeItem('sb-session');
+        localStorage.removeItem('supabase.auth.token');
+        localStorage.removeItem('rms_user');
+      } catch(err) {}
+      window.location.reload();
+    };
+  }
+})();
+
+/* ============================================================
+   JAPANESE QUOTES
+   ============================================================ */
+(function() {
+  // Quotes sourced from anime/gaming/study culture.
+  // src: '' indicates original/generic motivational phrases not attributed to a specific series.
+  var jpQuotes = [
+    { jp: '諦めないでくれよ…俺は本気だ', rom: 'Akiramenaide kure yo... ore wa honki da', src: 'Naruto' },
+    { jp: '人は心にバネを持っている。それは折れたりしない', rom: 'Hito wa kokoro ni bane wo motte iru. Sore wa oretari shinai', src: 'Bleach' },
+    { jp: '俺の剣は折れない。俺の心も折れない', rom: 'Ore no ken wa orenai. Ore no kokoro mo orenai', src: '' },
+    { jp: '過去を惜しむな。未来を恐れるな。今を生きろ', rom: 'Kako wo oshimu na. Mirai wo osoreru na. Ima wo ikiro', src: '' },
+    { jp: '努力した者が全て報われるわけではない。しかし、成功した者は皆すべからく努力している', rom: 'Doryoku shita mono ga subete mukuwareru wake dewa nai. Shikashi, seikou shita mono wa mina subekaraku doryoku shite iru', src: 'HxH' },
+    { jp: '俺は最強だ。なぜなら、俺は俺だからだ', rom: 'Ore wa saikyou da. Naze nara, ore wa ore dakara da', src: '' },
+    { jp: '結果より過程が大事だ', rom: 'Kekka yori katei ga daiji da', src: '' },
+    { jp: '夢を見ることが、始まりだ', rom: 'Yume wo miru koto ga, hajimari da', src: '' },
+    { jp: '一歩一歩、前へ進め', rom: 'Ippo ippo, mae e susume', src: '' },
+    { jp: '敵を知り己を知れば百戦危うからず', rom: 'Teki wo shiri onore wo shireba hyakusen ayaukarazu', src: '' },
+    { jp: 'コードを書くことは、心を書くことだ', rom: 'Koodo wo kaku koto wa, kokoro wo kaku koto da', src: '' },
+    { jp: 'レベルアップまであと少しだ', rom: 'Reberu appu made ato sukoshi da', src: '' },
+    { jp: '集中しろ。今この瞬間だけだ', rom: 'Shuuchuu shiro. Ima kono shunkan dake da', src: '' },
+    { jp: '失敗は成功の母だ', rom: 'Shippai wa seikou no haha da', src: '' },
+    { jp: '信じる力が、世界を変える', rom: 'Shinjiru chikara ga, sekai wo kaeru', src: '' },
+    { jp: '今日も一日、全力で', rom: 'Kyou mo ichinichi, zenryoku de', src: '' },
+    { jp: '論理は美しい。コードも美しくあるべきだ', rom: 'Ronri wa utsukushii. Koodo mo utsukushiku aru beki da', src: '' },
+    { jp: 'どんな闇も、光があれば怖くない', rom: 'Donna yami mo, hikari ga areba kowakunai', src: '' },
+    { jp: '仲間がいるから、強くなれる', rom: 'Nakama ga iru kara, tsuyoku nareru', src: '' },
+    { jp: 'バグは友達。いつか必ず解決する', rom: 'Bagu wa tomodachi. Itsuka kanarazu kaiketsu suru', src: '' },
+  ];
+
+  var container = document.getElementById('jpQuote');
+  var elJp  = document.getElementById('jpJp');
+  var elRom = document.getElementById('jpRom');
+  var elSrc = document.getElementById('jpSrc');
+  if (!container || !elJp) return;
+
+  var currentIdx = Math.floor(Math.random() * jpQuotes.length);
+
+  function showQuote(q) {
+    elJp.textContent  = q.jp;
+    elRom.textContent = q.rom;
+    elSrc.textContent = q.src ? '\u2014 ' + q.src : '';
+    elSrc.style.display = q.src ? '' : 'none';
+  }
+
+  function fadeToQuote(idx) {
+    container.classList.remove('visible');
+    container.classList.add('fading');
+    setTimeout(function() {
+      showQuote(jpQuotes[idx]);
+      container.classList.remove('fading');
+      container.classList.add('visible');
+    }, 700);
+  }
+
+  // Initial display
+  showQuote(jpQuotes[currentIdx]);
+  // Trigger visible class slightly after page load to allow other animations to settle first
+  setTimeout(function() { container.classList.add('visible'); }, 950);
+
+  // Rotate every 30 seconds
+  setInterval(function() {
+    currentIdx = (currentIdx + 1) % jpQuotes.length;
+    fadeToQuote(currentIdx);
+  }, 30000);
 })();
 </script>
 <script src="/js/retro-mode.js"></script>
