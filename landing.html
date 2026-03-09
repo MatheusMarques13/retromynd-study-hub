@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://retromynd-study-hub.vercel.app/">
 <meta property="og:title" content="RetroMynd — Study Hub">
 <meta property="og:description" content="Your aesthetic study companion. Pomodoro timer, daily goals, notes & more — all wrapped in a beautiful Ghibli-inspired interface. ✨">
-<meta property="og:image" content="https://www.ghibli.jp/gallery/howl048.jpg">
+<meta property="og:image" content="https://www.ghibli.jp/gallery/howl002.jpg">
 <meta property="og:image:width" content="1920">
 <meta property="og:image:height" content="1038">
 <meta property="og:site_name" content="RetroMynd Study Hub">
@@ -21,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RetroMynd — Study Hub">
 <meta name="twitter:description" content="Your aesthetic study companion. Pomodoro, goals, notes & Ghibli vibes ✨">
-<meta name="twitter:image" content="https://www.ghibli.jp/gallery/howl048.jpg">
+<meta name="twitter:image" content="https://www.ghibli.jp/gallery/howl002.jpg">
 
 <!-- Theme color -->
 <meta name="theme-color" content="#FF6B9D">
@@ -30,6 +30,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Press+Start+2P&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/cafe-theme.css">
 <style>
 :root {
   --paper: #FFFDF8;
@@ -81,74 +82,63 @@ body {
 
 .particle-dust {
   position: absolute;
-  background: radial-gradient(circle, rgba(255,255,200,0.8) 0%, rgba(255,255,220,0.3) 50%, transparent 70%);
+  background: rgba(255,235,150,0.7);
   border-radius: 50%;
+  box-shadow: 0 0 4px rgba(255,235,150,0.4);
   animation: floatDust linear infinite;
-  filter: blur(0.5px);
 }
 @keyframes floatDust {
   0% { transform: translate(0, 0) scale(1); opacity: 0; }
-  8% { opacity: 0.7; }
-  50% { opacity: 0.5; }
-  90% { opacity: 0.3; }
-  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.6; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
 }
 
 .particle-firefly {
   position: absolute;
-  background: radial-gradient(circle, rgba(255,220,80,1) 0%, rgba(255,200,50,0.6) 30%, rgba(255,180,50,0.2) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(255,200,50,1) 0%, rgba(255,180,50,0.6) 40%, transparent 70%);
   border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255,200,50,0.5);
   animation: floatFirefly ease-in-out infinite;
-  filter: blur(0.3px);
-  box-shadow: 0 0 8px rgba(255,200,50,0.4), 0 0 20px rgba(255,180,50,0.15);
 }
 @keyframes floatFirefly {
-  0%, 100% { transform: translate(0, 0) scale(0.8); opacity: 0.05; }
-  15% { transform: translate(calc(var(--dx) * 0.3), calc(var(--dy) * 0.3)); opacity: 0.8; }
+  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
   25% { transform: translate(var(--dx), var(--dy)); opacity: 0.9; }
-  40% { transform: translate(calc(var(--dx2) * 0.7), calc(var(--dy2) * 0.7)); opacity: 0.3; }
-  50% { transform: translate(var(--dx2), var(--dy2)) scale(1.2); opacity: 0.1; }
-  65% { transform: translate(calc(var(--dx3) * 0.5), calc(var(--dy3) * 0.5)); opacity: 0.7; }
-  75% { transform: translate(var(--dx3), var(--dy3)); opacity: 0.85; }
-  90% { opacity: 0.2; }
+  50% { transform: translate(var(--dx2), var(--dy2)); opacity: 0.15; }
+  75% { transform: translate(var(--dx3), var(--dy3)); opacity: 0.8; }
 }
 
 .particle-star {
   position: absolute;
-  background: #fff;
+  background: var(--star-color, #fff);
   border-radius: 50%;
   animation: twinkleStar ease-in-out infinite;
-  box-shadow: 0 0 3px rgba(255,255,255,0.5);
+}
+.particle-star.shooting {
+  width: 2px !important;
+  height: 2px !important;
+  background: #fff;
+  box-shadow: 0 0 6px 2px rgba(255,255,255,0.8);
+  animation: shootingStar linear forwards;
 }
 @keyframes twinkleStar {
-  0%, 100% { opacity: 0.05; transform: scale(0.8); box-shadow: 0 0 2px rgba(255,255,255,0.2); }
-  30% { opacity: calc(var(--bright, 0.7) * 0.5); transform: scale(1.1); }
-  50% { opacity: var(--bright, 0.7); transform: scale(1.6); box-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(200,220,255,0.2); }
-  70% { opacity: calc(var(--bright, 0.7) * 0.6); transform: scale(1.2); }
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: var(--bright, 0.8); transform: scale(1.6); }
+}
+@keyframes shootingStar {
+  0% { transform: translate(0, 0) scaleX(1); opacity: 1; }
+  70% { opacity: 0.8; }
+  100% { transform: translate(var(--shoot-x), var(--shoot-y)) scaleX(12); opacity: 0; }
 }
 
 .particle-rain {
   position: absolute; top: -30px;
-  width: 1.5px;
-  background: linear-gradient(transparent, rgba(180,200,240,0.6), rgba(160,190,240,0.3));
+  width: 2px;
+  background: linear-gradient(transparent, rgba(180,200,240,0.6));
   animation: rainDrop linear infinite;
-  filter: blur(0.3px);
 }
 @keyframes rainDrop {
   to { transform: translateY(110vh); }
-}
-
-/* Rain splash effect */
-.particle-splash {
-  position: absolute;
-  width: 4px; height: 1px;
-  background: rgba(180,200,240,0.4);
-  border-radius: 50%;
-  animation: splashFade 0.6s ease-out infinite;
-}
-@keyframes splashFade {
-  0% { transform: scale(0); opacity: 0.6; }
-  100% { transform: scale(3, 0.5); opacity: 0; }
 }
 
 .retro-scanlines {
@@ -205,9 +195,6 @@ body.retro-light .retro-neon-border { display: block; }
   letter-spacing: 1px;
 }
 
-.top-right-group {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
-}
 .quote-box {
   max-width: 260px; text-align: right;
   font-family: 'DM Sans', sans-serif;
@@ -399,133 +386,420 @@ body.retro-dark .bottom-group-left .retro-toggle:hover, body.retro-light .bottom
   transform: none !important;
 }
 
-/* ===== CAFÉ THEME — LANDING ===== */
-body.cafe { background: #1a1410 !important; }
-body.cafe .bg-overlay { background: rgba(10,8,5,0.45) !important; }
-body.cafe .clock {
-  font-family: 'Playfair Display', Didot, serif !important;
-  color: #f0e8dc !important;
-  text-shadow: 0 2px 40px rgba(201,169,110,.2), 0 4px 20px rgba(0,0,0,.4) !important;
-  letter-spacing: -2px !important;
-}
-body.cafe .greeting {
-  font-family: 'Cormorant Garamond', Garamond, serif !important;
-  color: #e8c9a0 !important;
-  font-weight: 400 !important;
-  font-size: 1.3rem !important;
-}
-body.cafe .brand-name {
-  font-family: 'Playfair Display', serif !important;
-  font-size: 0.7rem !important;
-  color: #c9a96e !important;
-  text-shadow: 0 1px 12px rgba(201,169,110,.2) !important;
-  letter-spacing: 3px !important;
-}
-body.cafe .brand-sub {
-  font-family: 'Cormorant Garamond', serif !important;
-  color: rgba(232,201,160,0.6) !important;
-  font-style: italic !important;
-  letter-spacing: 2px !important;
-}
-body.cafe .quote-box {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-style: italic !important;
-  color: rgba(240,232,220,0.75) !important;
-  font-size: 1rem !important;
-}
-body.cafe .enter-btn {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-size: 1.1rem !important; font-weight: 600 !important;
-  background: transparent !important;
-  border: 1px solid rgba(201,169,110,0.4) !important;
-  border-radius: 4px !important;
-  color: #c9a96e !important;
-  box-shadow: none !important;
-  letter-spacing: 0.1em !important;
-}
-body.cafe .enter-btn svg { stroke: #c9a96e !important; }
-body.cafe .enter-btn:hover {
-  background: rgba(201,169,110,0.1) !important;
-  border-color: #c9a96e !important;
-  color: #e8c9a0 !important;
-  box-shadow: 0 4px 24px rgba(201,169,110,.15) !important;
-  transform: translateY(-1px) !important;
-}
-body.cafe .glass-pill {
-  background: rgba(44,37,32,0.8) !important;
-  border: 1px solid rgba(201,169,110,0.2) !important;
-  border-radius: 6px !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,.3) !important;
-  backdrop-filter: blur(8px) !important;
-}
-body.cafe .pill-opt { border-radius: 4px !important; color: #a89880 !important; }
-body.cafe .pill-opt.active {
-  background: #c9a96e !important; color: #1a1410 !important;
-  box-shadow: 0 2px 8px rgba(201,169,110,.3) !important;
-}
-body.cafe .pill-opt:hover { color: #c9a96e !important; background: rgba(201,169,110,.08) !important; }
-body.cafe .theme-label {
-  font-family: 'Cormorant Garamond', serif !important;
-  color: #a89880 !important;
-  letter-spacing: 2px !important;
-  font-size: 7px !important;
-}
-body.cafe .bottom-group-left .retro-toggle {
-  font-family: 'Cormorant Garamond', serif !important;
-  font-size: 0.95rem !important; font-weight: 600 !important;
-  padding: 8px 20px !important;
-  border: 1px solid rgba(201,169,110,0.3) !important;
-  border-radius: 4px !important;
-  background: transparent !important;
-  color: #c9a96e !important;
-  box-shadow: none !important;
-  letter-spacing: 0.1em !important;
-}
-body.cafe .bottom-group-left .retro-toggle:hover {
-  background: rgba(201,169,110,0.1) !important;
-  border-color: #c9a96e !important;
-  color: #e8c9a0 !important;
-  transform: none !important;
-}
-
-/* Café steam particles */
-.particle-steam {
-  position: absolute;
-  background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0.03) 50%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(2px);
-  animation: steamFloat ease-in-out infinite;
-}
-@keyframes steamFloat {
-  0% { transform: translate(0, 0) scale(1); opacity: 0; }
-  20% { opacity: 0.6; }
-  80% { opacity: 0.3; }
-  100% { transform: translate(var(--dx), var(--dy)) scale(var(--scale, 2)); opacity: 0; }
-}
-
-/* Café golden dust */
-.particle-golden {
-  position: absolute;
-  background: radial-gradient(circle, rgba(201,169,110,0.6) 0%, rgba(201,169,110,0.2) 50%, transparent 70%);
-  border-radius: 50%;
-  animation: goldenDrift linear infinite;
-}
-@keyframes goldenDrift {
-  0% { transform: translate(0, 0) scale(1); opacity: 0; }
-  15% { opacity: 0.5; }
-  85% { opacity: 0.3; }
-  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
-}
-
 @media (max-width: 600px) {
   .top-bar { padding: 1.2rem 1.2rem; }
   .quote-box { font-size: 0.85rem; max-width: 180px; }
-  .top-right-group .glass-pill .pill-opt { width: 30px; height: 30px; }
   .greeting { font-size: 1.2rem; }
   .clock { letter-spacing: -1px; }
   .enter-btn { padding: 12px 36px; font-size: 0.95rem; }
   .bottom-bar { padding: 1rem 1.2rem; }
 }
+
+/* ======== CAFÉ MODE LANDING OVERRIDES ======== */
+body.cafe-light,
+body.cafe-dark {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body.cafe-light .bg-overlay { background: rgba(232,224,212,0.55) !important; }
+body.cafe-dark .bg-overlay { background: rgba(26,23,20,0.68) !important; }
+
+body.cafe-light .clock,
+body.cafe-dark .clock {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  color: #C4A882 !important;
+  text-shadow: none !important;
+  letter-spacing: -1px;
+}
+
+body.cafe-light .greeting,
+body.cafe-dark .greeting {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 700 !important;
+}
+
+body.cafe-light .greeting { color: #3D3329 !important; }
+body.cafe-dark .greeting { color: #F0E8DC !important; }
+
+body.cafe-light .brand-name,
+body.cafe-dark .brand-name {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  text-shadow: none !important;
+}
+body.cafe-light .brand-name { color: #5C4D3C !important; }
+body.cafe-dark .brand-name { color: #E8DFD0 !important; }
+
+body.cafe-light .brand-sub { color: #9A8E82 !important; font-family: 'DM Sans', sans-serif !important; }
+body.cafe-dark .brand-sub { color: #7A7068 !important; font-family: 'DM Sans', sans-serif !important; }
+
+body.cafe-light .quote-box,
+body.cafe-dark .quote-box {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-style: italic !important;
+}
+body.cafe-light .quote-box { color: #6B5E52 !important; }
+body.cafe-dark .quote-box { color: #B0A898 !important; }
+
+body.cafe-light .enter-btn,
+body.cafe-dark .enter-btn {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  background: #5C4D3C !important;
+  border: 1.5px solid #5C4D3C !important;
+  border-radius: 50px !important;
+  color: #F0E8DC !important;
+  box-shadow: 0 4px 16px rgba(93,77,60,0.15) !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: none !important;
+}
+
+body.cafe-light .enter-btn svg,
+body.cafe-dark .enter-btn svg { stroke: #F0E8DC !important; }
+
+body.cafe-light .enter-btn:hover,
+body.cafe-dark .enter-btn:hover {
+  background: #C4A882 !important;
+  border-color: #C4A882 !important;
+  box-shadow: 0 6px 24px rgba(196,168,130,0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+body.cafe-light .glass-pill,
+body.cafe-dark .glass-pill {
+  background: rgba(255,255,255,0.12) !important;
+  border: 1px solid rgba(208,197,181,0.5) !important;
+  border-radius: 50px !important;
+  box-shadow: 0 2px 12px rgba(93,77,60,0.08) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+body.cafe-light .pill-opt { border-radius: 50px !important; color: #6B5E52 !important; }
+body.cafe-dark .pill-opt { border-radius: 50px !important; color: #B0A898 !important; }
+
+body.cafe-light .pill-opt.active {
+  background: #C4A882 !important; color: #fff !important;
+  box-shadow: none !important; border-radius: 50px !important;
+}
+body.cafe-dark .pill-opt.active {
+  background: #C4A882 !important; color: #fff !important;
+  box-shadow: none !important; border-radius: 50px !important;
+}
+
+body.cafe-light .pill-opt:hover { color: #5C4D3C !important; background: rgba(196,168,130,0.15) !important; }
+body.cafe-dark .pill-opt:hover { color: #E8DFD0 !important; background: rgba(196,168,130,0.15) !important; }
+
+body.cafe-light .theme-label { color: #9A8E82 !important; font-family: 'DM Sans', sans-serif !important; }
+body.cafe-dark .theme-label { color: #7A7068 !important; font-family: 'DM Sans', sans-serif !important; }
+
+body.cafe-light .bottom-group-left .retro-toggle,
+body.cafe-dark .bottom-group-left .retro-toggle {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 0.65rem !important;
+  border-radius: 50px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+body.cafe-light .bottom-group-left .retro-toggle {
+  border: 1.5px solid #D0C5B5 !important;
+  color: #6B5E52 !important;
+}
+body.cafe-dark .bottom-group-left .retro-toggle {
+  border: 1.5px solid #3E372E !important;
+  color: #7A7068 !important;
+}
+body.cafe-light .bottom-group-left .retro-toggle:hover,
+body.cafe-dark .bottom-group-left .retro-toggle:hover {
+  border-color: #C4A882 !important;
+  color: #C4A882 !important;
+  background: rgba(196,168,130,0.1) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ======== JAPANESE QUOTES ======== */
+.jp-quote {
+  margin-top: 0.85rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.jp-quote.visible { opacity: 1; }
+.jp-quote.fading  { opacity: 0; }
+
+.jp-jp {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+}
+.jp-rom {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.65);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+  margin-top: 0.15rem;
+}
+.jp-src {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  margin-top: 0.25rem;
+}
+
+/* Retro theme overrides */
+body.retro-dark .jp-jp,
+body.retro-light .jp-jp {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rpixel, #e8f0ff) !important;
+}
+body.retro-dark .jp-rom,
+body.retro-light .jp-rom {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--rdim, #7a8faa) !important;
+  font-style: normal !important;
+}
+body.retro-dark .jp-src,
+body.retro-light .jp-src {
+  color: var(--rdim, #7a8faa) !important;
+}
+
+/* Café theme overrides */
+body.cafe-light .jp-jp,
+body.cafe-dark .jp-jp {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+body.cafe-light .jp-jp  { color: #3D3329 !important; }
+body.cafe-dark .jp-jp   { color: #F0E8DC !important; }
+body.cafe-light .jp-rom { color: #7A6E64 !important; }
+body.cafe-dark .jp-rom  { color: #A09488 !important; }
+body.cafe-light .jp-src { color: #9A8E82 !important; }
+body.cafe-dark .jp-src  { color: #7A7068 !important; }
+
+/* ======== LANDING NAV BUTTONS (top-right) ======== */
+.landing-nav {
+  position: fixed; top: 20px; right: 20px;
+  display: flex; align-items: center; gap: 4px; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 6px 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.landing-nav-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 14px; border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #888;
+  text-decoration: none;
+  position: relative;
+}
+.landing-nav-btn svg {
+  width: 20px; height: 20px;
+  stroke-width: 1.8; fill: none; stroke: currentColor;
+  pointer-events: none;
+}
+.landing-nav-btn:hover {
+  background: #FF6B8A;
+  color: #fff;
+  transform: none;
+}
+
+/* Retro nav container + button overrides */
+body.retro-dark .landing-nav,
+body.retro-light .landing-nav {
+  background: rgba(13,31,60,0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+body.retro-dark .landing-nav-btn,
+body.retro-light .landing-nav-btn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--rpixel, #e8f0ff) !important;
+  border-radius: 0 !important;
+}
+body.retro-dark .landing-nav-btn:hover,
+body.retro-light .landing-nav-btn:hover {
+  color: var(--rgold, #f5c518) !important;
+  background: rgba(245,197,24,0.1) !important;
+  transform: none !important;
+}
+
+/* Café nav container + button overrides */
+body.cafe-light .landing-nav,
+body.cafe-dark .landing-nav {
+  background: rgba(255,253,247,0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(212,197,169,0.3) !important;
+  box-shadow: 0 2px 12px rgba(139,111,71,0.06) !important;
+}
+body.cafe-light .landing-nav-btn,
+body.cafe-dark .landing-nav-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #6B5344 !important;
+  border-radius: 14px !important;
+}
+body.cafe-light .landing-nav-btn:hover,
+body.cafe-dark .landing-nav-btn:hover {
+  background: rgba(139,111,71,0.08) !important;
+  color: #8B6F47 !important;
+  transform: none !important;
+}
+
+/* Tooltip */
+.landing-nav-btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* About modal */
+.about-modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+}
+.about-modal-overlay.open { display: flex; }
+.about-modal-box {
+  background: var(--paper, #FFFDF8);
+  border-radius: 12px;
+  padding: 32px 28px;
+  max-width: 340px; width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  text-align: center; position: relative;
+}
+.about-modal-close {
+  position: absolute; top: 10px; right: 14px;
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--text-light, #94A3B8);
+}
+.about-modal-close:hover { color: var(--pink, #FF6B9D); }
+.about-modal-brand {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; color: var(--pink, #FF6B9D);
+  letter-spacing: 2px; margin-bottom: 8px;
+}
+.about-modal-title {
+  font-size: 15px; font-weight: 700;
+  color: var(--text-hub, #1E293B); margin-bottom: 6px;
+}
+.about-modal-desc {
+  font-size: 13px; color: var(--text-mid, #475569); line-height: 1.6;
+}
+.about-modal-footer {
+  margin-top: 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px; color: var(--text-light, #94A3B8); letter-spacing: 1px;
+}
+body.retro-dark .about-modal-box,
+body.retro-light .about-modal-box {
+  background: var(--rsurface, #0d1b2a) !important;
+  border: 2px solid var(--rborder, #1e3a6e);
+  border-radius: 0 !important;
+}
+body.retro-dark .about-modal-brand,
+body.retro-light .about-modal-brand { color: var(--rgold, #f5c518) !important; }
+body.retro-dark .about-modal-title,
+body.retro-light .about-modal-title { color: var(--rpixel, #e8f0ff) !important; }
+body.retro-dark .about-modal-desc,
+body.retro-light .about-modal-desc  { color: var(--rdim, #7a8faa) !important; }
+body.retro-dark .about-modal-footer,
+body.retro-light .about-modal-footer { color: var(--rdim, #7a8faa) !important; }
+body.cafe-dark .about-modal-box,
+body.cafe-light .about-modal-box {
+  background: rgba(255,253,247,0.95) !important;
+}
+body.cafe-dark .about-modal-box {
+  background: rgba(30,24,18,0.97) !important;
+}
+body.cafe-dark .about-modal-title  { color: #F0E8DC !important; }
+body.cafe-dark .about-modal-desc   { color: #B0A898 !important; }
+body.cafe-dark .about-modal-footer { color: #7A7068 !important; }
+
+.rm-footer {
+  text-align: center;
+  padding: 12px 24px;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  font-family: 'Kalam', 'Caveat', cursive;
+  margin-top: 20px;
+  color: #475569;
+}
+.rm-footer:hover { opacity: 1; }
+.rm-footer-inner {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+}
+.rm-footer a { color: #FF6B9D; text-decoration: none; }
+.rm-footer a:hover { text-decoration: underline; }
+
+/* Dark mode comfy */
+[data-theme="dark"] .rm-footer { color: rgba(232,224,240,0.6); }
+[data-theme="dark"] .rm-footer-inner { background: rgba(42,36,53,0.6); backdrop-filter: blur(8px); }
+[data-theme="dark"] .rm-footer a { color: var(--pink); }
+
+/* Retro theme */
+body.retro-dark .rm-footer, body.retro-light .rm-footer {
+  color: var(--rdim, #4a6fa5);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+body.retro-dark .rm-footer-inner, body.retro-light .rm-footer-inner {
+  background: rgba(13,31,60,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 0;
+  border: 1px solid var(--rborder, #1e3a6e);
+}
+body.retro-dark .rm-footer a, body.retro-light .rm-footer a { color: var(--rgold, #f5c518); text-decoration: none; }
+body.retro-dark .rm-footer a:hover, body.retro-light .rm-footer a:hover { text-decoration: underline; }
+
+/* Café theme */
+body.cafe-dark .rm-footer, body.cafe-light .rm-footer {
+  color: #8B7E76;
+  font-family: 'DM Sans', sans-serif;
+}
+body.cafe-dark .rm-footer-inner, body.cafe-light .rm-footer-inner {
+  background: rgba(255,253,247,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212,197,169,0.3);
+  border-radius: 12px;
+}
+body.cafe-dark .rm-footer a, body.cafe-light .rm-footer a { color: #C17950; text-decoration: none; }
+body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-decoration: underline; }
+
 </style>
 </head>
 <body>
@@ -542,27 +816,43 @@ body.cafe .bottom-group-left .retro-toggle:hover {
     <div class="brand-name">RETROMYND</div>
     <div class="brand-sub">study hub</div>
   </div>
-  <div class="top-right-group">
-    <div class="glass-pill" id="navPill">
-      <button class="pill-opt" title="Study Hub" onclick="document.getElementById('enterBtn').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      </button>
-      <button class="pill-opt" title="Pomodoro" onclick="window.location.href='/login.html#pomodoro'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/><line x1="12" y1="1" x2="12" y2="3"/></svg>
-      </button>
-      <button class="pill-opt" title="Configurações" onclick="window.location.href='/login.html#settings'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <button class="pill-opt" title="Sobre" onclick="alert('RetroMynd Study Hub v1.0\nFeito com ❤️')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      </button>
-    </div>
-    <div class="quote-box" id="quoteBox"></div>
+  <div class="quote-box" id="quoteBox"></div>
+</div>
+
+<!-- Top-right navigation buttons -->
+<div class="landing-nav" id="landingNav">
+  <a href="/index.html#retrolesson" class="landing-nav-btn" title="RetroLesson" id="navLesson">
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  </a>
+  <a href="/login.html" class="landing-nav-btn" title="Entrar" id="navAuth">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </a>
+  <button class="landing-nav-btn" title="Configurações" onclick="alert('Configurações em breve!')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+  <button class="landing-nav-btn" title="Sobre" id="navAbout" onclick="document.getElementById('aboutModal').classList.add('open')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  </button>
+</div>
+
+<!-- About modal -->
+<div id="aboutModal" class="about-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="about-modal-box">
+    <button class="about-modal-close" onclick="document.getElementById('aboutModal').classList.remove('open')">&#215;</button>
+    <div class="about-modal-brand">RETROMYND</div>
+    <div class="about-modal-title">Study Hub</div>
+    <div class="about-modal-desc">Seu companheiro estético de estudos. Pomodoro, metas diárias, notas e muito mais — tudo em uma interface com vibes Ghibli.</div>
+    <div class="about-modal-footer">CRUEL SUMMER EDITION &bull; 2026</div>
   </div>
 </div>
 
 <div class="landing-container">
   <div class="greeting" id="greeting"></div>
+  <div id="jpQuote" class="jp-quote">
+    <div class="jp-jp" id="jpJp"></div>
+    <div class="jp-rom" id="jpRom"></div>
+    <div class="jp-src" id="jpSrc"></div>
+  </div>
   <div class="clock" id="clock"></div>
   <a href="/login.html" class="enter-btn" id="enterBtn">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -598,134 +888,213 @@ body.cafe .bottom-group-left .retro-toggle:hover {
 </div>
 
 <script>
-var GHIBLI_BASE = 'https://www.ghibli.jp/gallery/';
+/* ═══════════════════════════════════════════════════
+   WALLPAPER POOLS — THEME-AWARE BACKGROUND STRATEGY
+   ═══════════════════════════════════════════════════
+   COMFY  → Ghibli landscape wallpapers (verified)
+   CAFÉ   → Cozy library/bookshop interiors (Unsplash)
+   RETRO  → Neon/cyberpunk/retro cityscapes (Unsplash)
+   Each has day/sunset/night/rain variants.
+   ═══════════════════════════════════════════════════ */
+var G = 'https://www.ghibli.jp/gallery/';
+var U = 'https://images.unsplash.com/photo-';
 
-/* Landscape-only Ghibli scenes — pure scenery, NO characters */
-var W = {
+/* --- COMFY: Ghibli landscapes --- */
+var W_COMFY = {
   day: [
-    GHIBLI_BASE + 'howl048.jpg',        /* Flower fields wide shot */
-    GHIBLI_BASE + 'laputa015.jpg',      /* Laputa floating island */
-    GHIBLI_BASE + 'laputa039.jpg',      /* Cloud sea panorama */
-    GHIBLI_BASE + 'kazetachinu018.jpg', /* Mountain landscape */
-    GHIBLI_BASE + 'kazetachinu002.jpg', /* Open countryside fields */
-    GHIBLI_BASE + 'marnie022.jpg',      /* Marsh scenery */
-    GHIBLI_BASE + 'mononoke034.jpg',    /* Forest clearing */
-    GHIBLI_BASE + 'mononoke036.jpg',    /* Ancient forest wide shot */
-    GHIBLI_BASE + 'chihiro049.jpg',     /* Spirit world landscape */
-    GHIBLI_BASE + 'kiki033.jpg'         /* Town panorama aerial */
+    G+'laputa036.jpg',       // Laputa floating castle — blue sky, clouds
+    G+'laputa039.jpg',       // Laputa garden ruins from above — green
+    G+'marnie009.jpg',       // Mansion by lake — golden light, trees
+    G+'karigurashi001.jpg',  // Overgrown cottage in garden
+    G+'marnie037.jpg',       // Forest with pond and bridge — lush green
+    G+'howl035.jpg',         // Green hillside with scarecrow — bright day
+    G+'totoro001.jpg',       // Countryside house with garden — sunny day
+    G+'ponyo013.jpg',        // Seaside town — aerial view
+    G+'ponyo006.jpg',        // Coastal island — green and blue
+    G+'majo002.jpg'          // Cottage with garden — bright green
   ],
   sunset: [
-    GHIBLI_BASE + 'chihiro006.jpg',     /* Spirit bathhouse at dusk */
-    GHIBLI_BASE + 'chihiro013.jpg',     /* Flooded tracks sunset */
-    GHIBLI_BASE + 'howl036.jpg',        /* Castle against sunset sky */
-    GHIBLI_BASE + 'howl026.jpg',        /* Golden hour meadow */
-    GHIBLI_BASE + 'laputa030.jpg',      /* Ruins at golden hour */
-    GHIBLI_BASE + 'mononoke010.jpg',    /* Forest at dusk */
-    GHIBLI_BASE + 'kazetachinu025.jpg', /* Countryside sunset */
-    GHIBLI_BASE + 'marnie015.jpg'       /* Wetland at sunset */
+    G+'marnie021.jpg',       // Sunset over calm water — pink sky
+    G+'kimitachi044.jpg',    // Stone path over water — golden sunset
+    G+'kimitachi019.jpg',    // Autumn lake with reflections — warm
+    G+'howl011.jpg',         // Moving castle at dusk — mountains
+    G+'howl033.jpg',         // Dramatic clouds — golden sunset sky
+    G+'kimitachi020.jpg',    // Field with towering clouds — golden
+    G+'kimitachi041.jpg',    // Stone memorial — warm golden light
+    G+'marnie009.jpg'        // Lakeside mansion — warm afternoon
   ],
   night: [
-    GHIBLI_BASE + 'howl011.jpg',        /* Starlit sky */
-    GHIBLI_BASE + 'mononoke041.jpg',    /* Night forest glow */
-    GHIBLI_BASE + 'mononoke005.jpg',    /* Dark forest canopy */
-    GHIBLI_BASE + 'mononoke018.jpg',    /* Moonlit forest */
-    GHIBLI_BASE + 'laputa022.jpg',      /* Night sky */
-    GHIBLI_BASE + 'laputa050.jpg',      /* Moonlit ruins */
-    GHIBLI_BASE + 'marnie030.jpg',      /* Night marsh */
-    GHIBLI_BASE + 'kazetachinu040.jpg'  /* Night countryside */
+    G+'chihiro011.jpg',      // Bathhouse at night — glowing lanterns
+    G+'ponyo038.jpg',        // Full moon over dark ocean
+    G+'mononoke024.jpg',     // Kodama forest — blue night mountains
+    G+'howl011.jpg',         // Moving castle — twilight mountains
+    G+'kimitachi022.jpg',    // Fireworks in night sky — red glow
+    G+'marnie027.jpg',       // Mansion by water at night — moonlight
+    G+'nausicaa001.jpg'      // Fire horizon — dark dramatic sky
   ],
   rain: [
-    GHIBLI_BASE + 'marnie003.jpg',      /* Misty marsh */
-    GHIBLI_BASE + 'marnie008.jpg',      /* Foggy wetland */
-    GHIBLI_BASE + 'marnie038.jpg',      /* Rain on water */
-    GHIBLI_BASE + 'mononoke033.jpg',    /* Rainy forest */
-    GHIBLI_BASE + 'kazetachinu034.jpg', /* Overcast landscape */
-    GHIBLI_BASE + 'kazetachinu009.jpg', /* Misty mountains */
-    GHIBLI_BASE + 'howl019.jpg',        /* Rain on town rooftops */
-    GHIBLI_BASE + 'chihiro040.jpg'      /* Misty spirit world */
+    G+'marnie038.jpg',       // Lightning over dark mansion tower
+    G+'mononoke024.jpg',     // Dark forest with spirits — overcast
+    G+'marnie010.jpg',       // Misty marsh — foggy atmosphere
+    G+'kimitachi046.jpg',    // Giant ocean wave — stormy
+    G+'ponyo011.jpg',        // Stormy ocean — dark waves
+    G+'kazetachinu032.jpg',  // Overcast green countryside
+    G+'marnie037.jpg'        // Dense forest — moody green atmosphere
   ]
 };
 
-var FALLBACK = {
+/* --- CAFÉ: Cozy library / bookshop interiors (Unsplash) --- */
+var W_CAFE = {
   day: [
-    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1920&q=80',
-    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80'
+    U+'1507842217343-583bb7270b66?w=1920&q=80',  // Warm library shelves, sunlight
+    U+'1521587760476-6c12a4b040da?w=1920&q=80',  // Old bookshop interior
+    U+'1524995997946-a1c2e315a42f?w=1920&q=80',  // Cozy reading nook with books
+    U+'1481627834876-b7833e8f5570?w=1920&q=80',  // Classic library hall
+    U+'1519682337058-a94d519337bc?w=1920&q=80',  // Bookshelf warm wood
+    U+'1512820790803-83ca734da794?w=1920&q=80'   // Cafe interior warm tones
   ],
   sunset: [
-    'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920&q=80',
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=80'
+    U+'1468581264429-2548ef9eb732?w=1920&q=80',  // Library with golden hour light
+    U+'1526243741027-444d633d7365?w=1920&q=80',  // Warm sunset through library window
+    U+'1495446815901-a7297e633e8d?w=1920&q=80',  // Old books golden light
+    U+'1559339352-11d035aa65de?w=1920&q=80',     // Coffee shop warm evening
+    U+'1506880018603-83d5b814b5a6?w=1920&q=80'   // Cozy warm interior
   ],
   night: [
-    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80',
-    'https://images.unsplash.com/photo-1475274047050-1d0c55b0033b?w=1920&q=80'
+    U+'1530538095376-a4936b35b5f0?w=1920&q=80',  // Library with lamp light at night
+    U+'1497366216548-37526070297c?w=1920&q=80',  // Dark bookshop with warm lamps
+    U+'1519682577862-22b62b24e493?w=1920&q=80',  // Night study room
+    U+'1532012197267-da84d127e765?w=1920&q=80',  // Dim library atmosphere
+    U+'1558618666-fcd25c85f82e?w=1920&q=80'      // Candle-lit study
   ],
   rain: [
-    'https://images.unsplash.com/photo-1515694346937-94d85e39d29b?w=1920&q=80',
-    'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1920&q=80'
+    U+'1515694346937-94d85e39d29b?w=1920&q=80',  // Rain on window
+    U+'1519692933314-fef5c7921ef4?w=1920&q=80',  // Rainy window coffee shop
+    U+'1501436513145-8171d310ca43?w=1920&q=80',  // Moody rainy bookshop
+    U+'1496185106368-308ed53f0c9c?w=1920&q=80',  // Rain drops on glass
+    U+'1428592953211-077101b2021b?w=1920&q=80'   // Overcast atmosphere
   ]
 };
 
-var validatedW = { day: [], sunset: [], night: [], rain: [] };
-var validationDone = { day: false, sunset: false, night: false, rain: false };
+/* --- RETRO: Neon / cyberpunk / retro cityscapes (Unsplash) --- */
+var W_RETRO = {
+  day: [
+    U+'1550745165-9bc0b252726f?w=1920&q=80',  // Retro arcade machines
+    U+'1511882150382-421056c89033?w=1920&q=80',// Vintage TV static retro
+    U+'1556438064-2d7646166914?w=1920&q=80',  // Retro computer setup
+    U+'1531525645387-7f14be1bdbbd?w=1920&q=80',// Old CRT monitors
+    U+'1558618666-fcd25c85f82e?w=1920&q=80'   // Retro gaming room
+  ],
+  sunset: [
+    U+'1579546929518-9e396f3cc809?w=1920&q=80',// Neon city sunset
+    U+'1534430480872-3498386e7856?w=1920&q=80',// Synthwave sunset sky
+    U+'1514565131-fce0801e5785?w=1920&q=80',  // Purple sunset cityscape
+    U+'1517420704952-d9f39e95b43e?w=1920&q=80',// Urban sunset neon
+    U+'1545127398-14699f92334b?w=1920&q=80'   // Golden hour cyberpunk
+  ],
+  night: [
+    U+'1563089145-599997674d42?w=1920&q=80',  // Neon city at night
+    U+'1519501025264-65ba15a82390?w=1920&q=80',// Tokyo neon streets
+    U+'1533174072545-7a4855d30cb8?w=1920&q=80',// Cyberpunk alley neon
+    U+'1505506364700-93a06f43f5e2?w=1920&q=80',// Neon signs night city
+    U+'1579548122080-c35fd6820ecb?w=1920&q=80',// Dark neon cityscape
+    U+'1542831371-29b0f74f9713?w=1920&q=80'   // Night city lights
+  ],
+  rain: [
+    U+'1501436513145-8171d310ca43?w=1920&q=80',// Neon rain reflections
+    U+'1507400492013-162706c8c05e?w=1920&q=80',// Rainy neon street
+    U+'1476820865390-c52aeebb9891?w=1920&q=80',// Wet city lights
+    U+'1519692933314-fef5c7921ef4?w=1920&q=80',// Rainy window neon glow
+    U+'1515694346937-94d85e39d29b?w=1920&q=80' // Rain on glass
+  ]
+};
 
+/* --- Fallback pools (guaranteed Unsplash photos) --- */
+var FB = {
+  day: [
+    U+'1501785888041-af3ef285b470?w=1920&q=80',
+    U+'1470071459604-3b5ec3a7fe05?w=1920&q=80',
+    U+'1441974231531-c6227db76b6e?w=1920&q=80'
+  ],
+  sunset: [
+    U+'1495616811223-4d98c6e9c869?w=1920&q=80',
+    U+'1506744038136-46273834b3fb?w=1920&q=80'
+  ],
+  night: [
+    U+'1519681393784-d120267933ba?w=1920&q=80',
+    U+'1475274047050-1d0c55b0033b?w=1920&q=80'
+  ],
+  rain: [
+    U+'1515694346937-94d85e39d29b?w=1920&q=80',
+    U+'1428592953211-077101b2021b?w=1920&q=80'
+  ]
+};
+
+/* --- Get the right wallpaper pool for current theme --- */
+function getWallpaperPool() {
+  var theme = localStorage.getItem('rm_theme') || 'comfy';
+  if (theme === 'cafe-dark' || theme === 'cafe-light') return W_CAFE;
+  if (theme === 'retro-dark' || theme === 'retro-light') return W_RETRO;
+  return W_COMFY;
+}
+var W = getWallpaperPool();
+
+/* --- wallpaper state --- */
+var readyPool = { day:[], sunset:[], night:[], rain:[] };
+var validated  = { day:false, sunset:false, night:false, rain:false };
+var wallIdx    = { day:0, sunset:0, night:0, rain:0 };
+var activeLayer = 'A';
+var lastScene   = '';
+var currentScene = localStorage.getItem('landingScene') || 'auto';
+
+/* --- preload & validate each scene's images once --- */
 function validateScene(scene, cb) {
-  if (validationDone[scene]) return cb(validatedW[scene]);
-  var urls = W[scene];
-  var pending = urls.length;
+  if (validated[scene]) return cb(readyPool[scene]);
+  var urls = W[scene], pending = urls.length;
   urls.forEach(function(url) {
     var img = new Image();
     img.onload = function() {
-      if (img.naturalWidth > 100) {
-        validatedW[scene].push(url);
-        console.log('[RM] \u2705 valid:', url.split('/').pop());
-      }
-      if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
+      if (img.naturalWidth > 100) readyPool[scene].push(url);
+      if (--pending === 0) { validated[scene] = true; cb(readyPool[scene]); }
     };
     img.onerror = function() {
-      console.warn('[RM] \u274c dead:', url.split('/').pop());
-      if (--pending === 0) { validationDone[scene] = true; cb(validatedW[scene]); }
+      if (--pending === 0) { validated[scene] = true; cb(readyPool[scene]); }
     };
     img.src = url;
   });
 }
 
-var quotes = [
-  '"The only way to do great work is to love what you do."',
-  '"Don\'t watch the clock; do what it does. Keep going."',
-  '"The beautiful thing about learning is that nobody can take it away from you."',
-  '"It does not matter how slowly you go as long as you do not stop."',
-  '"A person who never made a mistake never tried anything new."',
-  '"The expert in anything was once a beginner."',
-  '"Dream big. Start small. Act now."',
-  '"First, solve the problem. Then, write the code."',
-  '"Talk is cheap. Show me the code."'
-];
-document.getElementById('quoteBox').textContent = quotes[Math.floor(Math.random() * quotes.length)];
-
-function updateClock() {
-  var now = new Date();
-  document.getElementById('clock').textContent =
-    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+/* --- crossfade between wallA / wallB layers --- */
+function doApply(url, crossfade) {
+  if (crossfade) {
+    var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
+    var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
+    var show = document.getElementById(showId);
+    var hide = document.getElementById(hideId);
+    show.style.backgroundImage = 'url("' + url + '")';
+    show.offsetHeight;
+    show.classList.add('active');
+    hide.classList.remove('active');
+    activeLayer = activeLayer === 'A' ? 'B' : 'A';
+  } else {
+    var el = document.getElementById('wall' + activeLayer);
+    el.style.backgroundImage = 'url("' + url + '")';
+    el.classList.add('active');
+  }
 }
-function updateGreeting() {
-  var now = new Date();
-  var h = now.getHours();
-  var days = ['Domingo','Segunda','Ter\u00e7a','Quarta','Quinta','Sexta','S\u00e1bado'];
-  var period = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
-  var name = localStorage.getItem('rmUserName') || '';
-  if (!name) { try { name = JSON.parse(localStorage.getItem('rms_user') || '{}').name || ''; } catch(e){} }
-  var n = name ? ', ' + name.split(' ')[0] : '';
-  document.getElementById('greeting').innerHTML = period + n + '!<br>Ready for ' + days[now.getDay()] + '? You\'ve got this \u2764\ufe0f';
+
+function showWall(scene, crossfade) {
+  validateScene(scene, function(pool) {
+    if (pool.length === 0) pool = FB[scene];
+    var idx = wallIdx[scene] % pool.length;
+    doApply(pool[idx], crossfade);
+    // preload next
+    var next = pool[(idx + 1) % pool.length];
+    (new Image()).src = next;
+  });
 }
-updateClock(); updateGreeting();
-setInterval(updateClock, 1000);
-setInterval(updateGreeting, 60000);
 
-var currentScene = localStorage.getItem('landingScene') || 'auto';
-var wallIdx = { day: 0, sunset: 0, night: 0, rain: 0 };
-var activeLayer = 'A';
-var lastAppliedScene = '';
-
+/* --- scene management --- */
 function getAutoScene() {
   var h = new Date().getHours();
   if (h >= 6 && h < 17) return 'day';
@@ -736,54 +1105,12 @@ function resolveScene() {
   return currentScene === 'auto' ? getAutoScene() : currentScene;
 }
 
-function doApply(url, crossfade) {
-  /* Preload image BEFORE crossfading so transition is smooth */
-  var img = new Image();
-  img.onload = function() {
-    if (crossfade) {
-      var showId = activeLayer === 'A' ? 'wallB' : 'wallA';
-      var hideId = activeLayer === 'A' ? 'wallA' : 'wallB';
-      var showEl = document.getElementById(showId);
-      var hideEl = document.getElementById(hideId);
-      /* Set bg on hidden layer first, force paint, then fade */
-      showEl.style.backgroundImage = 'url("' + url + '")';
-      showEl.offsetHeight; /* force reflow */
-      requestAnimationFrame(function() {
-        showEl.classList.add('active');
-        hideEl.classList.remove('active');
-      });
-      activeLayer = activeLayer === 'A' ? 'B' : 'A';
-    } else {
-      var el = document.getElementById('wall' + activeLayer);
-      el.style.backgroundImage = 'url("' + url + '")';
-      el.classList.add('active');
-    }
-  };
-  img.onerror = function() {
-    console.warn('[RM] failed to load wallpaper:', url);
-  };
-  img.src = url;
-}
-
-function setWallpaper(scene, crossfade) {
-  validateScene(scene, function(valid) {
-    var pool = valid.length > 0 ? valid : FALLBACK[scene];
-    var idx = wallIdx[scene] % pool.length;
-    var url = pool[idx];
-    console.log('[RM] showing:', scene, url.split('/').pop(), '(pool:', pool.length, 'valid)');
-    doApply(url, crossfade);
-    var nextUrl = pool[(idx + 1) % pool.length];
-    (new Image()).src = nextUrl;
-  });
-}
-
 function applyScene(scene, initial) {
   var actual = scene === 'auto' ? getAutoScene() : scene;
-  console.log('[RM] scene:', scene, '->', actual);
-  if (initial || lastAppliedScene !== actual) {
-    setWallpaper(actual, !initial);
+  if (initial || lastScene !== actual) {
+    showWall(actual, !initial);
     createParticles(actual);
-    lastAppliedScene = actual;
+    lastScene = actual;
   }
   var opts = document.querySelectorAll('#scenePill .pill-opt');
   for (var i = 0; i < opts.length; i++)
@@ -795,35 +1122,77 @@ function setScene(scene) {
   localStorage.setItem('landingScene', scene);
   var sc = scene === 'auto' ? getAutoScene() : scene;
   wallIdx[sc] = 0;
-  lastAppliedScene = '';
-  /* initial=false so crossfade is enabled on user scene change */
-  applyScene(scene, false);
+  validated[sc] = false;
+  readyPool[sc] = [];
+  lastScene = '';
+  applyScene(scene, true);
 }
 
+/* --- clock & greeting --- */
+function updateClock() {
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2, '0');
+  var m = String(now.getMinutes()).padStart(2, '0');
+  var el = document.getElementById('clock');
+  if (el) el.textContent = h + ':' + m;
+}
+
+function updateGreeting() {
+  var h = new Date().getHours();
+  var msg = '';
+  if (h >= 5 && h < 12) msg = 'Bom dia';
+  else if (h >= 12 && h < 18) msg = 'Boa tarde';
+  else msg = 'Boa noite';
+  // Try to get user name from localStorage
+  try {
+    var u = JSON.parse(localStorage.getItem('rms_user') || '{}');
+    if (u && u.name) msg += ', ' + u.name.split(' ')[0];
+  } catch(e) {}
+  var el = document.getElementById('greeting');
+  if (el) el.textContent = msg;
+}
+
+/* --- boot & timers --- */
+updateClock();
+updateGreeting();
 applyScene(currentScene, true);
 
-/* Re-create particles when theme changes (café has its own particles) */
-var _lastThemeForParticles = document.body.className;
-var _themeObserver = new MutationObserver(function(mutations) {
-  var newClass = document.body.className;
-  if (newClass !== _lastThemeForParticles) {
-    _lastThemeForParticles = newClass;
-    currentParticleScene = '';
-    var sc = resolveScene();
-    createParticles(sc);
-  }
-});
-_themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+// Update clock every second
+setInterval(updateClock, 1000);
 
+// Update greeting every minute (in case hour changes)
+setInterval(updateGreeting, 60000);
+
+// Cycle wallpaper every 30s
 setInterval(function() {
   var sc = resolveScene();
   wallIdx[sc] = (wallIdx[sc] || 0) + 1;
-  setWallpaper(sc, true);
+  showWall(sc, true);
 }, 30000);
 
+// Re-check auto scene every 60s (faster detection of time-of-day change)
 setInterval(function() {
   if (currentScene === 'auto') applyScene('auto');
-}, 300000);
+}, 60000);
+
+/* --- Theme change listener: reload wallpapers when theme switches --- */
+var _lastTheme = localStorage.getItem('rm_theme') || 'comfy';
+function checkThemeWallpaperSwitch() {
+  var cur = localStorage.getItem('rm_theme') || 'comfy';
+  if (cur !== _lastTheme) {
+    _lastTheme = cur;
+    W = getWallpaperPool();
+    // Reset validation cache so new pool gets loaded
+    readyPool = { day:[], sunset:[], night:[], rain:[] };
+    validated  = { day:false, sunset:false, night:false, rain:false };
+    wallIdx    = { day:0, sunset:0, night:0, rain:0 };
+    lastScene  = '';
+    applyScene(currentScene, true);
+  }
+}
+// Check every 500ms (catches theme toggle instantly)
+setInterval(checkThemeWallpaperSwitch, 500);
+
 
 var currentParticleScene = '';
 function createParticles(scene) {
@@ -832,87 +1201,73 @@ function createParticles(scene) {
   currentParticleScene = scene;
   c.innerHTML = '';
   var i, p, sz;
-  var isCafe = document.body.classList.contains('cafe');
-
-  if (isCafe) {
-    /* Café: warm golden dust + steam wisps */
-    for (i = 0; i < 35; i++) {
-      p = document.createElement('div'); p.className = 'particle-golden';
-      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
-      p.style.setProperty('--dx',(Math.random()*120-60)+'px');
-      p.style.setProperty('--dy',-(40+Math.random()*120)+'px');
-      p.style.animationDuration = (10+Math.random()*15)+'s';
-      p.style.animationDelay = Math.random()*10+'s';
-      sz=(1.5+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
-      c.appendChild(p);
-    }
-    for (i = 0; i < 8; i++) {
-      p = document.createElement('div'); p.className = 'particle-steam';
-      p.style.left = 15+Math.random()*70+'%'; p.style.top = 50+Math.random()*40+'%';
-      p.style.setProperty('--dx',(Math.random()*60-30)+'px');
-      p.style.setProperty('--dy',-(80+Math.random()*120)+'px');
-      p.style.setProperty('--scale',(1.5+Math.random()*2).toFixed(1));
-      p.style.animationDuration = (12+Math.random()*10)+'s';
-      p.style.animationDelay = Math.random()*8+'s';
-      sz=(20+Math.random()*40)+'px'; p.style.width=sz; p.style.height=sz;
-      c.appendChild(p);
-    }
-    return;
-  }
-
   if (scene === 'day') {
+    // 45 golden dust motes, warm glow
     for (i = 0; i < 45; i++) {
       p = document.createElement('div'); p.className = 'particle-dust';
       p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
-      p.style.setProperty('--dx',(Math.random()*140-70)+'px');
-      p.style.setProperty('--dy',-(60+Math.random()*140)+'px');
-      p.style.animationDuration = (7+Math.random()*14)+'s';
-      p.style.animationDelay = Math.random()*10+'s';
-      sz=(1.5+Math.random()*4)+'px'; p.style.width=sz; p.style.height=sz;
+      p.style.setProperty('--dx',(Math.random()*100-50)+'px');
+      p.style.setProperty('--dy',-(50+Math.random()*100)+'px');
+      p.style.animationDuration = (8+Math.random()*12)+'s';
+      p.style.animationDelay = Math.random()*8+'s';
+      sz=(3+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'sunset') {
-    for (i = 0; i < 28; i++) {
+    // 30 bright golden fireflies
+    for (i = 0; i < 30; i++) {
       p = document.createElement('div'); p.className = 'particle-firefly';
-      p.style.left = Math.random()*100+'%'; p.style.top = 15+Math.random()*75+'%';
-      p.style.setProperty('--dx',(Math.random()*100-50)+'px');
-      p.style.setProperty('--dy',-(20+Math.random()*60)+'px');
-      p.style.setProperty('--dx2',(Math.random()*80-40)+'px');
-      p.style.setProperty('--dy2',-(30+Math.random()*70)+'px');
-      p.style.setProperty('--dx3',(Math.random()*90-45)+'px');
-      p.style.setProperty('--dy3',-(10+Math.random()*40)+'px');
-      p.style.animationDuration = (4+Math.random()*8)+'s';
-      p.style.animationDelay = Math.random()*6+'s';
-      sz=(3+Math.random()*6)+'px'; p.style.width=sz; p.style.height=sz;
+      p.style.left = Math.random()*100+'%'; p.style.top = 20+Math.random()*70+'%';
+      p.style.setProperty('--dx',(Math.random()*80-40)+'px');
+      p.style.setProperty('--dy',-(15+Math.random()*40)+'px');
+      p.style.setProperty('--dx2',(Math.random()*60-30)+'px');
+      p.style.setProperty('--dy2',-(25+Math.random()*50)+'px');
+      p.style.setProperty('--dx3',(Math.random()*70-35)+'px');
+      p.style.setProperty('--dy3',-(5+Math.random()*25)+'px');
+      p.style.animationDuration = (5+Math.random()*7)+'s';
+      p.style.animationDelay = Math.random()*5+'s';
+      sz=(6+Math.random()*4)+'px'; p.style.width=sz; p.style.height=sz;
       c.appendChild(p);
     }
   } else if (scene === 'night') {
-    for (i = 0; i < 90; i++) {
+    // 80 stars with varied sizes and colors
+    var starColors = ['#ffffff','#ffffff','#ffffff','#fffde0','#ffe8a0','#d0e8ff'];
+    for (i = 0; i < 80; i++) {
       p = document.createElement('div'); p.className = 'particle-star';
       p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*75+'%';
-      p.style.setProperty('--bright',(0.3+Math.random()*0.6).toFixed(2));
-      p.style.animationDuration = (1.5+Math.random()*5)+'s';
-      p.style.animationDelay = Math.random()*5+'s';
-      sz=(1+Math.random()*3)+'px'; p.style.width=sz; p.style.height=sz;
+      // bright stars get larger size
+      var bright = (0.6+Math.random()*0.4).toFixed(2);
+      p.style.setProperty('--bright', bright);
+      p.style.setProperty('--star-color', starColors[Math.floor(Math.random()*starColors.length)]);
+      p.style.animationDuration = (2+Math.random()*4)+'s';
+      p.style.animationDelay = Math.random()*4+'s';
+      // bigger for bright stars
+      var maxSz = bright > 0.85 ? 4 : bright > 0.7 ? 2.5 : 1.5;
+      sz=(1+Math.random()*maxSz)+'px'; p.style.width=sz; p.style.height=sz;
+      c.appendChild(p);
+    }
+    // 4 shooting stars
+    for (i = 0; i < 4; i++) {
+      p = document.createElement('div'); p.className = 'particle-star shooting';
+      p.style.left = (5+Math.random()*60)+'%';
+      p.style.top = (5+Math.random()*40)+'%';
+      var angle = 20+Math.random()*25; // degrees below horizontal
+      var dist = 200+Math.random()*300;
+      p.style.setProperty('--shoot-x', (dist*Math.cos(angle*Math.PI/180)).toFixed(0)+'px');
+      p.style.setProperty('--shoot-y', (dist*Math.sin(angle*Math.PI/180)).toFixed(0)+'px');
+      p.style.animationDuration = (1.2+Math.random()*1.5)+'s';
+      p.style.animationDelay = (3+Math.random()*12)+'s';
       c.appendChild(p);
     }
   } else if (scene === 'rain') {
-    for (i = 0; i < 140; i++) {
+    // 120 rain drops, wider and longer
+    for (i = 0; i < 120; i++) {
       p = document.createElement('div'); p.className = 'particle-rain';
       p.style.left = Math.random()*100+'%';
-      p.style.height = (10+Math.random()*25)+'px';
-      p.style.animationDuration = (0.3+Math.random()*0.5)+'s';
+      p.style.height = (15+Math.random()*15)+'px';
+      p.style.animationDuration = (0.35+Math.random()*0.45)+'s';
       p.style.animationDelay = Math.random()*2+'s';
-      p.style.opacity = (0.12+Math.random()*0.3).toFixed(2);
-      c.appendChild(p);
-    }
-    /* Add splash effects at bottom */
-    for (i = 0; i < 20; i++) {
-      p = document.createElement('div'); p.className = 'particle-splash';
-      p.style.left = Math.random()*100+'%';
-      p.style.bottom = Math.random()*15+'%';
-      p.style.animationDuration = (0.4+Math.random()*0.4)+'s';
-      p.style.animationDelay = Math.random()*3+'s';
+      p.style.opacity = (0.2+Math.random()*0.2).toFixed(2);
       c.appendChild(p);
     }
   }
@@ -926,7 +1281,110 @@ function createParticles(scene) {
     document.getElementById('enterBtn').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Abrir Study Hub';
   }
 })();
+
+/* ============================================================
+   AUTH-AWARE NAV BUTTON
+   ============================================================ */
+(function() {
+  var navAuth = document.getElementById('navAuth');
+  if (!navAuth) return;
+  var isLoggedIn = false;
+  try {
+    var u = JSON.parse(localStorage.getItem('rms_user') || 'null');
+    var token = localStorage.getItem('token');
+    var session = localStorage.getItem('sb-session') || localStorage.getItem('supabase.auth.token');
+    isLoggedIn = !!(u || token || session);
+  } catch(e) {}
+
+  if (isLoggedIn) {
+    navAuth.title = 'Sair';
+    navAuth.href = '#';
+    navAuth.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+    navAuth.onclick = function(e) {
+      e.preventDefault();
+      try {
+        localStorage.removeItem('token');
+        localStorage.removeItem('sb-session');
+        localStorage.removeItem('supabase.auth.token');
+        localStorage.removeItem('rms_user');
+      } catch(err) {}
+      window.location.reload();
+    };
+  }
+})();
+
+/* ============================================================
+   JAPANESE QUOTES
+   ============================================================ */
+(function() {
+  // Quotes sourced from anime/gaming/study culture.
+  // src: '' indicates original/generic motivational phrases not attributed to a specific series.
+  var jpQuotes = [
+    { jp: '諦めないでくれよ…俺は本気だ', rom: 'Akiramenaide kure yo... ore wa honki da', src: 'Naruto' },
+    { jp: '人は心にバネを持っている。それは折れたりしない', rom: 'Hito wa kokoro ni bane wo motte iru. Sore wa oretari shinai', src: 'Bleach' },
+    { jp: '俺の剣は折れない。俺の心も折れない', rom: 'Ore no ken wa orenai. Ore no kokoro mo orenai', src: '' },
+    { jp: '過去を惜しむな。未来を恐れるな。今を生きろ', rom: 'Kako wo oshimu na. Mirai wo osoreru na. Ima wo ikiro', src: '' },
+    { jp: '努力した者が全て報われるわけではない。しかし、成功した者は皆すべからく努力している', rom: 'Doryoku shita mono ga subete mukuwareru wake dewa nai. Shikashi, seikou shita mono wa mina subekaraku doryoku shite iru', src: 'HxH' },
+    { jp: '俺は最強だ。なぜなら、俺は俺だからだ', rom: 'Ore wa saikyou da. Naze nara, ore wa ore dakara da', src: '' },
+    { jp: '結果より過程が大事だ', rom: 'Kekka yori katei ga daiji da', src: '' },
+    { jp: '夢を見ることが、始まりだ', rom: 'Yume wo miru koto ga, hajimari da', src: '' },
+    { jp: '一歩一歩、前へ進め', rom: 'Ippo ippo, mae e susume', src: '' },
+    { jp: '敵を知り己を知れば百戦危うからず', rom: 'Teki wo shiri onore wo shireba hyakusen ayaukarazu', src: '' },
+    { jp: 'コードを書くことは、心を書くことだ', rom: 'Koodo wo kaku koto wa, kokoro wo kaku koto da', src: '' },
+    { jp: 'レベルアップまであと少しだ', rom: 'Reberu appu made ato sukoshi da', src: '' },
+    { jp: '集中しろ。今この瞬間だけだ', rom: 'Shuuchuu shiro. Ima kono shunkan dake da', src: '' },
+    { jp: '失敗は成功の母だ', rom: 'Shippai wa seikou no haha da', src: '' },
+    { jp: '信じる力が、世界を変える', rom: 'Shinjiru chikara ga, sekai wo kaeru', src: '' },
+    { jp: '今日も一日、全力で', rom: 'Kyou mo ichinichi, zenryoku de', src: '' },
+    { jp: '論理は美しい。コードも美しくあるべきだ', rom: 'Ronri wa utsukushii. Koodo mo utsukushiku aru beki da', src: '' },
+    { jp: 'どんな闇も、光があれば怖くない', rom: 'Donna yami mo, hikari ga areba kowakunai', src: '' },
+    { jp: '仲間がいるから、強くなれる', rom: 'Nakama ga iru kara, tsuyoku nareru', src: '' },
+    { jp: 'バグは友達。いつか必ず解決する', rom: 'Bagu wa tomodachi. Itsuka kanarazu kaiketsu suru', src: '' },
+  ];
+
+  var container = document.getElementById('jpQuote');
+  var elJp  = document.getElementById('jpJp');
+  var elRom = document.getElementById('jpRom');
+  var elSrc = document.getElementById('jpSrc');
+  if (!container || !elJp) return;
+
+  var currentIdx = Math.floor(Math.random() * jpQuotes.length);
+
+  function showQuote(q) {
+    elJp.textContent  = q.jp;
+    elRom.textContent = q.rom;
+    elSrc.textContent = q.src ? '\u2014 ' + q.src : '';
+    elSrc.style.display = q.src ? '' : 'none';
+  }
+
+  function fadeToQuote(idx) {
+    container.classList.remove('visible');
+    container.classList.add('fading');
+    setTimeout(function() {
+      showQuote(jpQuotes[idx]);
+      container.classList.remove('fading');
+      container.classList.add('visible');
+    }, 700);
+  }
+
+  // Initial display
+  showQuote(jpQuotes[currentIdx]);
+  // Trigger visible class slightly after page load to allow other animations to settle first
+  setTimeout(function() { container.classList.add('visible'); }, 950);
+
+  // Rotate every 30 seconds
+  setInterval(function() {
+    currentIdx = (currentIdx + 1) % jpQuotes.length;
+    fadeToQuote(currentIdx);
+  }, 30000);
+})();
 </script>
 <script src="/js/retro-mode.js"></script>
+<script src="/js/inject-player.js"></script>
+<footer class="rm-footer">
+  <span class="rm-footer-inner">
+    feito por Matheus Marques · conheça meu trabalho: <a href="https://mmarques.dev" target="_blank" rel="noopener noreferrer">mmarques.dev</a>
+  </span>
+</footer>
 </body>
 </html>
