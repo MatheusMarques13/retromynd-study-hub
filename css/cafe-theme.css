@@ -5,7 +5,7 @@
    Supports: body.cafe-light | body.cafe-dark
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap');
 
 /* ========== CAFÉ LIGHT VARIABLES ========== */
 body.cafe-light {
@@ -18,10 +18,10 @@ body.cafe-light {
   --cafe-text-muted: #9C9A94;
   --cafe-accent: #1A1A1A;
   --cafe-accent-soft: #F0EDE7;
-  --cafe-shadow: rgba(0,0,0,0.04);
+  --cafe-shadow: rgba(0,0,0,0.06);
   --cafe-highlight: #1A1A1A;
-  --cafe-shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.03);
-  --cafe-shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.05);
+  --cafe-shadow-card: 0 2px 4px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
+  --cafe-shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.08);
 }
 
 /* ========== CAFÉ DARK VARIABLES ========== */
@@ -37,8 +37,8 @@ body.cafe-dark {
   --cafe-accent-soft: #2A2722;
   --cafe-shadow: rgba(0,0,0,0.4);
   --cafe-highlight: #F0ECE6;
-  --cafe-shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.2);
-  --cafe-shadow-hover: 0 2px 8px rgba(0,0,0,0.4), 0 8px 30px rgba(0,0,0,0.3);
+  --cafe-shadow-card: 0 2px 4px rgba(0,0,0,0.25), 0 8px 32px rgba(0,0,0,0.2);
+  --cafe-shadow-hover: 0 4px 12px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.25);
 }
 
 /* ========== FONT OVERRIDES ========== */
@@ -62,7 +62,7 @@ body.cafe-dark h3,
 body.cafe-dark h4,
 body.cafe-dark h5,
 body.cafe-dark h6 {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif !important;
+  font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif !important;
   letter-spacing: -0.02em !important;
   font-weight: 700 !important;
 }
@@ -340,7 +340,7 @@ body.cafe-dark [class*="stat"] [class*="num"],
 body.cafe-dark [class*="stat"] [class*="count"],
 body.cafe-dark [class*="streak"],
 body.cafe-dark [class*="score"] {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-size: 2.2rem !important;
@@ -395,7 +395,7 @@ body.cafe-dark [class*="clock"],
 body.cafe-dark [class*="countdown"],
 body.cafe-dark [class*="digit"],
 body.cafe-dark .timer-num {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-weight: 700 !important;
@@ -644,7 +644,7 @@ body.cafe-dark [class*="sticky"] {
 /* ========== STREAK ========== */
 body.cafe-light [class*="streak-num"],
 body.cafe-dark [class*="streak-num"] {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
@@ -771,7 +771,7 @@ body.cafe-dark [class*="tab"] {
 /* Header title */
 body.cafe-light .header-title,
 body.cafe-dark .header-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
   animation: none !important;
@@ -788,7 +788,7 @@ body.cafe-dark .header-date {
 /* Hub logo text */
 body.cafe-light .hub-logo-text h1,
 body.cafe-dark .hub-logo-text h1 {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
 }
 
@@ -818,7 +818,7 @@ body.cafe-dark .scoreboard {
 
 body.cafe-light .score-val,
 body.cafe-dark .score-val {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-size: 1.7rem !important;
@@ -912,7 +912,7 @@ body.cafe-dark .stat-card {
 
 body.cafe-light .stat-val,
 body.cafe-dark .stat-val {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-size: 2.4rem !important;
@@ -951,7 +951,7 @@ body.cafe-dark .streak-card {
 
 body.cafe-light .streak-num,
 body.cafe-dark .streak-num {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
@@ -964,7 +964,7 @@ body.cafe-dark .streak-sub {
 
 body.cafe-light .streak-best-val,
 body.cafe-dark .streak-best-val {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
 }
 
@@ -976,7 +976,7 @@ body.cafe-dark .streak-best-lbl {
 /* Section titles */
 body.cafe-light .sec-title,
 body.cafe-dark .sec-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   font-size: 1rem !important;
   letter-spacing: 0 !important;
@@ -1062,7 +1062,7 @@ body.cafe-dark .rank-pos.gold {
 body.cafe-light .rank-score,
 body.cafe-dark .rank-score {
   color: var(--cafe-text) !important;
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
 }
 
 body.cafe-light .rank-date,
@@ -1250,7 +1250,7 @@ body.cafe-light[data-page="landing"] {
 /* Clock on landing */
 body.cafe-light .clock,
 body.cafe-dark .clock {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
@@ -1258,7 +1258,7 @@ body.cafe-dark .clock {
 /* Greeting */
 body.cafe-light .greeting,
 body.cafe-dark .greeting {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   font-weight: 700 !important;
 }
@@ -1266,7 +1266,7 @@ body.cafe-dark .greeting {
 /* Brand name */
 body.cafe-light .brand-name,
 body.cafe-dark .brand-name {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
@@ -1340,7 +1340,7 @@ body.cafe-dark .theme-label {
 /* Quote box */
 body.cafe-light .quote-box,
 body.cafe-dark .quote-box {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   font-style: italic !important;
   color: var(--cafe-text-mid) !important;
 }
@@ -1406,7 +1406,7 @@ body.cafe-dark .login-card {
 
 body.cafe-light .card-header h1,
 body.cafe-dark .card-header h1 {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
 }
 
@@ -1519,7 +1519,7 @@ body.cafe-dark .brand span {
 body.cafe-light .lyric,
 body.cafe-dark .lyric {
   color: var(--cafe-text-muted) !important;
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
 }
 
 /* ========== DARK MODE SPECIFIC ========== */
@@ -1651,7 +1651,7 @@ body.cafe-dark .login-box::before {
 
 body.cafe-light .login-title,
 body.cafe-dark .login-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
 }
 
@@ -1680,7 +1680,7 @@ body.cafe-dark .login-name-input:focus {
 /* ========== SPLASH OVERRIDES ========== */
 body.cafe-light .splash-title,
 body.cafe-dark .splash-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'DM Serif Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
