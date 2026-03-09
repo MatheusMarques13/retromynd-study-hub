@@ -222,17 +222,25 @@ class RetroMyndPlayer {
         if (titleEl) {
             titleEl.textContent = this.playlist[this.currentIndex].title;
         }
+        const thumbEl = document.getElementById('rm-thumbnail');
+        if (thumbEl) {
+            const track = this.playlist[this.currentIndex];
+            thumbEl.src = `https://img.youtube.com/vi/${track.id}/mqdefault.jpg`;
+            thumbEl.alt = track.title;
+            thumbEl.onerror = function() { this.style.opacity = '0'; };
+            thumbEl.onload = function() { this.style.opacity = '1'; };
+        }
     }
-    
+
     updatePlayButton() {
         const playBtn = document.getElementById('rm-play');
         if (!playBtn) return;
-        
+
         if (this.isPlaying) {
-            playBtn.textContent = '⏸';
+            playBtn.innerHTML = '<svg class="rm-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
             playBtn.setAttribute('aria-label', 'Pausar');
         } else {
-            playBtn.textContent = '▶';
+            playBtn.innerHTML = '<svg class="rm-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
             playBtn.setAttribute('aria-label', 'Tocar');
         }
     }
