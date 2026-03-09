@@ -581,102 +581,177 @@ body.cafe-dark .jp-rom  { color: #A09488 !important; }
 body.cafe-light .jp-src { color: #9A8E82 !important; }
 body.cafe-dark .jp-src  { color: #7A7068 !important; }
 
-/* ======== LANDING NAV BUTTONS (top-right) ======== */
-.landing-nav {
-  position: fixed; top: 20px; right: 20px;
-  display: flex; align-items: center; gap: 4px; z-index: 100;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 6px 12px;
+/* ======== COLLAPSIBLE DROPDOWN NAV (bottom-right) ======== */
+.nav-dropdown-trigger {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 20;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--paper, #FFFDF8);
+  border: 1px solid #E5E0DA;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-.landing-nav-btn {
   display: flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px;
-  border-radius: 14px; border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: transparent;
-  color: #888;
-  text-decoration: none;
-  position: relative;
 }
-.landing-nav-btn svg {
+.nav-dropdown-trigger svg {
   width: 20px; height: 20px;
-  stroke-width: 1.8; fill: none; stroke: currentColor;
-  pointer-events: none;
+  fill: none; stroke: var(--text-mid, #475569); stroke-width: 1.8;
+  stroke-linecap: round; pointer-events: none;
+  transition: stroke 0.2s ease;
 }
-.landing-nav-btn:hover {
-  background: #FF6B8A;
-  color: #fff;
-  transform: none;
+.nav-dropdown-trigger:hover {
+  background: var(--pink-soft, #FFE4EE);
+  border-color: var(--pink, #FF6B9D);
+}
+.nav-dropdown-trigger:hover svg { stroke: var(--pink, #FF6B9D); }
+
+.nav-dropdown-panel {
+  position: fixed;
+  bottom: calc(2rem + 44px + 10px);
+  right: 2rem;
+  background: var(--paper, #FFFDF8);
+  border: 1px solid #E5E0DA;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  z-index: 19;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.nav-dropdown-panel.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-/* Retro nav container + button overrides */
-body.retro-dark .landing-nav,
-body.retro-light .landing-nav {
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-hub, #1E293B);
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+}
+.nav-dropdown-item svg {
+  width: 18px; height: 18px; flex-shrink: 0;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  pointer-events: none;
+}
+.nav-dropdown-item:hover {
+  background: var(--pink-soft, #FFE4EE);
+  color: var(--pink, #FF6B9D);
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background: #E5E0DA;
+  margin: 2px 0;
+}
+
+.nav-dropdown-scene-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  color: var(--text-light, #94A3B8);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 12px 0;
+}
+
+.nav-dropdown-scene-row {
+  display: flex; align-items: center; gap: 2px;
+  padding: 2px 8px 4px;
+}
+
+/* ---- Retro overrides ---- */
+body.retro-dark .nav-dropdown-trigger,
+body.retro-light .nav-dropdown-trigger {
   background: rgba(13,31,60,0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
   border: 2px solid var(--rborder, #1e3a6e) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
-body.retro-dark .landing-nav-btn,
-body.retro-light .landing-nav-btn {
-  background: transparent !important;
-  border: none !important;
+body.retro-dark .nav-dropdown-trigger svg,
+body.retro-light .nav-dropdown-trigger svg { stroke: var(--rpixel, #e8f0ff) !important; }
+body.retro-dark .nav-dropdown-trigger:hover,
+body.retro-light .nav-dropdown-trigger:hover {
+  background: rgba(245,197,24,0.1) !important;
+  border-color: var(--rgold, #f5c518) !important;
+}
+body.retro-dark .nav-dropdown-trigger:hover svg,
+body.retro-light .nav-dropdown-trigger:hover svg { stroke: var(--rgold, #f5c518) !important; }
+
+body.retro-dark .nav-dropdown-panel,
+body.retro-light .nav-dropdown-panel {
+  background: rgba(13,31,60,0.92) !important;
+  border: 2px solid var(--rborder, #1e3a6e) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+body.retro-dark .nav-dropdown-item,
+body.retro-light .nav-dropdown-item {
   color: var(--rpixel, #e8f0ff) !important;
   border-radius: 0 !important;
 }
-body.retro-dark .landing-nav-btn:hover,
-body.retro-light .landing-nav-btn:hover {
-  color: var(--rgold, #f5c518) !important;
+body.retro-dark .nav-dropdown-item:hover,
+body.retro-light .nav-dropdown-item:hover {
   background: rgba(245,197,24,0.1) !important;
-  transform: none !important;
+  color: var(--rgold, #f5c518) !important;
 }
+body.retro-dark .nav-dropdown-divider,
+body.retro-light .nav-dropdown-divider { background: var(--rborder, #1e3a6e) !important; }
+body.retro-dark .nav-dropdown-scene-label,
+body.retro-light .nav-dropdown-scene-label { color: var(--rdim, #7a8faa) !important; font-family: 'Space Mono', monospace !important; }
 
-/* Café nav container + button overrides */
-body.cafe-light .landing-nav,
-body.cafe-dark .landing-nav {
-  background: rgba(255,253,247,0.85) !important;
+/* ---- Café overrides ---- */
+body.cafe-light .nav-dropdown-trigger,
+body.cafe-dark .nav-dropdown-trigger {
+  background: rgba(255,253,247,0.9) !important;
+  border: 1px solid rgba(212,197,169,0.3) !important;
+  border-radius: 12px !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border-radius: 20px !important;
-  border: 1px solid rgba(212,197,169,0.3) !important;
-  box-shadow: 0 2px 12px rgba(139,111,71,0.06) !important;
 }
-body.cafe-light .landing-nav-btn,
-body.cafe-dark .landing-nav-btn {
-  background: transparent !important;
-  border: none !important;
-  color: #6B5344 !important;
-  border-radius: 14px !important;
-}
-body.cafe-light .landing-nav-btn:hover,
-body.cafe-dark .landing-nav-btn:hover {
-  background: rgba(139,111,71,0.08) !important;
-  color: #8B6F47 !important;
-  transform: none !important;
+body.cafe-light .nav-dropdown-trigger svg { stroke: #6B5344 !important; }
+body.cafe-dark  .nav-dropdown-trigger svg { stroke: #B0A898 !important; }
+body.cafe-light .nav-dropdown-trigger:hover,
+body.cafe-dark  .nav-dropdown-trigger:hover {
+  background: rgba(196,168,130,0.15) !important;
+  border-color: rgba(196,168,130,0.4) !important;
 }
 
-/* Tooltip */
-.landing-nav-btn[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  bottom: -30px; left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem;
-  white-space: nowrap;
-  padding: 3px 8px;
-  border-radius: 4px;
-  pointer-events: none;
+body.cafe-light .nav-dropdown-panel,
+body.cafe-dark  .nav-dropdown-panel {
+  background: rgba(255,253,247,0.95) !important;
+  border: 1px solid rgba(212,197,169,0.3) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 4px 20px rgba(139,111,71,0.08) !important;
 }
+body.cafe-dark  .nav-dropdown-panel { background: rgba(30,24,18,0.96) !important; }
+body.cafe-light .nav-dropdown-item { color: #6B5344 !important; }
+body.cafe-dark  .nav-dropdown-item { color: #D4C5A9 !important; }
+body.cafe-light .nav-dropdown-item:hover { background: rgba(196,168,130,0.15) !important; color: #5C4D3C !important; }
+body.cafe-dark  .nav-dropdown-item:hover { background: rgba(196,168,130,0.15) !important; color: #E8DFD0 !important; }
+body.cafe-light .nav-dropdown-divider,
+body.cafe-dark  .nav-dropdown-divider { background: rgba(212,197,169,0.3) !important; }
+body.cafe-light .nav-dropdown-scene-label { color: #9A8E82 !important; }
+body.cafe-dark  .nav-dropdown-scene-label { color: #7A7068 !important; }
 
 /* About modal */
 .about-modal-overlay {
@@ -819,21 +894,54 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
   <div class="quote-box" id="quoteBox"></div>
 </div>
 
-<!-- Top-right navigation buttons -->
-<div class="landing-nav" id="landingNav">
-  <a href="/index.html#retrolesson" class="landing-nav-btn" title="RetroLesson" id="navLesson">
+<!-- Collapsible dropdown nav (bottom-right) -->
+<div class="nav-dropdown-panel" id="navDropdownPanel">
+  <!-- Nav items -->
+  <a href="/index.html#retrolesson" class="nav-dropdown-item" id="navLesson">
     <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    RetroLesson
   </a>
-  <a href="/login.html" class="landing-nav-btn" title="Entrar" id="navAuth">
+  <a href="/login.html" class="nav-dropdown-item" id="navAuth">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Entrar
   </a>
-  <button class="landing-nav-btn" title="Configurações" onclick="alert('Configurações em breve!')">
+  <button class="nav-dropdown-item" onclick="alert('Configurações em breve!')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Configurações
   </button>
-  <button class="landing-nav-btn" title="Sobre" id="navAbout" onclick="document.getElementById('aboutModal').classList.add('open')">
+  <button class="nav-dropdown-item" id="navAbout" onclick="document.getElementById('aboutModal').classList.add('open')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Sobre
   </button>
+  <!-- Divider -->
+  <div class="nav-dropdown-divider"></div>
+  <!-- Cenário section -->
+  <div class="nav-dropdown-scene-label">CENÁRIO</div>
+  <div class="nav-dropdown-scene-row">
+    <div class="glass-pill" id="scenePill">
+      <button class="pill-opt active" data-sc="auto" title="Auto" onclick="setScene('auto')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </button>
+      <button class="pill-opt" data-sc="day" title="Dia" onclick="setScene('day')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+      </button>
+      <button class="pill-opt" data-sc="sunset" title="Pôr do Sol" onclick="setScene('sunset')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg>
+      </button>
+      <button class="pill-opt" data-sc="night" title="Noite" onclick="setScene('night')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="pill-opt" data-sc="rain" title="Chuva" onclick="setScene('rain')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
+      </button>
+    </div>
+  </div>
 </div>
+
+<!-- Trigger button -->
+<button class="nav-dropdown-trigger" id="navDropdownTrigger" aria-label="Menu" onclick="toggleNavDropdown()">
+  <svg viewBox="0 0 24 24" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+</button>
 
 <!-- About modal -->
 <div id="aboutModal" class="about-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
@@ -864,26 +972,6 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
   <div class="bottom-group-left">
     <button class="retro-toggle" onclick="toggleRetroMode()">Retro ✨</button>
     <div class="theme-label">ESTILO</div>
-  </div>
-  <div class="bottom-group">
-    <div class="glass-pill" id="scenePill">
-      <button class="pill-opt active" data-sc="auto" title="Auto" onclick="setScene('auto')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </button>
-      <button class="pill-opt" data-sc="day" title="Dia" onclick="setScene('day')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
-      </button>
-      <button class="pill-opt" data-sc="sunset" title="Pôr do Sol" onclick="setScene('sunset')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg>
-      </button>
-      <button class="pill-opt" data-sc="night" title="Noite" onclick="setScene('night')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <button class="pill-opt" data-sc="rain" title="Chuva" onclick="setScene('rain')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
-      </button>
-    </div>
-    <div class="theme-label">CENÁRIO</div>
   </div>
 </div>
 
@@ -1299,7 +1387,7 @@ function createParticles(scene) {
   if (isLoggedIn) {
     navAuth.title = 'Sair';
     navAuth.href = '#';
-    navAuth.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+    navAuth.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sair';
     navAuth.onclick = function(e) {
       e.preventDefault();
       try {
@@ -1378,6 +1466,21 @@ function createParticles(scene) {
     fadeToQuote(currentIdx);
   }, 30000);
 })();
+
+/* ============================================================
+   DROPDOWN NAV — toggle & close when clicking outside
+   ============================================================ */
+var _navDropdownPanel = document.getElementById('navDropdownPanel');
+var _navDropdownTrigger = document.getElementById('navDropdownTrigger');
+function toggleNavDropdown() {
+  if (_navDropdownPanel) _navDropdownPanel.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!_navDropdownPanel || !_navDropdownTrigger) return;
+  if (!_navDropdownPanel.contains(e.target) && !_navDropdownTrigger.contains(e.target)) {
+    _navDropdownPanel.classList.remove('open');
+  }
+});
 </script>
 <script src="/js/retro-mode.js"></script>
 <script src="/js/inject-player.js"></script>
