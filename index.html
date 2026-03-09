@@ -393,6 +393,46 @@ body.retro-dark .home-btn:hover,body.retro-light .home-btn:hover{border-color:va
 body.cafe-dark .home-btn,body.cafe-light .home-btn{background:rgba(196,168,130,0.15)!important;border:1.5px solid rgba(196,168,130,0.4)!important;color:#C4A882!important;border-radius:8px!important;}
 body.cafe-dark .home-btn:hover,body.cafe-light .home-btn:hover{background:#C4A882!important;color:#fff!important;border-color:#C4A882!important;transform:translateY(-1px)!important;}
 
+.rm-footer {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  z-index: 50;
+  text-align: center;
+  padding: 4px 16px;
+  border-radius: 12px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+  color: rgba(255,255,255,0.7);
+  font-family: 'Kalam', 'Caveat', cursive;
+}
+.rm-footer:hover { opacity: 1; }
+.rm-footer a { color: rgba(255,255,255,0.85); text-decoration: none; }
+.rm-footer a:hover { text-decoration: underline; }
+
+/* Retro theme */
+body.retro-dark .rm-footer, body.retro-light .rm-footer {
+  color: var(--rdim, #4a6fa5);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+body.retro-dark .rm-footer a, body.retro-light .rm-footer a { color: var(--rgold, #f5c518); }
+
+/* Café theme */
+body.cafe-dark .rm-footer, body.cafe-light .rm-footer {
+  color: #8B7E76;
+  font-family: 'DM Sans', sans-serif;
+}
+body.cafe-dark .rm-footer a, body.cafe-light .rm-footer a { color: #C17950; }
+
+/* Dark mode comfy */
+[data-theme="dark"] .rm-footer { color: rgba(232,224,240,0.5); }
+[data-theme="dark"] .rm-footer a { color: var(--pink); }
+
 </style>
 </head>
 <body><div class="stars-container" id="starsContainer"></div><div class="moon"></div>
@@ -566,5 +606,8 @@ body.cafe-dark .home-btn:hover,body.cafe-light .home-btn:hover{background:#C4A88
 </script>
 <script src="/js/inject-player.js"></script>
 <script src="js/loader.js"></script>
+<footer class="rm-footer">
+  feito por Matheus Marques · conheça meu trabalho: <a href="https://mmarques.dev" target="_blank" rel="noopener noreferrer">mmarques.dev</a>
+</footer>
 </body>
 </html>
