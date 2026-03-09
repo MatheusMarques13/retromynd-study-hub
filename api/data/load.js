@@ -61,6 +61,10 @@ module.exports = async (req, res) => {
     if (hubData.notes) result.notes = { data: hubData.notes, updated_at: data.updated_at };
     if (hubData.timer) result.timer = { data: hubData.timer, updated_at: data.updated_at };
     if (hubData.streak) result.streak = { data: hubData.streak, updated_at: data.updated_at };
+    if (hubData.flashcards) result.flashcards = { data: hubData.flashcards, updated_at: data.updated_at };
+    if (hubData.snippets) result.snippets = { data: hubData.snippets, updated_at: data.updated_at };
+    if (hubData.achievements) result.achievements = { data: hubData.achievements, updated_at: data.updated_at };
+    if (hubData.mood) result.mood = { data: hubData.mood, updated_at: data.updated_at };
 
     if (data.lesson_data) result.lessons = { data: data.lesson_data, updated_at: data.updated_at };
     if (data.preferences) result.preferences = { data: data.preferences, updated_at: data.updated_at };

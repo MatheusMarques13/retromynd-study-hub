@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
     const currentPrefs = (existing && existing.preferences) || {};
 
     // Categorize data_type
-    const hubTypes = ['goals', 'notes', 'timer', 'streak', 'hub_state', 'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle'];
+    const hubTypes = ['goals', 'notes', 'timer', 'streak', 'hub_state', 'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle', 'flashcards', 'snippets', 'achievements', 'mood'];
     const lessonTypes = ['quiz', 'lessons'];
 
     if (hubTypes.includes(data_type)) {

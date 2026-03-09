@@ -27,6 +27,7 @@
 
   function saveSnippets(arr) {
     localStorage.setItem(LS_KEY, JSON.stringify(arr));
+    if (window.markDirty) window.markDirty('snippets');
   }
 
   function generateId() {
@@ -251,4 +252,9 @@
   } else {
     initSnippetsApp();
   }
+
+  // Re-render when cloud sync updates localStorage
+  window.addEventListener('rmCloudSync', function() {
+    render();
+  });
 })();

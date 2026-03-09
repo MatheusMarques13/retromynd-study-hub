@@ -819,7 +819,10 @@ body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var
   }
 
   function save(entries) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch (e) {}
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      if (window.markDirty) window.markDirty('mood');
+    } catch (e) {}
   }
 
   function logMood(moodKey) {
@@ -934,6 +937,11 @@ body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var
   } else {
     init();
   }
+
+  // Re-render when cloud sync updates localStorage
+  window.addEventListener('rmCloudSync', function() {
+    render();
+  });
 })();
 </script>
 
@@ -1058,7 +1066,10 @@ body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var
   }
 
   function saveUnlocked(data) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      if (window.markDirty) window.markDirty('achievements');
+    } catch(e) {}
   }
 
   function escHtml(s) {
@@ -1197,6 +1208,12 @@ body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var
     if (document.hidden) return;
     checkAchievements();
   }, 30000);
+
+  // Re-render when cloud sync updates localStorage
+  window.addEventListener('rmCloudSync', function() {
+    renderAchievements();
+    checkAchievements();
+  });
 
 })();
 </script>

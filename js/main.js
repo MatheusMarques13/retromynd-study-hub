@@ -65,6 +65,10 @@
       streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
       streak_days:  () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
       lessons:      () => ({ type: 'lessons', data: store.get('lessons', { completed: [], history: [] }) }),
+      flashcards:   () => ({ type: 'flashcards', data: (() => { try { return JSON.parse(localStorage.getItem('rmFlashcards')) || { decks: {} }; } catch(e) { return { decks: {} }; } })() }),
+      snippets:     () => ({ type: 'snippets', data: (() => { try { return JSON.parse(localStorage.getItem('rmSnippets')) || []; } catch(e) { return []; } })() }),
+      achievements: () => ({ type: 'achievements', data: (() => { try { return JSON.parse(localStorage.getItem('rmAchievements')) || {}; } catch(e) { return {}; } })() }),
+      mood:         () => ({ type: 'mood', data: (() => { try { return JSON.parse(localStorage.getItem('rmMoodTracker')) || []; } catch(e) { return []; } })() }),
     },
 
     async flush() {
@@ -141,6 +145,15 @@
     }
   };
   window._store = store;
+
+  // Global hook for external features to trigger cloud sync
+  window.markDirty = function(key) {
+    if (store._serverMap[key]) {
+      store._dirty.add(key);
+      store._localModifiedAt = Date.now();
+      store._debouncedFlush();
+    }
+  };
 
   window.addEventListener('beforeunload', () => {
     store.flushSync();
@@ -429,6 +442,133 @@
         if (d.current != null) store.setRaw('streak', d.current, false);
       }
 
+      // FLASHCARDS SYNC
+      if (allData.flashcards && allData.flashcards.data) {
+        const serverFC = allData.flashcards.data;
+        let localFC;
+        try { localFC = JSON.parse(localStorage.getItem('rmFlashcards')) || null; } catch(e) { localFC = null; }
+
+        if (!localFC || !localFC.decks || Object.keys(localFC.decks).length === 0) {
+          if (serverFC.decks && Object.keys(serverFC.decks).length > 0) {
+            localStorage.setItem('rmFlashcards', JSON.stringify(serverFC));
+            loaded++;
+          }
+        } else if (!serverFC.decks || Object.keys(serverFC.decks).length === 0) {
+          needsResync = true; store._dirty.add('flashcards');
+        } else {
+          // Merge decks: combine cards, local wins on duplicates
+          const merged = { decks: {} };
+          const allDeckNames = new Set([...Object.keys(serverFC.decks), ...Object.keys(localFC.decks)]);
+          for (const dn of allDeckNames) {
+            const sc = serverFC.decks[dn] || [];
+            const lc = localFC.decks[dn] || [];
+            // Merge by front+back as unique key
+            const cardMap = new Map();
+            sc.forEach(c => cardMap.set(c.front + '|||' + c.back, c));
+            lc.forEach(c => cardMap.set(c.front + '|||' + c.back, c)); // local wins
+            merged.decks[dn] = Array.from(cardMap.values());
+          }
+          localStorage.setItem('rmFlashcards', JSON.stringify(merged));
+          const totalLocal = Object.values(merged.decks).reduce((s, d) => s + d.length, 0);
+          const totalServer = Object.values(serverFC.decks).reduce((s, d) => s + d.length, 0);
+          if (totalLocal > totalServer || allDeckNames.size > Object.keys(serverFC.decks).length) {
+            needsResync = true; store._dirty.add('flashcards');
+          }
+          loaded++;
+        }
+      } else {
+        let localFC;
+        try { localFC = JSON.parse(localStorage.getItem('rmFlashcards')); } catch(e) { localFC = null; }
+        if (localFC && localFC.decks && Object.keys(localFC.decks).length > 0) {
+          const hasCards = Object.values(localFC.decks).some(d => d.length > 0);
+          if (hasCards) { needsResync = true; store._dirty.add('flashcards'); }
+        }
+      }
+
+      // SNIPPETS SYNC
+      if (allData.snippets && allData.snippets.data && Array.isArray(allData.snippets.data)) {
+        const serverSnip = allData.snippets.data;
+        let localSnip;
+        try { localSnip = JSON.parse(localStorage.getItem('rmSnippets')) || []; } catch(e) { localSnip = []; }
+
+        if (localSnip.length === 0 && serverSnip.length > 0) {
+          localStorage.setItem('rmSnippets', JSON.stringify(serverSnip));
+          loaded++;
+        } else if (localSnip.length > 0 && serverSnip.length === 0) {
+          needsResync = true; store._dirty.add('snippets');
+        } else if (localSnip.length > 0 && serverSnip.length > 0) {
+          const merged = new Map();
+          serverSnip.forEach(s => merged.set(s.id, s));
+          localSnip.forEach(s => merged.set(s.id, s)); // local wins
+          const result = Array.from(merged.values()).sort((a, b) => (b.created || '').localeCompare(a.created || ''));
+          localStorage.setItem('rmSnippets', JSON.stringify(result));
+          if (result.length > serverSnip.length) { needsResync = true; store._dirty.add('snippets'); }
+          loaded++;
+        }
+      } else {
+        let localSnip;
+        try { localSnip = JSON.parse(localStorage.getItem('rmSnippets')) || []; } catch(e) { localSnip = []; }
+        if (localSnip.length > 0) { needsResync = true; store._dirty.add('snippets'); }
+      }
+
+      // ACHIEVEMENTS SYNC
+      if (allData.achievements && allData.achievements.data) {
+        const serverAch = allData.achievements.data;
+        let localAch;
+        try { localAch = JSON.parse(localStorage.getItem('rmAchievements')) || {}; } catch(e) { localAch = {}; }
+
+        if (Object.keys(localAch).length === 0 && Object.keys(serverAch).length > 0) {
+          localStorage.setItem('rmAchievements', JSON.stringify(serverAch));
+          loaded++;
+        } else if (Object.keys(localAch).length > 0 && Object.keys(serverAch).length === 0) {
+          needsResync = true; store._dirty.add('achievements');
+        } else {
+          // Merge: keep earliest unlockedAt for each achievement
+          const merged = { ...serverAch };
+          for (const [id, local] of Object.entries(localAch)) {
+            if (!merged[id] || local.unlockedAt < merged[id].unlockedAt) {
+              merged[id] = local;
+            }
+          }
+          localStorage.setItem('rmAchievements', JSON.stringify(merged));
+          if (Object.keys(merged).length > Object.keys(serverAch).length) {
+            needsResync = true; store._dirty.add('achievements');
+          }
+          loaded++;
+        }
+      } else {
+        let localAch;
+        try { localAch = JSON.parse(localStorage.getItem('rmAchievements')) || {}; } catch(e) { localAch = {}; }
+        if (Object.keys(localAch).length > 0) { needsResync = true; store._dirty.add('achievements'); }
+      }
+
+      // MOOD TRACKER SYNC
+      if (allData.mood && allData.mood.data && Array.isArray(allData.mood.data)) {
+        const serverMood = allData.mood.data;
+        let localMood;
+        try { localMood = JSON.parse(localStorage.getItem('rmMoodTracker')) || []; } catch(e) { localMood = []; }
+
+        if (localMood.length === 0 && serverMood.length > 0) {
+          localStorage.setItem('rmMoodTracker', JSON.stringify(serverMood));
+          loaded++;
+        } else if (localMood.length > 0 && serverMood.length === 0) {
+          needsResync = true; store._dirty.add('mood');
+        } else if (localMood.length > 0 && serverMood.length > 0) {
+          // Merge by date, local wins on same day
+          const merged = new Map();
+          serverMood.forEach(m => merged.set(m.date, m));
+          localMood.forEach(m => merged.set(m.date, m)); // local wins
+          const result = Array.from(merged.values()).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+          localStorage.setItem('rmMoodTracker', JSON.stringify(result));
+          if (result.length > serverMood.length) { needsResync = true; store._dirty.add('mood'); }
+          loaded++;
+        }
+      } else {
+        let localMood;
+        try { localMood = JSON.parse(localStorage.getItem('rmMoodTracker')) || []; } catch(e) { localMood = []; }
+        if (localMood.length > 0) { needsResync = true; store._dirty.add('mood'); }
+      }
+
       store._lastSyncOk = true;
       if (loaded > 0) showSaveStatus('ok', 'Dados sincronizados ✓');
       else showSaveStatus('ok', 'Conectado ✓');
@@ -437,6 +577,8 @@
         loadStats();
         try { renderGoals(); } catch(e) {}
         try { renderNotesList(); } catch(e) {}
+        // Notify external features to re-render with updated data
+        try { window.dispatchEvent(new CustomEvent('rmCloudSync')); } catch(e) {}
       }
 
       if (needsResync) {

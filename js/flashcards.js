@@ -40,6 +40,7 @@
   function saveData() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+      if (window.markDirty) window.markDirty('flashcards');
     } catch (e) {}
   }
 
@@ -372,4 +373,11 @@
   } else {
     init();
   }
+
+  // Re-render when cloud sync updates localStorage
+  window.addEventListener('rmCloudSync', function() {
+    loadData();
+    buildReviewQueue();
+    render();
+  });
 })();
