@@ -156,10 +156,14 @@
   };
 
   window.addEventListener('beforeunload', () => {
+    if (pomRunning) savePomState();
     store.flushSync();
   });
   window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') store.flushNow();
+    if (document.visibilityState === 'hidden') {
+      if (pomRunning) savePomState();
+      store.flushNow();
+    }
   });
   setInterval(() => { if (store._dirty.size > 0) store.flush(); }, 30000);
 
@@ -573,8 +577,9 @@
       if (loaded > 0) showSaveStatus('ok', 'Dados sincronizados ✓');
       else showSaveStatus('ok', 'Conectado ✓');
 
+      // Always refresh stats after sync so pomodoro count, streak, etc. reflect cloud data
+      loadStats();
       if (loaded > 0) {
-        loadStats();
         try { renderGoals(); } catch(e) {}
         try { renderNotesList(); } catch(e) {}
         // Notify external features to re-render with updated data
@@ -630,28 +635,86 @@
   // ═══ POMODORO ═══
   let pomTimer = null, pomSec = 25 * 60, pomRunning = false, pomMode = 25;
 
+  // Persist timer state to localStorage so it survives page reloads
+  function savePomState() {
+    const state = { sec: pomSec, mode: pomMode, running: pomRunning, ts: Date.now() };
+    localStorage.setItem('rms_pom_state', JSON.stringify(state));
+  }
+
+  function restorePomState() {
+    try {
+      const raw = localStorage.getItem('rms_pom_state');
+      if (!raw) return;
+      const s = JSON.parse(raw);
+      if (!s || typeof s.sec !== 'number' || typeof s.mode !== 'number') return;
+      pomMode = s.mode;
+      if (s.running && s.ts) {
+        // Calculate elapsed time while page was closed
+        const elapsed = Math.floor((Date.now() - s.ts) / 1000);
+        pomSec = Math.max(0, s.sec - elapsed);
+        if (pomSec <= 0) {
+          // Timer finished while page was closed — credit the pomodoro
+          pomSec = 0;
+          pomRunning = false;
+          if (pomMode >= 25) {
+            const p = parseInt(store.getRaw('pomodoros', '0')) + 1;
+            store.setRaw('pomodoros', p);
+            loadStats();
+            store.flushNow();
+          }
+          savePomState();
+        } else {
+          // Timer was still running — resume it
+          pomRunning = false; // toggleTimer will start it
+          updateTimerDisplay();
+          updateModeButtons();
+          toggleTimer(); // auto-resume
+          return;
+        }
+      } else {
+        pomSec = s.sec;
+        pomRunning = false;
+      }
+      updateTimerDisplay();
+      updateModeButtons();
+      // Update button text based on state
+      const tB = $('tB');
+      if (tB) tB.textContent = (pomSec > 0 && pomSec < pomMode * 60) ? 'Continuar' : 'Iniciar';
+    } catch(e) { /* ignore corrupt state */ }
+  }
+
+  function updateModeButtons() {
+    document.querySelectorAll('.tm-btn[data-min]').forEach(b => {
+      b.classList.toggle('on', parseInt(b.dataset.min) === pomMode);
+    });
+    const tL = $('tL'); if (tL) tL.textContent = pomMode <= 15 ? 'BREAK TIME' : 'FOCUS MODE';
+  }
+
   function initPomodoro() {
     document.querySelectorAll('.tm-btn[data-min]').forEach(btn => {
       btn.onclick = () => {
         pomMode = parseInt(btn.dataset.min); pomSec = pomMode * 60;
-        pomRunning = false; clearInterval(pomTimer); updateTimerDisplay();
-        document.querySelectorAll('.tm-btn[data-min]').forEach(b => b.classList.remove('on'));
-        btn.classList.add('on');
+        pomRunning = false; clearInterval(pomTimer);
+        updateTimerDisplay(); updateModeButtons(); savePomState();
         const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
-        const tL = $('tL'); if (tL) tL.textContent = pomMode <= 15 ? 'BREAK TIME' : 'FOCUS MODE';
       };
     });
     const tB = $('tB'); if (tB) tB.onclick = toggleTimer;
     const tR = $('tReset'); if (tR) tR.onclick = resetTimer;
+    // Restore previous timer state before showing default
+    restorePomState();
     updateTimerDisplay();
   }
 
+  let pomSaveCounter = 0;
   function toggleTimer() {
     if (pomRunning) {
       clearInterval(pomTimer); pomRunning = false;
+      savePomState();
       const tB = $('tB'); if (tB) tB.textContent = 'Continuar';
     } else {
       pomRunning = true;
+      savePomState();
       const tB = $('tB'); if (tB) tB.textContent = 'Pausar';
       pomTimer = setInterval(() => {
         pomSec--;
@@ -664,6 +727,11 @@
             loadStats();
             store.flushNow();
           }
+          savePomState();
+        } else {
+          // Save state every 10 seconds while running
+          pomSaveCounter++;
+          if (pomSaveCounter >= 10) { pomSaveCounter = 0; savePomState(); }
         }
         updateTimerDisplay();
       }, 1000);
@@ -672,7 +740,7 @@
 
   function resetTimer() {
     clearInterval(pomTimer); pomRunning = false; pomSec = pomMode * 60;
-    updateTimerDisplay();
+    updateTimerDisplay(); savePomState();
     const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
   }
 
