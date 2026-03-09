@@ -393,6 +393,78 @@ body.retro-dark .home-btn:hover,body.retro-light .home-btn:hover{border-color:va
 body.cafe-dark .home-btn,body.cafe-light .home-btn{background:rgba(196,168,130,0.15)!important;border:1.5px solid rgba(196,168,130,0.4)!important;color:#C4A882!important;border-radius:8px!important;}
 body.cafe-dark .home-btn:hover,body.cafe-light .home-btn:hover{background:#C4A882!important;color:#fff!important;border-color:#C4A882!important;transform:translateY(-1px)!important;}
 
+/* ══════ FLASHCARDS ══════ */
+.fc-deck-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.fc-deck-tab{font-family:'Kalam','Caveat',cursive;font-size:14px;font-weight:600;padding:5px 14px;background:var(--postit-yellow);color:var(--text-mid);border:none;border-radius:4px;cursor:pointer;transition:all .15s}
+.fc-deck-tab.on{background:var(--postit-pink);color:var(--pink)}
+.fc-deck-tab:hover:not(.on){transform:translateY(-1px)}
+.fc-deck-new{font-family:'Kalam','Caveat',cursive;font-size:13px;padding:5px 10px;background:rgba(255,255,255,.4);color:var(--text-light);border:1px dashed var(--paper-line);border-radius:4px;cursor:pointer;transition:all .15s}
+.fc-deck-new:hover{border-color:var(--pink);color:var(--pink)}
+.fc-add-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:12px;align-items:start}
+.fc-input{font-family:'Kalam','Caveat',cursive;font-size:15px;padding:7px 12px;border:1px solid var(--paper-line);border-radius:6px;background:rgba(255,255,255,.8);color:var(--text);outline:none;transition:border .2s,box-shadow .2s;width:100%}
+.fc-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(109,189,232,.15)}
+.fc-input::placeholder{color:var(--text-light)}
+.fc-add-btn{font-family:'Kalam','Caveat',cursive;font-size:15px;font-weight:700;padding:7px 16px;background:var(--postit-pink);color:var(--pink);border:none;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap;align-self:end}
+.fc-add-btn:hover{background:var(--pink);color:#fff;transform:translateY(-1px)}
+.fc-stats-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fc-stat{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text-mid);background:rgba(255,255,255,.4);padding:4px 12px;border-radius:20px;border:1px solid var(--paper-line)}
+.fc-stat-num{font-size:15px;font-weight:700;color:var(--text)}
+.fc-stat-due .fc-stat-num{color:var(--pink)}
+.fc-stat-done .fc-stat-num{color:#059669}
+.fc-scene{perspective:800px;margin:0 auto;max-width:440px}
+.fc-card-wrapper{position:relative;width:100%;padding-top:52%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer}
+.fc-card-wrapper.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:20px 24px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.fc-front{background:var(--pink-soft);border:1px solid var(--paper-margin)}
+.fc-back{background:var(--blue-soft);border:1px solid var(--blue);transform:rotateY(180deg)}
+.fc-face-label{position:absolute;top:8px;left:12px;font-family:'Press Start 2P',monospace;font-size:6px;letter-spacing:1px;opacity:.6}
+.fc-front .fc-face-label{color:var(--pink)}
+.fc-back .fc-face-label{color:var(--blue-deep)}
+.fc-face-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;line-height:1.4;word-break:break-word}
+.fc-hint{text-align:center;font-size:13px;color:var(--text-light);margin-top:8px;font-style:italic}
+.fc-rating-row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.fc-rating-btn{font-family:'Kalam','Caveat',cursive;font-size:16px;font-weight:700;padding:8px 22px;border:none;border-radius:6px;cursor:pointer;transition:all .15s;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+.fc-rating-btn:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.fc-rating-hard{background:#FEE2E2;color:#DC2626}
+.fc-rating-hard:hover{background:#DC2626;color:#fff}
+.fc-rating-good{background:var(--blue-soft);color:var(--blue-deep)}
+.fc-rating-good:hover{background:var(--blue);color:#fff}
+.fc-rating-easy{background:var(--mint-soft);color:#059669}
+.fc-rating-easy:hover{background:#059669;color:#fff}
+.fc-empty{text-align:center;padding:28px 0;color:var(--text-light);font-size:16px}
+.fc-all-done{text-align:center;padding:28px 0}
+.fc-all-done-icon{font-size:40px;margin-bottom:10px}
+.fc-all-done-text{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
+.fc-all-done-sub{font-size:14px;color:var(--text-light)}
+.fc-card-count{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text-light);text-align:center;margin-bottom:8px;letter-spacing:1px}
+/* Dark mode flashcards */
+[data-theme="dark"] .fc-front{background:var(--pink-soft);border-color:var(--paper-margin)}
+[data-theme="dark"] .fc-back{background:var(--blue-soft);border-color:var(--blue)}
+[data-theme="dark"] .fc-stat{background:rgba(42,36,53,.6);border-color:var(--border)}
+[data-theme="dark"] .fc-deck-tab{background:var(--postit-yellow);color:var(--text-mid)}
+[data-theme="dark"] .fc-deck-tab.on{background:var(--postit-pink);color:var(--pink)}
+[data-theme="dark"] .fc-input{background:#332D40;color:#E8E0F0;border-color:#443D52}
+[data-theme="dark"] .fc-deck-new{background:rgba(42,36,53,.6);border-color:var(--border);color:var(--text-light)}
+[data-theme="dark"] .fc-rating-hard{background:rgba(220,38,38,.15);color:#F87171}
+[data-theme="dark"] .fc-rating-good{background:rgba(126,200,245,.1);color:var(--blue)}
+[data-theme="dark"] .fc-rating-easy{background:rgba(110,231,183,.08);color:var(--mint)}
+/* Retro theme flashcards */
+body.retro-dark .fc-face,body.retro-light .fc-face{background:var(--rsurface,#0d1b2a)!important;border:2px solid var(--rborder,#1e3a6e)!important;border-radius:0!important;font-family:'Space Mono',monospace!important;color:var(--rpixel,#e8f0ff)!important}
+body.retro-dark .fc-back,body.retro-light .fc-back{border-color:var(--rgold,#f5c518)!important}
+body.retro-dark .fc-face-text,body.retro-light .fc-face-text{font-family:'Space Mono',monospace!important;color:var(--rpixel,#e8f0ff)!important}
+body.retro-dark .fc-rating-btn,body.retro-light .fc-rating-btn{border-radius:0!important;font-family:'Press Start 2P',monospace!important;font-size:8px!important;border:2px solid currentColor!important}
+body.retro-dark .fc-deck-tab,body.retro-light .fc-deck-tab{border-radius:0!important;font-family:'Space Mono',monospace!important;font-size:11px!important;background:var(--rsurface,#0d1b2a)!important;color:var(--rpixel,#e8f0ff)!important;border:1px solid var(--rborder,#1e3a6e)!important}
+body.retro-dark .fc-deck-tab.on,body.retro-light .fc-deck-tab.on{border-color:var(--rgold,#f5c518)!important;color:var(--rgold,#f5c518)!important}
+body.retro-dark .fc-input,body.retro-light .fc-input{background:var(--rsurface,#0d1b2a)!important;border:1px solid var(--rborder,#1e3a6e)!important;border-radius:0!important;color:var(--rpixel,#e8f0ff)!important;font-family:'Space Mono',monospace!important}
+/* Café theme flashcards */
+body.cafe-dark .fc-face,body.cafe-light .fc-face{background:#FFFDF7!important;border:1px solid rgba(212,197,169,.3)!important;border-radius:12px!important;font-family:'DM Sans',sans-serif!important;color:#3E2E1C!important}
+body.cafe-dark .fc-back,body.cafe-light .fc-back{background:#F0EAE0!important;border-color:rgba(193,121,80,.3)!important}
+body.cafe-dark .fc-face-text,body.cafe-light .fc-face-text{font-family:'DM Sans',sans-serif!important;color:#3E2E1C!important}
+body.cafe-dark .fc-rating-btn,body.cafe-light .fc-rating-btn{border-radius:8px!important;font-family:'DM Sans',sans-serif!important}
+body.cafe-dark .fc-deck-tab,body.cafe-light .fc-deck-tab{border-radius:6px!important;font-family:'DM Sans',sans-serif!important}
+body.cafe-dark .fc-input,body.cafe-light .fc-input{border-radius:8px!important;font-family:'DM Sans',sans-serif!important}
+@media(max-width:768px){.fc-add-row{grid-template-columns:1fr;}.fc-add-btn{width:100%}}
+
 .rm-footer {
   text-align: center;
   padding: 12px 24px;
@@ -509,7 +581,13 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
 <div class="nb-header"><h2>Caderno de Notas</h2><span class="nb-tag tag-lav pixel">NOTES</span></div>
 <div class="nb-body"><div id="notesApp"></div></div>
 </div></div>
-<!-- ROW 3: RetroLesson + Links -->
+<!-- ROW 3: Flashcards -->
+<div class="grid">
+<div class="nb card-full" id="flashcardsCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
+<div class="nb-header"><h2>Flashcards</h2><span class="nb-tag tag-pink pixel">REVIEW</span></div>
+<div class="nb-body"><div id="flashcardsApp"></div></div>
+</div></div>
+<!-- ROW 4: RetroLesson + Links -->
 <div class="grid">
 <div class="nb" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
 <div class="nb-header"><h2>RetroLesson</h2><span class="nb-tag tag-pink pixel">LEARN</span></div>
@@ -622,6 +700,7 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
 })();
 </script>
 <script src="/js/inject-player.js"></script>
+<script src="js/flashcards.js"></script>
 <script src="js/loader.js"></script>
 <footer class="rm-footer">
   <span class="rm-footer-inner">
