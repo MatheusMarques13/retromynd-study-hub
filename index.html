@@ -450,6 +450,68 @@ body.cafe-dark .rm-footer-inner, body.cafe-light .rm-footer-inner {
 body.cafe-dark .rm-footer a, body.cafe-light .rm-footer a { color: #C17950; text-decoration: none; }
 body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-decoration: underline; }
 
+/* ═══ CODE SNIPPETS ═══ */
+.snip-search-row{margin-bottom:12px}
+.snip-search{width:100%;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Kalam','Caveat',cursive;font-size:15px;background:var(--paper);color:var(--text);outline:none;transition:border-color .2s;display:block}
+.snip-search:focus{border-color:var(--blue)}
+.snip-form{background:var(--postit-sky);border-radius:var(--radius);padding:14px;margin-bottom:14px;border:1px solid var(--border)}
+.snip-form-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.snip-form-bottom{align-items:center}
+.snip-input{flex:1;min-width:120px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Kalam','Caveat',cursive;font-size:15px;background:var(--paper);color:var(--text);outline:none}
+.snip-select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Kalam','Caveat',cursive;font-size:15px;background:var(--paper);color:var(--text);outline:none;cursor:pointer}
+.snip-textarea{width:100%;min-height:100px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Space Mono',monospace;font-size:13px;background:#1e1e2e;color:#cdd6f4;resize:vertical;outline:none;tab-size:2;margin-bottom:8px;display:block}
+.snip-tags-input{flex:1;min-width:120px}
+.snip-save-btn{font-size:15px;padding:8px 18px;background:var(--postit-mint);color:#059669;white-space:nowrap}
+.snip-list{display:flex;flex-direction:column;gap:12px}
+.snip-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);overflow:hidden}
+.snip-card-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--postit-yellow);flex-wrap:wrap}
+.snip-card-title{font-size:16px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.snip-lang-badge{font-family:'Press Start 2P',monospace;font-size:6px;padding:4px 8px;border-radius:4px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.snip-card-actions{display:flex;gap:6px;margin-left:auto;flex-shrink:0}
+.snip-copy-btn,.snip-delete-btn{font-size:13px;padding:4px 10px;background:var(--postit-lilac);color:var(--text)}
+.snip-delete-btn{background:var(--postit-peach)}
+.snip-code-block{font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;background:#1e1e2e;color:#cdd6f4;padding:12px 14px;margin:0;overflow-x:auto;max-height:120px;transition:max-height .3s ease;display:block;white-space:pre}
+.snip-code-block.snip-expanded{max-height:none}
+.snip-ln{display:inline-block;min-width:28px;text-align:right;padding-right:12px;color:#585b70;user-select:none;border-right:1px solid #313244;margin-right:10px}
+.snip-card-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;gap:8px;flex-wrap:wrap}
+.snip-tags{display:flex;gap:4px;flex-wrap:wrap}
+.snip-tag{font-size:11px;padding:2px 8px;background:var(--lavender-soft);color:#7C3AED;border-radius:50px}
+.snip-meta{display:flex;align-items:center;gap:8px;margin-left:auto}
+.snip-date{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--text-light)}
+.snip-expand-btn{font-size:11px;padding:4px 10px;background:var(--postit-mint);color:#059669}
+.snip-empty{text-align:center;padding:28px 0;font-size:16px;color:var(--text-mid)}
+.snip-toast{position:fixed;bottom:24px;right:24px;background:#1e1e2e;color:#cdd6f4;font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 20px;border-radius:4px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;transform:translateY(10px)}
+.snip-toast.snip-toast-show{opacity:1;transform:translateY(0)}
+
+/* Retro theme – snippets */
+body.retro-dark .snip-card,body.retro-light .snip-card{border-radius:0!important;border:2px solid var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .snip-card-header,body.retro-light .snip-card-header{background:var(--rsurface,#0d1b2a)!important;border-bottom:1px solid var(--rborder,#1e3a6e)!important}
+body.retro-dark .snip-card-title,body.retro-light .snip-card-title{font-family:'Press Start 2P',monospace!important;font-size:9px!important;color:var(--rpixel,#e8f0ff)!important}
+body.retro-dark .snip-lang-badge,body.retro-light .snip-lang-badge{border-radius:0!important}
+body.retro-dark .snip-code-block,body.retro-light .snip-code-block{color:#00ff41!important;background:#0a0a0a!important}
+body.retro-dark .snip-ln,body.retro-light .snip-ln{color:#005500!important;border-right-color:#003300!important}
+body.retro-dark .snip-form,body.retro-light .snip-form{background:var(--rsurface,#0d1b2a)!important;border:2px solid var(--rborder,#1e3a6e)!important;border-radius:0!important}
+body.retro-dark .snip-input,body.retro-light .snip-input,body.retro-dark .snip-select,body.retro-light .snip-select,body.retro-dark .snip-search,body.retro-light .snip-search{background:var(--rsurface,#0d1b2a)!important;border:1px solid var(--rborder,#1e3a6e)!important;color:var(--rpixel,#e8f0ff)!important;border-radius:0!important}
+body.retro-dark .snip-textarea,body.retro-light .snip-textarea{border:1px solid var(--rborder,#1e3a6e)!important;border-radius:0!important;color:#00ff41!important;background:#0a0a0a!important}
+body.retro-dark .snip-tag,body.retro-light .snip-tag{border-radius:0!important;background:var(--rsurface,#0d1b2a)!important;color:var(--rgold,#f5c518)!important;border:1px solid var(--rborder,#1e3a6e)!important}
+body.retro-dark .snip-copy-btn,body.retro-light .snip-copy-btn,body.retro-dark .snip-delete-btn,body.retro-light .snip-delete-btn,body.retro-dark .snip-expand-btn,body.retro-light .snip-expand-btn,body.retro-dark .snip-save-btn,body.retro-light .snip-save-btn{border-radius:0!important;font-family:'Press Start 2P',monospace!important;font-size:7px!important;background:var(--rsurface,#0d1b2a)!important;color:var(--rpixel,#e8f0ff)!important;border:1px solid var(--rborder,#1e3a6e)!important}
+body.retro-dark .snip-date,body.retro-light .snip-date{color:var(--rdim,#4a6fa5)!important}
+body.retro-dark .snip-empty,body.retro-light .snip-empty{color:var(--rdim,#4a6fa5)!important}
+
+/* Café theme – snippets */
+body.cafe-dark .snip-card,body.cafe-light .snip-card{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:12px!important}
+body.cafe-dark .snip-card-header,body.cafe-light .snip-card-header{background:rgba(196,168,130,0.15)!important;border-bottom:1px solid var(--cafe-border,#D0C5B5)!important}
+body.cafe-dark .snip-card-title,body.cafe-light .snip-card-title{color:var(--cafe-text,#3D3329)!important}
+body.cafe-dark .snip-lang-badge,body.cafe-light .snip-lang-badge{border-radius:50px!important;opacity:.85}
+body.cafe-dark .snip-code-block,body.cafe-light .snip-code-block{background:#2C2418!important;color:#E8C9A0!important}
+body.cafe-dark .snip-ln,body.cafe-light .snip-ln{color:#6B5030!important;border-right-color:#4A3820!important}
+body.cafe-dark .snip-form,body.cafe-light .snip-form{background:rgba(196,168,130,0.1)!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:12px!important}
+body.cafe-dark .snip-input,body.cafe-light .snip-input,body.cafe-dark .snip-select,body.cafe-light .snip-select,body.cafe-dark .snip-search,body.cafe-light .snip-search{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important;color:var(--cafe-text,#3D3329)!important;border-radius:8px!important}
+body.cafe-dark .snip-textarea,body.cafe-light .snip-textarea{background:#2C2418!important;color:#E8C9A0!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:8px!important}
+body.cafe-dark .snip-tag,body.cafe-light .snip-tag{background:rgba(196,168,130,0.2)!important;color:var(--cafe-accent,#5C4D3C)!important;border-radius:50px!important}
+body.cafe-dark .snip-date,body.cafe-light .snip-date{color:var(--cafe-text-muted,#9A8E82)!important}
+body.cafe-dark .snip-empty,body.cafe-light .snip-empty{color:var(--cafe-text-mid,#6B5E52)!important}
+
 </style>
 </head>
 <body><div class="stars-container" id="starsContainer"></div><div class="moon"></div>
@@ -532,6 +594,12 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
 <div class="streak-row" id="skD"></div><button class="streak-btn postit-btn" id="skBtn">Marcar hoje</button>
 </div></div>
 </div>
+<!-- ROW 4: Code Snippets (full-width) -->
+<div class="grid">
+<div class="nb card-full" id="snippetsCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
+<div class="nb-header"><h2>Code Snippets</h2><span class="nb-tag tag-blue pixel">CODE</span></div>
+<div class="nb-body"><div id="snippetsApp"></div></div>
+</div></div>
 </div>
 
 <div class="hub-footer">RETROMYND STUDY HUB - CRUEL SUMMER EDITION - 2026</div>
