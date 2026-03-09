@@ -1,5 +1,4 @@
 {
-  "toolbar": false,
   "rewrites": [
     { "source": "/", "destination": "/landing.html" },
     { "source": "/landing", "destination": "/landing.html" },
