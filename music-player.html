@@ -14,33 +14,26 @@
   #rm-radio-btn {
     width: 48px;
     height: 48px;
-    border-radius: 50%;
-    border: none;
+    border-radius: 12px;
+    border: 1px solid #E5E0DA;
     cursor: pointer;
-    background: #5C4D3C;
-    color: #F0EAE0;
+    background: var(--paper, #FFFDF8);
+    color: var(--pink, #FF6B9D);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.30);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
     outline: none;
     padding: 0;
     flex-shrink: 0;
   }
 
-  /* Light theme override — detect via :root or body without dark class */
-  body:not(.dark) #rm-radio-btn,
-  body[data-theme="light"] #rm-radio-btn,
-  body[data-theme="comfy"] #rm-radio-btn {
-    background: #DDD5C8;
-    color: #3A2E22;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-
   #rm-radio-btn:hover {
-    transform: scale(1.08);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    background: var(--pink-soft, #FFE4EE);
+    border-color: var(--pink, #FF6B9D);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(255,107,157,0.2);
   }
 
   #rm-radio-btn:active {
@@ -53,7 +46,7 @@
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    border: 2px solid #A8896A;
+    border: 2px solid var(--pink, #FF6B9D);
     animation: rm-pulse 1.8s ease-out infinite;
     pointer-events: none;
   }
@@ -76,24 +69,15 @@
     gap: 12px;
     width: 280px;
     padding: 12px 14px;
-    border-radius: 12px;
-    background: rgba(44, 36, 28, 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.40);
-    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    background: var(--paper, #FFFDF8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid #E5E0DA;
     transform-origin: bottom right;
     animation: rm-slide-up 0.22s cubic-bezier(0.34, 1.3, 0.64, 1) both;
-    color: #F0EAE0;
-  }
-
-  body:not(.dark) #rm-radio-panel,
-  body[data-theme="light"] #rm-radio-panel,
-  body[data-theme="comfy"] #rm-radio-panel {
-    background: rgba(240, 232, 220, 0.95);
-    border: 1px solid rgba(0,0,0,0.10);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    color: #3A2E22;
+    color: var(--text-hub, #1E293B);
   }
 
   .rm-album-art {
@@ -148,9 +132,9 @@
   }
 
   .rm-ctrl-btn {
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.12);
-    color: inherit;
+    background: var(--pink-soft, #FFE4EE);
+    border: 1px solid #F0D0DC;
+    color: var(--pink, #FF6B9D);
     border-radius: 8px;
     width: 34px;
     height: 34px;
@@ -159,41 +143,28 @@
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    transition: background 0.12s ease;
+    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
     padding: 0;
     outline: none;
   }
 
-  body:not(.dark) .rm-ctrl-btn,
-  body[data-theme="light"] .rm-ctrl-btn,
-  body[data-theme="comfy"] .rm-ctrl-btn {
-    background: rgba(0,0,0,0.06);
-    border: 1px solid rgba(0,0,0,0.10);
-  }
-
   .rm-ctrl-btn:hover {
-    background: rgba(255,255,255,0.18);
-  }
-
-  body:not(.dark) .rm-ctrl-btn:hover,
-  body[data-theme="light"] .rm-ctrl-btn:hover,
-  body[data-theme="comfy"] .rm-ctrl-btn:hover {
-    background: rgba(0,0,0,0.12);
+    background: var(--pink, #FF6B9D);
+    color: #fff;
+    border-color: var(--pink, #FF6B9D);
   }
 
   #rm-play.rm-ctrl-btn {
     width: 40px;
     height: 40px;
     font-size: 16px;
-    background: rgba(255,255,255,0.18);
-    border-color: rgba(255,255,255,0.20);
+    background: var(--pink, #FF6B9D);
+    border-color: var(--pink, #FF6B9D);
+    color: #fff;
   }
 
-  body:not(.dark) #rm-play.rm-ctrl-btn,
-  body[data-theme="light"] #rm-play.rm-ctrl-btn,
-  body[data-theme="comfy"] #rm-play.rm-ctrl-btn {
-    background: rgba(0,0,0,0.10);
-    border-color: rgba(0,0,0,0.14);
+  #rm-play.rm-ctrl-btn:hover {
+    background: var(--pink-hover, #FF4F88);
   }
 
   .rm-close-btn {
@@ -215,17 +186,21 @@
   }
 
   /* ===== RETRO THEME ===== */
+  body.retro-dark #rm-radio-btn,
+  body.retro-light #rm-radio-btn {
+    border-radius: 0 !important;
+    border: 2px solid var(--rborder, #1e3a6e) !important;
+  }
+
   body.retro-dark #rm-radio-btn {
     background: #2a2520;
     color: #FFD700;
-    border: 1px solid #444;
     box-shadow: 0 0 8px rgba(255,215,0,0.15), 0 2px 6px rgba(0,0,0,0.4);
   }
 
   body.retro-light #rm-radio-btn {
     background: #e8e0d2;
     color: #5c4d3c;
-    border: 1px solid #c4b8a4;
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   }
 
@@ -290,10 +265,8 @@
   }
 
   /* ===== SVG ICON COLOR - COMFY THEME ===== */
-  #rm-player .rm-ctrl-btn { color: #8B8B8B; }
-  #rm-player .rm-ctrl-btn:hover { color: #555; background: rgba(0,0,0,0.06); }
-  #rm-player .rm-ctrl-btn:active { color: #333; }
-  #rm-radio-btn .rm-icon { color: #666; }
+  #rm-player .rm-ctrl-btn { color: var(--pink, #FF6B9D); }
+  #rm-radio-btn .rm-icon { color: var(--pink, #FF6B9D); }
 
   /* ===== SVG ICON COLOR - RETRO THEME ===== */
   body.retro-dark #rm-player .rm-ctrl-btn,
@@ -321,27 +294,20 @@
   /* ===== CAFÉ THEME ===== */
   body.cafe-dark #rm-radio-btn,
   body.cafe-light #rm-radio-btn {
-    background: #5C4D3C;
-    color: #F0EAE0;
+    border-radius: 50px !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   }
 
-  body.cafe-dark #rm-radio-panel,
-  body.cafe-light #rm-radio-panel {
-    background: rgba(44, 36, 28, 0.92);
-    border: 1px solid rgba(212,197,169,0.15);
-    color: #F0EAE0;
-  }
-
   body.cafe-light #rm-radio-btn {
-    background: #D4C5A9;
-    color: #3A2E22;
+    background: rgba(255,253,248,0.92) !important;
+    border: 1px solid rgba(212,197,169,0.5) !important;
+    color: #C4A882 !important;
   }
 
-  body.cafe-light #rm-radio-panel {
-    background: rgba(240, 232, 220, 0.95);
-    border: 1px solid rgba(0,0,0,0.10);
-    color: #3A2E22;
+  body.cafe-dark #rm-radio-btn {
+    background: rgba(44,36,28,0.85) !important;
+    border: 1px solid rgba(212,197,169,0.2) !important;
+    color: #C4A882 !important;
   }
 
   body.cafe-dark #rm-player .rm-ctrl-btn,
