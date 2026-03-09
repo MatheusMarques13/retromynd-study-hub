@@ -633,12 +633,55 @@ body.cafe-dark .ach-toast,body.cafe-light .ach-toast{border-radius:12px!importan
 body.cafe-dark .ach-tooltip,body.cafe-light .ach-tooltip{border-radius:8px!important;background:#3D3329!important;color:#EDE6DA!important;font-family:'DM Sans',sans-serif!important}
 body.cafe-dark .ach-tooltip::after,body.cafe-light .ach-tooltip::after{border-top-color:#3D3329!important}
 
+/* ═══ MOOD TRACKER ═══ */
+.mood-selector{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;border:2px solid var(--border);border-radius:12px;background:var(--paper);cursor:pointer;transition:all .2s;font-size:28px;line-height:1;outline:none}
+.mood-btn:hover{border-color:var(--lavender);transform:translateY(-2px);box-shadow:0 4px 12px rgba(196,181,253,.3)}
+.mood-btn.mood-selected{border-color:var(--lavender);background:var(--lavender-soft);box-shadow:0 0 14px rgba(196,181,253,.4),0 2px 8px rgba(0,0,0,.08);transform:translateY(-2px)}
+.mood-btn-label{font-size:11px;font-weight:600;color:var(--text-mid);white-space:nowrap}
+.mood-btn.mood-selected .mood-btn-label{color:#7C3AED}
+.mood-history{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.mood-hist-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.mood-hist-emoji{font-size:20px;width:38px;height:38px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--paper);transition:all .2s}
+.mood-hist-emoji.mood-today{border-color:var(--lavender);box-shadow:0 0 10px rgba(196,181,253,.4);background:var(--lavender-soft)}
+.mood-hist-emoji.mood-empty{opacity:.3}
+.mood-hist-date{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-light)}
+.mood-streak-wrap{text-align:center;margin-bottom:12px}
+.mood-streak{font-family:'Press Start 2P',monospace;font-size:9px;color:#7C3AED;background:var(--lavender-soft);border:1px solid var(--lavender);border-radius:20px;padding:6px 16px;display:inline-block;letter-spacing:.5px}
+.mood-section-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:0}
+/* Mood Tracker – dark mode */
+[data-theme="dark"] .mood-btn{background:var(--paper);border-color:var(--border)}
+[data-theme="dark"] .mood-btn:hover{border-color:var(--lavender)}
+[data-theme="dark"] .mood-btn.mood-selected{border-color:var(--lavender);background:var(--lavender-soft);box-shadow:0 0 16px rgba(184,169,240,.5),0 2px 8px rgba(0,0,0,.3)}
+[data-theme="dark"] .mood-btn.mood-selected .mood-btn-label{color:var(--lavender)}
+[data-theme="dark"] .mood-hist-emoji{background:var(--paper);border-color:var(--border)}
+[data-theme="dark"] .mood-hist-emoji.mood-today{border-color:var(--lavender);background:var(--lavender-soft)}
+[data-theme="dark"] .mood-streak{border-color:var(--lavender);color:var(--lavender);background:var(--lavender-soft)}
+/* Mood Tracker – retro theme */
+body.retro-dark .mood-btn,body.retro-light .mood-btn{border-radius:0!important;border:2px solid var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-btn:hover,body.retro-light .mood-btn:hover{border-color:var(--rgold,#f5c518)!important;box-shadow:none!important}
+body.retro-dark .mood-btn.mood-selected,body.retro-light .mood-btn.mood-selected{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-btn-label,body.retro-light .mood-btn-label{font-family:'Press Start 2P',monospace!important;font-size:6px!important;color:var(--rpixel,#e8f0ff)!important}
+body.retro-dark .mood-btn.mood-selected .mood-btn-label,body.retro-light .mood-btn.mood-selected .mood-btn-label{color:var(--rgold,#f5c518)!important}
+body.retro-dark .mood-hist-emoji,body.retro-light .mood-hist-emoji{border-radius:0!important;border-color:var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-hist-emoji.mood-today,body.retro-light .mood-hist-emoji.mood-today{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important}
+body.retro-dark .mood-hist-date,body.retro-light .mood-hist-date{color:var(--rdim,#4a6fa5)!important}
+body.retro-dark .mood-streak,body.retro-light .mood-streak{border-radius:0!important;border-color:var(--rgold,#f5c518)!important;color:var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-section-label,body.retro-light .mood-section-label{color:var(--rdim,#4a6fa5)!important}
+/* Mood Tracker – café theme */
+body.cafe-dark .mood-btn,body.cafe-light .mood-btn{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:16px!important}
+body.cafe-dark .mood-btn:hover,body.cafe-light .mood-btn:hover{border-color:#C17950!important;box-shadow:0 4px 12px rgba(193,121,80,.2)!important}
+body.cafe-dark .mood-btn.mood-selected,body.cafe-light .mood-btn.mood-selected{border-color:#C17950!important;background:rgba(193,121,80,.1)!important;box-shadow:0 0 12px rgba(193,121,80,.25)!important}
+body.cafe-dark .mood-btn.mood-selected .mood-btn-label,body.cafe-light .mood-btn.mood-selected .mood-btn-label{color:#C17950!important}
+body.cafe-dark .mood-hist-emoji,body.cafe-light .mood-hist-emoji{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important}
+body.cafe-dark .mood-hist-emoji.mood-today,body.cafe-light .mood-hist-emoji.mood-today{border-color:#C17950!important;background:rgba(193,121,80,.1)!important}
+body.cafe-dark .mood-streak,body.cafe-light .mood-streak{border-color:#C17950!important;color:#C17950!important;background:rgba(193,121,80,.08)!important;border-radius:50px!important}
+body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var(--cafe-text-muted,#9A8E82)!important}
+@media(max-width:480px){.mood-btn{padding:8px 10px;font-size:24px}.mood-selector{gap:6px}}
+
 </style>
 </head>
 <body><div class="stars-container" id="starsContainer"></div><div class="moon"></div>
-
-</div>
-</div>
 
 <!-- ============ SCREEN 3: HUB ============ -->
 <div class="profile-panel-overlay" id="ppOverlay"></div>
@@ -721,13 +764,14 @@ body.cafe-dark .ach-tooltip::after,body.cafe-light .ach-tooltip::after{border-to
 <div class="streak-row" id="skD"></div><button class="streak-btn postit-btn" id="skBtn">Marcar hoje</button>
 </div></div>
 </div>
-<!-- ROW 4: Code Snippets (full-width) -->
+<!-- ROW 5: Code Snippets -->
 <div class="grid">
 <div class="nb card-full" id="snippetsCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
 <div class="nb-header"><h2>Code Snippets</h2><span class="nb-tag tag-blue pixel">CODE</span></div>
 <div class="nb-body"><div id="snippetsApp"></div></div>
 </div></div>
 
+<!-- ROW 6: Achievements -->
 <div class="grid">
 <div class="nb card-full" id="achievementsCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
 <div class="nb-header"><h2>Conquistas</h2><span class="nb-tag tag-lav pixel">BADGES</span></div>
@@ -735,54 +779,6 @@ body.cafe-dark .ach-tooltip::after,body.cafe-light .ach-tooltip::after{border-to
 </div></div>
 
 <!-- ROW 7: Mood Tracker -->
-<style>
-/* ═══ MOOD TRACKER ═══ */
-.mood-selector{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
-.mood-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;border:2px solid var(--border);border-radius:12px;background:var(--paper);cursor:pointer;transition:all .2s;font-size:28px;line-height:1;outline:none}
-.mood-btn:hover{border-color:var(--lavender);transform:translateY(-2px);box-shadow:0 4px 12px rgba(196,181,253,.3)}
-.mood-btn.mood-selected{border-color:var(--lavender);background:var(--lavender-soft);box-shadow:0 0 14px rgba(196,181,253,.4),0 2px 8px rgba(0,0,0,.08);transform:translateY(-2px)}
-.mood-btn-label{font-size:11px;font-weight:600;color:var(--text-mid);white-space:nowrap}
-.mood-btn.mood-selected .mood-btn-label{color:#7C3AED}
-.mood-history{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
-.mood-hist-item{display:flex;flex-direction:column;align-items:center;gap:4px}
-.mood-hist-emoji{font-size:20px;width:38px;height:38px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--paper);transition:all .2s}
-.mood-hist-emoji.mood-today{border-color:var(--lavender);box-shadow:0 0 10px rgba(196,181,253,.4);background:var(--lavender-soft)}
-.mood-hist-emoji.mood-empty{opacity:.3}
-.mood-hist-date{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-light)}
-.mood-streak-wrap{text-align:center;margin-bottom:12px}
-.mood-streak{font-family:'Press Start 2P',monospace;font-size:9px;color:#7C3AED;background:var(--lavender-soft);border:1px solid var(--lavender);border-radius:20px;padding:6px 16px;display:inline-block;letter-spacing:.5px}
-.mood-section-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:0}
-/* Mood Tracker – dark mode */
-[data-theme="dark"] .mood-btn{background:var(--paper);border-color:var(--border)}
-[data-theme="dark"] .mood-btn:hover{border-color:var(--lavender)}
-[data-theme="dark"] .mood-btn.mood-selected{border-color:var(--lavender);background:var(--lavender-soft);box-shadow:0 0 16px rgba(184,169,240,.5),0 2px 8px rgba(0,0,0,.3)}
-[data-theme="dark"] .mood-btn.mood-selected .mood-btn-label{color:var(--lavender)}
-[data-theme="dark"] .mood-hist-emoji{background:var(--paper);border-color:var(--border)}
-[data-theme="dark"] .mood-hist-emoji.mood-today{border-color:var(--lavender);background:var(--lavender-soft)}
-[data-theme="dark"] .mood-streak{border-color:var(--lavender);color:var(--lavender);background:var(--lavender-soft)}
-/* Mood Tracker – retro theme */
-body.retro-dark .mood-btn,body.retro-light .mood-btn{border-radius:0!important;border:2px solid var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
-body.retro-dark .mood-btn:hover,body.retro-light .mood-btn:hover{border-color:var(--rgold,#f5c518)!important;box-shadow:none!important}
-body.retro-dark .mood-btn.mood-selected,body.retro-light .mood-btn.mood-selected{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important}
-body.retro-dark .mood-btn-label,body.retro-light .mood-btn-label{font-family:'Press Start 2P',monospace!important;font-size:6px!important;color:var(--rpixel,#e8f0ff)!important}
-body.retro-dark .mood-btn.mood-selected .mood-btn-label,body.retro-light .mood-btn.mood-selected .mood-btn-label{color:var(--rgold,#f5c518)!important}
-body.retro-dark .mood-hist-emoji,body.retro-light .mood-hist-emoji{border-radius:0!important;border-color:var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
-body.retro-dark .mood-hist-emoji.mood-today,body.retro-light .mood-hist-emoji.mood-today{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important}
-body.retro-dark .mood-hist-date,body.retro-light .mood-hist-date{color:var(--rdim,#4a6fa5)!important}
-body.retro-dark .mood-streak,body.retro-light .mood-streak{border-radius:0!important;border-color:var(--rgold,#f5c518)!important;color:var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important}
-body.retro-dark .mood-section-label,body.retro-light .mood-section-label{color:var(--rdim,#4a6fa5)!important}
-/* Mood Tracker – café theme */
-body.cafe-dark .mood-btn,body.cafe-light .mood-btn{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:16px!important}
-body.cafe-dark .mood-btn:hover,body.cafe-light .mood-btn:hover{border-color:#C17950!important;box-shadow:0 4px 12px rgba(193,121,80,.2)!important}
-body.cafe-dark .mood-btn.mood-selected,body.cafe-light .mood-btn.mood-selected{border-color:#C17950!important;background:rgba(193,121,80,.1)!important;box-shadow:0 0 12px rgba(193,121,80,.25)!important}
-body.cafe-dark .mood-btn.mood-selected .mood-btn-label,body.cafe-light .mood-btn.mood-selected .mood-btn-label{color:#C17950!important}
-body.cafe-dark .mood-hist-emoji,body.cafe-light .mood-hist-emoji{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important}
-body.cafe-dark .mood-hist-emoji.mood-today,body.cafe-light .mood-hist-emoji.mood-today{border-color:#C17950!important;background:rgba(193,121,80,.1)!important}
-body.cafe-dark .mood-streak,body.cafe-light .mood-streak{border-color:#C17950!important;color:#C17950!important;background:rgba(193,121,80,.08)!important;border-radius:50px!important}
-body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var(--cafe-text-muted,#9A8E82)!important}
-@media(max-width:480px){.mood-btn{padding:8px 10px;font-size:24px}.mood-selector{gap:6px}}
-</style>
-
 <div class="grid">
 <div class="nb card-full" id="moodTrackerCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
 <div class="nb-header"><h2>Mood Tracker</h2><span class="nb-tag tag-lav pixel">MOOD</span></div>
@@ -1035,8 +1031,8 @@ body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var
 })();
 </script>
 <script src="/js/inject-player.js"></script>
-<script src="js/flashcards.js"></script>
-<script src="js/loader.js"></script>
+<script src="/js/flashcards.js"></script>
+<script src="/js/loader.js"></script>
 <script>
 (function(){
   'use strict';
