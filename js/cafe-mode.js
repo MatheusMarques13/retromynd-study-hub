@@ -4,9 +4,9 @@
 
   function applyCafeIfSaved() {
     var saved = localStorage.getItem(THEME_KEY);
-    if (saved === 'cafe') {
+    if (saved === 'cafe-dark' || saved === 'cafe-light') {
       document.body.classList.remove('retro-dark', 'retro-light', 'retro-mode');
-      document.body.classList.add('cafe');
+      document.body.classList.add(saved);
     }
   }
 

@@ -287,7 +287,7 @@
   function isCafe() { var t = getTheme(); return t === 'cafe-dark' || t === 'cafe-light'; }
 
   function applyTheme(theme) {
-    document.body.classList.remove('retro-dark','retro-light','retro-mode','cafe-dark','cafe-light');
+    document.body.classList.remove('retro-dark','retro-light','retro-mode','cafe-dark','cafe-light','cafe');
     if (theme === 'retro-dark') document.body.classList.add('retro-dark');
     else if (theme === 'retro-light') document.body.classList.add('retro-light');
     else if (theme === 'cafe-dark') document.body.classList.add('cafe-dark');
