@@ -1,54 +1,55 @@
 /* ============================================================
    RETROMYND — CAFÉ THEME
-   Warm, sophisticated café aesthetic for Study Hub
+   Inspired by Littlebird: warm cream, white cards, editorial serif,
+   soft shadows, monochrome minimalism.
    Supports: body.cafe-light | body.cafe-dark
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap');
 
 /* ========== CAFÉ LIGHT VARIABLES ========== */
 body.cafe-light {
-  --cafe-bg: #E8E0D4;
-  --cafe-surface: #DDD5C8;
-  --cafe-card: #EDE6DA;
-  --cafe-border: #D0C5B5;
-  --cafe-text: #3D3329;
-  --cafe-text-mid: #6B5E52;
-  --cafe-text-muted: #9A8E82;
-  --cafe-accent: #5C4D3C;
-  --cafe-accent-soft: #D4C8B8;
-  --cafe-shadow: rgba(93,77,60,0.08);
-  --cafe-highlight: #C4A882;
-  --cafe-shadow-card: 0 2px 12px rgba(93,77,60,0.08), 0 1px 3px rgba(93,77,60,0.05);
-  --cafe-shadow-hover: 0 4px 20px rgba(93,77,60,0.12), 0 2px 8px rgba(93,77,60,0.08);
+  --cafe-bg: #F5F1EB;
+  --cafe-surface: #EEEBE5;
+  --cafe-card: #FFFFFF;
+  --cafe-border: #E8E4DE;
+  --cafe-text: #1A1A1A;
+  --cafe-text-mid: #52524E;
+  --cafe-text-muted: #9C9A94;
+  --cafe-accent: #1A1A1A;
+  --cafe-accent-soft: #F0EDE7;
+  --cafe-shadow: rgba(0,0,0,0.04);
+  --cafe-highlight: #1A1A1A;
+  --cafe-shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.03);
+  --cafe-shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.05);
 }
 
 /* ========== CAFÉ DARK VARIABLES ========== */
 body.cafe-dark {
-  --cafe-bg: #1A1714;
-  --cafe-surface: #242019;
-  --cafe-card: #2D2822;
-  --cafe-border: #3E372E;
-  --cafe-text: #F0E8DC;
-  --cafe-text-mid: #B0A898;
-  --cafe-text-muted: #7A7068;
-  --cafe-accent: #E8DFD0;
-  --cafe-accent-soft: #3E372E;
-  --cafe-shadow: rgba(0,0,0,0.3);
-  --cafe-highlight: #C4A882;
-  --cafe-shadow-card: 0 2px 12px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
-  --cafe-shadow-hover: 0 4px 20px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.25);
+  --cafe-bg: #141210;
+  --cafe-surface: #1C1A17;
+  --cafe-card: #222019;
+  --cafe-border: #302D27;
+  --cafe-text: #F0ECE6;
+  --cafe-text-mid: #B5B0A6;
+  --cafe-text-muted: #706C64;
+  --cafe-accent: #F0ECE6;
+  --cafe-accent-soft: #2A2722;
+  --cafe-shadow: rgba(0,0,0,0.4);
+  --cafe-highlight: #F0ECE6;
+  --cafe-shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.2);
+  --cafe-shadow-hover: 0 2px 8px rgba(0,0,0,0.4), 0 8px 30px rgba(0,0,0,0.3);
 }
 
 /* ========== FONT OVERRIDES ========== */
 
-/* Body font: DM Sans */
+/* Body font: Inter — clean, modern sans-serif */
 body.cafe-light *,
 body.cafe-dark * {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
-/* Headings: Outfit — clean, modern geometric sans-serif */
+/* Headings: Playfair Display — editorial serif */
 body.cafe-light h1:not(#rmLoginOverlay h1),
 body.cafe-light h2:not(#rmLoginOverlay *),
 body.cafe-light h3,
@@ -61,9 +62,9 @@ body.cafe-dark h3,
 body.cafe-dark h4,
 body.cafe-dark h5,
 body.cafe-dark h6 {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  letter-spacing: -0.01em !important;
-  font-weight: 600 !important;
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 700 !important;
 }
 
 /* Tags/code elements: Source Code Pro */
@@ -101,7 +102,7 @@ body.cafe-dark ::-webkit-scrollbar {
 }
 body.cafe-light ::-webkit-scrollbar-track,
 body.cafe-dark ::-webkit-scrollbar-track {
-  background: var(--cafe-surface);
+  background: var(--cafe-bg);
 }
 body.cafe-light ::-webkit-scrollbar-thumb,
 body.cafe-dark ::-webkit-scrollbar-thumb {
@@ -110,14 +111,17 @@ body.cafe-dark ::-webkit-scrollbar-thumb {
 }
 body.cafe-light ::-webkit-scrollbar-thumb:hover,
 body.cafe-dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--cafe-highlight);
+  background: var(--cafe-text-muted);
 }
 
 /* ========== SELECTION ========== */
-body.cafe-light ::selection,
-body.cafe-dark ::selection {
-  background: var(--cafe-highlight) !important;
+body.cafe-light ::selection {
+  background: #1A1A1A !important;
   color: #fff !important;
+}
+body.cafe-dark ::selection {
+  background: #F0ECE6 !important;
+  color: #1A1A1A !important;
 }
 
 /* ========== HEADER / NAV ========== */
@@ -133,10 +137,9 @@ body.cafe-dark nav,
 body.cafe-dark [class*="nav"]:not(#rmProfilePanel *),
 body.cafe-dark [class*="toolbar"],
 body.cafe-dark [class*="topbar"] {
-  background: var(--cafe-surface) !important;
-  border-color: var(--cafe-border) !important;
+  background: transparent !important;
+  border-color: transparent !important;
   color: var(--cafe-text) !important;
-  backdrop-filter: blur(12px) !important;
 }
 
 /* ========== BACKGROUNDS: MAIN / CONTAINER ========== */
@@ -177,9 +180,24 @@ body.cafe-dark [class*="panel"]:not(#rmProfilePanel),
 body.cafe-dark [class*="box"]:not(input):not(select) {
   background: var(--cafe-card) !important;
   border: 1px solid var(--cafe-border) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow: var(--cafe-shadow-card) !important;
   color: var(--cafe-text) !important;
+}
+
+/* ========== NOTEBOOK CONTAINER (.nb) — clean card look ========== */
+body.cafe-light .nb,
+body.cafe-dark .nb {
+  background: var(--cafe-card) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  overflow: hidden;
+}
+
+body.cafe-light .nb:hover,
+body.cafe-dark .nb:hover {
+  box-shadow: var(--cafe-shadow-hover) !important;
 }
 
 /* ========== REMOVE NOTEBOOK PAPER LINES ========== */
@@ -187,21 +205,27 @@ body.cafe-light [class*="ruled"],
 body.cafe-light [class*="paper"],
 body.cafe-light [class*="notebook"],
 body.cafe-light [class*="lined"],
+body.cafe-light .nb-body,
 body.cafe-dark [class*="ruled"],
 body.cafe-dark [class*="paper"],
 body.cafe-dark [class*="notebook"],
-body.cafe-dark [class*="lined"] {
+body.cafe-dark [class*="lined"],
+body.cafe-dark .nb-body {
   background-image: none !important;
   background: var(--cafe-card) !important;
 }
 
 /* Remove ::before/::after notebook decorations */
+body.cafe-light .nb-body::before,
+body.cafe-light .nb-header::before,
 body.cafe-light [class*="card"]::before,
 body.cafe-light [class*="card"]::after,
 body.cafe-light [class*="paper"]::before,
 body.cafe-light [class*="paper"]::after,
 body.cafe-light [class*="note"]::before,
 body.cafe-light [class*="note"]::after,
+body.cafe-dark .nb-body::before,
+body.cafe-dark .nb-header::before,
 body.cafe-dark [class*="card"]::before,
 body.cafe-dark [class*="card"]::after,
 body.cafe-dark [class*="paper"]::before,
@@ -220,6 +244,18 @@ body.cafe-dark .nb-holes {
   display: none !important;
 }
 
+/* Fix nb-body padding without holes */
+body.cafe-light .nb-body,
+body.cafe-dark .nb-body {
+  padding-left: 22px !important;
+}
+
+body.cafe-light .nb-header,
+body.cafe-dark .nb-header {
+  padding-left: 22px !important;
+  border-bottom: 1px solid var(--cafe-border) !important;
+}
+
 /* ========== HEADINGS COLOR ========== */
 body.cafe-light h1:not(#rmLoginOverlay h1),
 body.cafe-light h2:not(#rmLoginOverlay *),
@@ -231,9 +267,8 @@ body.cafe-dark h2:not(#rmLoginOverlay *),
 body.cafe-dark h3,
 body.cafe-dark h4,
 body.cafe-dark h5 {
-  color: var(--cafe-accent) !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
-  letter-spacing: 0.01em !important;
   animation: none !important;
 }
 
@@ -305,8 +340,8 @@ body.cafe-dark [class*="stat"] [class*="num"],
 body.cafe-dark [class*="stat"] [class*="count"],
 body.cafe-dark [class*="streak"],
 body.cafe-dark [class*="score"] {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-size: 2.2rem !important;
   font-weight: 700 !important;
@@ -326,19 +361,42 @@ body.cafe-dark [class*="stat"] small {
   font-weight: 500 !important;
 }
 
+/* ========== STAT CARDS — clean white ========== */
+body.cafe-light .stat,
+body.cafe-dark .stat {
+  background: var(--cafe-card) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  background-image: none !important;
+}
+
+body.cafe-light .stat:hover,
+body.cafe-dark .stat:hover {
+  box-shadow: var(--cafe-shadow-hover) !important;
+}
+
+body.cafe-light .stat-icon,
+body.cafe-dark .stat-icon {
+  background: var(--cafe-accent-soft) !important;
+  border-radius: 10px !important;
+}
+
 /* ========== TIMER ========== */
 body.cafe-light [class*="timer"] [class*="display"],
 body.cafe-light [class*="timer"] [class*="time"],
 body.cafe-light [class*="clock"],
 body.cafe-light [class*="countdown"],
 body.cafe-light [class*="digit"],
+body.cafe-light .timer-num,
 body.cafe-dark [class*="timer"] [class*="display"],
 body.cafe-dark [class*="timer"] [class*="time"],
 body.cafe-dark [class*="clock"],
 body.cafe-dark [class*="countdown"],
-body.cafe-dark [class*="digit"] {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+body.cafe-dark [class*="digit"],
+body.cafe-dark .timer-num {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-weight: 700 !important;
 }
@@ -350,15 +408,15 @@ body.cafe-light [type="submit"]:not(#rmLoginOverlay *),
 body.cafe-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),
 body.cafe-dark [type="button"]:not(#rmLoginOverlay *),
 body.cafe-dark [type="submit"]:not(#rmLoginOverlay *) {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border: 1px solid var(--cafe-border) !important;
   color: var(--cafe-text) !important;
-  border-radius: 50px !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
   font-weight: 500 !important;
-  font-size: 0.8rem !important;
-  letter-spacing: 0.02em !important;
-  padding: 6px 16px !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.01em !important;
+  padding: 7px 16px !important;
   box-shadow: none !important;
   transition: all 0.2s ease !important;
 }
@@ -366,8 +424,7 @@ body.cafe-dark [type="submit"]:not(#rmLoginOverlay *) {
 body.cafe-light button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover,
 body.cafe-dark button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover {
   background: var(--cafe-accent-soft) !important;
-  border-color: var(--cafe-highlight) !important;
-  color: var(--cafe-accent) !important;
+  border-color: var(--cafe-text-muted) !important;
   box-shadow: 0 2px 8px var(--cafe-shadow) !important;
 }
 
@@ -378,10 +435,10 @@ body.cafe-light [aria-selected="true"]:not(#rmLoginOverlay *),
 body.cafe-dark button.active:not(#rmLoginOverlay button):not(.rm-tb):not(.pb-btn),
 body.cafe-dark [class*="selected"]:not(#rmLoginOverlay *),
 body.cafe-dark [aria-selected="true"]:not(#rmLoginOverlay *) {
-  background: var(--cafe-highlight) !important;
-  color: #fff !important;
-  border-color: var(--cafe-highlight) !important;
-  box-shadow: 0 2px 8px rgba(196,168,130,0.3) !important;
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  border-color: var(--cafe-text) !important;
+  box-shadow: none !important;
 }
 
 /* Danger buttons */
@@ -402,11 +459,11 @@ body.cafe-light select:not(#rmLoginOverlay select),
 body.cafe-dark input:not(.rm-f):not(.pp-input):not(#rmLoginOverlay input),
 body.cafe-dark textarea:not(#rmLoginOverlay textarea),
 body.cafe-dark select:not(#rmLoginOverlay select) {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border: 1px solid var(--cafe-border) !important;
   color: var(--cafe-text) !important;
   border-radius: 8px !important;
-  caret-color: var(--cafe-highlight) !important;
+  caret-color: var(--cafe-text) !important;
   font-size: 0.88rem !important;
   box-shadow: none !important;
 }
@@ -415,8 +472,8 @@ body.cafe-light input:not(#rmLoginOverlay input):focus,
 body.cafe-light textarea:not(#rmLoginOverlay textarea):focus,
 body.cafe-dark input:not(#rmLoginOverlay input):focus,
 body.cafe-dark textarea:not(#rmLoginOverlay textarea):focus {
-  border-color: var(--cafe-highlight) !important;
-  box-shadow: 0 0 0 3px rgba(196,168,130,0.2) !important;
+  border-color: var(--cafe-text-muted) !important;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06) !important;
   outline: none !important;
 }
 
@@ -435,7 +492,7 @@ body.cafe-dark input[type="checkbox"] {
   width: 18px !important;
   height: 18px !important;
   border: 1.5px solid var(--cafe-border) !important;
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border-radius: 4px !important;
   cursor: pointer !important;
   position: relative !important;
@@ -443,21 +500,21 @@ body.cafe-dark input[type="checkbox"] {
 
 body.cafe-light input[type="checkbox"]:checked,
 body.cafe-dark input[type="checkbox"]:checked {
-  background: var(--cafe-highlight) !important;
-  border-color: var(--cafe-highlight) !important;
-  box-shadow: 0 1px 4px rgba(196,168,130,0.3) !important;
+  background: var(--cafe-text) !important;
+  border-color: var(--cafe-text) !important;
+  box-shadow: none !important;
 }
 
 body.cafe-light input[type="checkbox"]:checked::after,
 body.cafe-dark input[type="checkbox"]:checked::after {
-  content: "✓";
+  content: "\2713";
   position: absolute;
   top: -2px;
   left: 2px;
-  color: #fff;
+  color: var(--cafe-bg);
   font-weight: 700;
   font-size: 13px;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 /* ========== TAGS / BADGES ========== */
@@ -468,8 +525,8 @@ body.cafe-dark [class*="badge"]:not(#rmLoginOverlay *) {
   background: var(--cafe-accent-soft) !important;
   border: 1px solid var(--cafe-border) !important;
   color: var(--cafe-text-mid) !important;
-  border-radius: 50px !important;
-  font-size: 0.68rem !important;
+  border-radius: 6px !important;
+  font-size: 0.65rem !important;
   font-weight: 500 !important;
   padding: 2px 10px !important;
   font-family: 'Source Code Pro', monospace !important;
@@ -481,12 +538,12 @@ body.cafe-light [role="tab"],
 body.cafe-dark [class*="tab"]:not(.rm-tb):not(#rmLoginOverlay *),
 body.cafe-dark [role="tab"] {
   background: transparent !important;
-  color: var(--cafe-text-mid) !important;
+  color: var(--cafe-text-muted) !important;
   border: 1px solid transparent !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
   font-size: 0.78rem !important;
-  letter-spacing: 0.02em !important;
+  letter-spacing: 0.01em !important;
   padding: 6px 14px !important;
   transition: all 0.15s ease !important;
 }
@@ -498,9 +555,10 @@ body.cafe-dark [class*="tab"].active:not(.rm-tb),
 body.cafe-dark [class*="tab"][class*="active"]:not(.rm-tb),
 body.cafe-dark [role="tab"][aria-selected="true"] {
   background: var(--cafe-card) !important;
-  color: var(--cafe-accent) !important;
+  color: var(--cafe-text) !important;
   border-color: var(--cafe-border) !important;
   box-shadow: var(--cafe-shadow-card) !important;
+  font-weight: 600 !important;
 }
 
 /* ========== PROGRESS ========== */
@@ -508,15 +566,15 @@ body.cafe-light [class*="progress"],
 body.cafe-light progress,
 body.cafe-dark [class*="progress"],
 body.cafe-dark progress {
-  background: var(--cafe-surface) !important;
-  border: 1px solid var(--cafe-border) !important;
+  background: var(--cafe-accent-soft) !important;
+  border: none !important;
   border-radius: 50px !important;
   overflow: hidden !important;
 }
 
 body.cafe-light [class*="progress"] [class*="fill"],
 body.cafe-dark [class*="progress"] [class*="fill"] {
-  background: linear-gradient(90deg, var(--cafe-highlight), #B89060) !important;
+  background: var(--cafe-text) !important;
   box-shadow: none !important;
   border-radius: 50px !important;
 }
@@ -524,22 +582,32 @@ body.cafe-dark [class*="progress"] [class*="fill"] {
 /* ========== LINKS ========== */
 body.cafe-light a:not(#rmLoginOverlay a),
 body.cafe-dark a:not(#rmLoginOverlay a) {
-  color: var(--cafe-highlight) !important;
+  color: var(--cafe-text) !important;
+  text-decoration: underline !important;
+  text-decoration-color: var(--cafe-border) !important;
+  text-underline-offset: 2px !important;
 }
 
 body.cafe-light a:hover,
 body.cafe-dark a:hover {
-  color: var(--cafe-accent) !important;
-  text-decoration: underline !important;
+  text-decoration-color: var(--cafe-text) !important;
+}
+
+/* Quick links — no underline */
+body.cafe-light .ql,
+body.cafe-dark .ql {
+  text-decoration: none !important;
 }
 
 /* ========== DIVIDERS ========== */
 body.cafe-light hr,
 body.cafe-light [class*="divider"],
 body.cafe-light [class*="separator"],
+body.cafe-light .px-div,
 body.cafe-dark hr,
 body.cafe-dark [class*="divider"],
-body.cafe-dark [class*="separator"] {
+body.cafe-dark [class*="separator"],
+body.cafe-dark .px-div {
   border-color: var(--cafe-border) !important;
   background: var(--cafe-border) !important;
 }
@@ -557,11 +625,10 @@ body.cafe-dark [class*="dropdown"] {
   border: 1px solid var(--cafe-border) !important;
   color: var(--cafe-text) !important;
   border-radius: 12px !important;
-  box-shadow: var(--cafe-shadow-card) !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
 }
 
 /* ========== POST-IT / NOTE CARDS ========== */
-/* Override post-it colors with warm neutrals */
 body.cafe-light [class*="postit"],
 body.cafe-light [class*="post-it"],
 body.cafe-light [class*="sticky"],
@@ -570,21 +637,42 @@ body.cafe-dark [class*="post-it"],
 body.cafe-dark [class*="sticky"] {
   background: var(--cafe-card) !important;
   border: 1px solid var(--cafe-border) !important;
-  border-radius: 12px !important;
-  box-shadow: var(--cafe-shadow-card) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
 }
 
 /* ========== STREAK ========== */
 body.cafe-light [class*="streak-num"],
 body.cafe-dark [class*="streak-num"] {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
 
 body.cafe-light [class*="streak-fire"],
 body.cafe-dark [class*="streak-fire"] {
-  filter: sepia(0.3) hue-rotate(-10deg) !important;
+  filter: none !important;
+}
+
+/* Streak day dots */
+body.cafe-light .sd,
+body.cafe-dark .sd {
+  background: var(--cafe-accent-soft) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 8px !important;
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .sd.ok,
+body.cafe-dark .sd.ok {
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  border-color: var(--cafe-text) !important;
+}
+
+body.cafe-light .sd.now,
+body.cafe-dark .sd.now {
+  border-color: var(--cafe-text-muted) !important;
 }
 
 /* ========== SAVE STATUS ========== */
@@ -610,12 +698,12 @@ body.cafe-dark #rmProfilePanel {
   background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
   color: var(--cafe-text) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
 }
 
 body.cafe-light #rmProfileBar,
 body.cafe-dark #rmProfileBar {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
   color: var(--cafe-text) !important;
 }
@@ -623,23 +711,23 @@ body.cafe-dark #rmProfileBar {
 /* ========== RETRO TOGGLE BUTTON IN CAFÉ MODE ========== */
 body.cafe-light .retro-toggle,
 body.cafe-dark .retro-toggle {
-  font-family: 'DM Sans', sans-serif !important;
-  border-radius: 50px !important;
+  font-family: 'Inter', sans-serif !important;
+  border-radius: 8px !important;
   font-size: 0.65rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.04em !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
 }
 
 body.cafe-light .retro-toggle {
   border-color: var(--cafe-border) !important;
-  color: var(--cafe-text-mid) !important;
+  color: var(--cafe-text-muted) !important;
   background: transparent !important;
 }
 
 body.cafe-light .retro-toggle:hover {
-  background: var(--cafe-highlight) !important;
-  color: #fff !important;
-  border-color: var(--cafe-highlight) !important;
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  border-color: var(--cafe-text) !important;
 }
 
 body.cafe-dark .retro-toggle {
@@ -649,9 +737,9 @@ body.cafe-dark .retro-toggle {
 }
 
 body.cafe-dark .retro-toggle:hover {
-  background: var(--cafe-highlight) !important;
-  color: #fff !important;
-  border-color: var(--cafe-highlight) !important;
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  border-color: var(--cafe-text) !important;
 }
 
 /* ========== SMOOTH TRANSITIONS ========== */
@@ -680,11 +768,11 @@ body.cafe-dark [class*="tab"] {
 
 /* ========== HUB-SPECIFIC: STUDY HUB INDEX.HTML ========== */
 
-/* Header title — warm serif */
+/* Header title */
 body.cafe-light .header-title,
 body.cafe-dark .header-title {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
   animation: none !important;
 }
@@ -694,27 +782,51 @@ body.cafe-light .header-date,
 body.cafe-dark .header-sub,
 body.cafe-dark .header-date {
   color: var(--cafe-text-muted) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Hub logo text */
+body.cafe-light .hub-logo-text h1,
+body.cafe-dark .hub-logo-text h1 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
+}
+
+body.cafe-light .hub-logo-text span,
+body.cafe-dark .hub-logo-text span {
+  color: var(--cafe-text-muted) !important;
+}
+
+/* Hub date */
+body.cafe-light .hub-date,
+body.cafe-dark .hub-date {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .pixel-dot,
+body.cafe-dark .pixel-dot {
+  background: var(--cafe-text) !important;
+  border-radius: 50% !important;
 }
 
 /* Scoreboard / stats bar */
 body.cafe-light .scoreboard,
 body.cafe-dark .scoreboard {
-  background: rgba(255,255,255,0.08) !important;
+  background: transparent !important;
   border-color: var(--cafe-border) !important;
 }
 
 body.cafe-light .score-val,
 body.cafe-dark .score-val {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-size: 1.7rem !important;
 }
 
 body.cafe-light .score-val.pink,
 body.cafe-dark .score-val.pink {
-  color: var(--cafe-highlight) !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
 
@@ -726,20 +838,20 @@ body.cafe-dark .score-val.sky {
 body.cafe-light .score-label,
 body.cafe-dark .score-label {
   color: var(--cafe-text-muted) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 /* Progress bar */
 body.cafe-light .progress-bar,
 body.cafe-dark .progress-bar {
-  background: var(--cafe-surface) !important;
-  border-color: var(--cafe-border) !important;
+  background: var(--cafe-accent-soft) !important;
+  border-color: transparent !important;
   border-radius: 50px !important;
 }
 
 body.cafe-light .progress-fill,
 body.cafe-dark .progress-fill {
-  background: linear-gradient(90deg, var(--cafe-highlight), #A07848) !important;
+  background: var(--cafe-text) !important;
   box-shadow: none !important;
   border-radius: 50px !important;
 }
@@ -748,45 +860,44 @@ body.cafe-dark .progress-fill {
 body.cafe-light .tick,
 body.cafe-dark .tick {
   border-color: var(--cafe-border) !important;
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border-radius: 50% !important;
 }
 
 body.cafe-light .tick.done,
 body.cafe-dark .tick.done {
-  background: var(--cafe-highlight) !important;
-  border-color: var(--cafe-highlight) !important;
-  color: #fff !important;
+  background: var(--cafe-text) !important;
+  border-color: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
   box-shadow: none !important;
 }
 
 body.cafe-light .tick.active,
 body.cafe-dark .tick.active {
-  border-color: var(--cafe-highlight) !important;
-  color: var(--cafe-highlight) !important;
+  border-color: var(--cafe-text-muted) !important;
+  color: var(--cafe-text) !important;
 }
 
 /* Nav tabs */
 body.cafe-light .nav-tabs,
 body.cafe-dark .nav-tabs {
-  background: rgba(255,255,255,0.05) !important;
+  background: transparent !important;
   border-color: var(--cafe-border) !important;
 }
 
 body.cafe-light .nav-tab,
 body.cafe-dark .nav-tab {
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   color: var(--cafe-text-muted) !important;
   border-bottom-color: transparent !important;
   font-size: 0.8rem !important;
   font-weight: 500 !important;
-  letter-spacing: 0.02em !important;
 }
 
 body.cafe-light .nav-tab.active,
 body.cafe-dark .nav-tab.active {
-  color: var(--cafe-accent) !important;
-  border-bottom-color: var(--cafe-highlight) !important;
+  color: var(--cafe-text) !important;
+  border-bottom-color: var(--cafe-text) !important;
   font-weight: 600 !important;
 }
 
@@ -795,21 +906,21 @@ body.cafe-light .stat-card,
 body.cafe-dark .stat-card {
   background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow: var(--cafe-shadow-card) !important;
 }
 
 body.cafe-light .stat-val,
 body.cafe-dark .stat-val {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
   font-size: 2.4rem !important;
 }
 
 body.cafe-light .stat-val.pink,
 body.cafe-dark .stat-val.pink {
-  color: var(--cafe-highlight) !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
 
@@ -820,14 +931,14 @@ body.cafe-dark .stat-val.sky {
 
 body.cafe-light .stat-val.green,
 body.cafe-dark .stat-val.green {
-  color: #7A9E7E !important;
+  color: #5A7A5E !important;
   text-shadow: none !important;
 }
 
 body.cafe-light .stat-lbl,
 body.cafe-dark .stat-lbl {
   color: var(--cafe-text-muted) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 /* Streak card */
@@ -835,26 +946,26 @@ body.cafe-light .streak-card,
 body.cafe-dark .streak-card {
   background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
 }
 
 body.cafe-light .streak-num,
 body.cafe-dark .streak-num {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
 
 body.cafe-light .streak-sub,
 body.cafe-dark .streak-sub {
   color: var(--cafe-text-muted) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 body.cafe-light .streak-best-val,
 body.cafe-dark .streak-best-val {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
 }
 
 body.cafe-light .streak-best-lbl,
@@ -865,10 +976,10 @@ body.cafe-dark .streak-best-lbl {
 /* Section titles */
 body.cafe-light .sec-title,
 body.cafe-dark .sec-title {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-accent) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   font-size: 1rem !important;
-  letter-spacing: 0.02em !important;
+  letter-spacing: 0 !important;
   border-color: var(--cafe-border) !important;
   font-weight: 700 !important;
 }
@@ -876,56 +987,56 @@ body.cafe-dark .sec-title {
 /* Heatmap */
 body.cafe-light .hm-cell,
 body.cafe-dark .hm-cell {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-accent-soft) !important;
   border-radius: 3px !important;
 }
 
 body.cafe-light .hm-cell.l1,
 body.cafe-dark .hm-cell.l1 {
-  background: rgba(196,168,130,0.2) !important;
+  background: rgba(26,26,26,0.1) !important;
 }
 
 body.cafe-light .hm-cell.l2,
 body.cafe-dark .hm-cell.l2 {
-  background: rgba(196,168,130,0.45) !important;
+  background: rgba(26,26,26,0.25) !important;
 }
 
 body.cafe-light .hm-cell.l3,
 body.cafe-dark .hm-cell.l3 {
-  background: rgba(196,168,130,0.72) !important;
+  background: rgba(26,26,26,0.45) !important;
 }
 
 body.cafe-light .hm-cell.l4,
 body.cafe-dark .hm-cell.l4 {
-  background: var(--cafe-highlight) !important;
+  background: var(--cafe-text) !important;
   box-shadow: none !important;
 }
 
 body.cafe-light .hm-cell.today,
 body.cafe-dark .hm-cell.today {
-  outline-color: var(--cafe-accent) !important;
+  outline-color: var(--cafe-text) !important;
 }
 
 body.cafe-light .hm-month-lbl,
 body.cafe-dark .hm-month-lbl {
   color: var(--cafe-text-muted) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 /* Period buttons */
 body.cafe-light .period-btn,
 body.cafe-dark .period-btn {
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   border-color: var(--cafe-border) !important;
   color: var(--cafe-text-muted) !important;
-  border-radius: 50px !important;
+  border-radius: 8px !important;
 }
 
 body.cafe-light .period-btn.active,
 body.cafe-dark .period-btn.active {
-  border-color: var(--cafe-highlight) !important;
-  color: var(--cafe-highlight) !important;
-  background: rgba(196,168,130,0.1) !important;
+  border-color: var(--cafe-text) !important;
+  color: var(--cafe-text) !important;
+  background: var(--cafe-accent-soft) !important;
 }
 
 /* Rank/history table */
@@ -933,39 +1044,39 @@ body.cafe-light .rank-table th,
 body.cafe-dark .rank-table th {
   color: var(--cafe-text-muted) !important;
   border-color: var(--cafe-border) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 body.cafe-light .rank-table td,
 body.cafe-dark .rank-table td {
   color: var(--cafe-text) !important;
   border-color: var(--cafe-border) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 body.cafe-light .rank-pos.gold,
 body.cafe-dark .rank-pos.gold {
-  color: var(--cafe-highlight) !important;
+  color: var(--cafe-text) !important;
 }
 
 body.cafe-light .rank-score,
 body.cafe-dark .rank-score {
-  color: var(--cafe-highlight) !important;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  color: var(--cafe-text) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
 }
 
 body.cafe-light .rank-date,
 body.cafe-dark .rank-date {
   color: var(--cafe-text-mid) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 /* Theme toggle in hub header */
 body.cafe-light #themeToggle,
 body.cafe-dark #themeToggle {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
-  border-radius: 50px !important;
+  border-radius: 10px !important;
 }
 
 /* Pixel decorations — hide in café mode */
@@ -974,18 +1085,159 @@ body.cafe-dark .pixel-deco {
   display: none !important;
 }
 
+/* Stars container — hide */
+body.cafe-light .stars-container,
+body.cafe-light .moon,
+body.cafe-dark .stars-container,
+body.cafe-dark .moon {
+  display: none !important;
+}
+
 /* Footer */
 body.cafe-light footer,
 body.cafe-dark footer {
-  border-color: var(--cafe-border) !important;
+  border-color: transparent !important;
   color: var(--cafe-text-muted) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 body.cafe-light footer span,
 body.cafe-dark footer span {
-  color: var(--cafe-highlight) !important;
+  color: var(--cafe-text-muted) !important;
 }
+
+body.cafe-light .rm-footer,
+body.cafe-dark .rm-footer {
+  color: var(--cafe-text-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+body.cafe-light .rm-footer-inner,
+body.cafe-dark .rm-footer-inner {
+  background: var(--cafe-card) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 10px !important;
+  backdrop-filter: none !important;
+}
+
+body.cafe-light .rm-footer a,
+body.cafe-dark .rm-footer a {
+  color: var(--cafe-text) !important;
+  text-decoration: underline !important;
+}
+
+/* ========== GOAL ROWS ========== */
+body.cafe-light .goal-row:hover,
+body.cafe-dark .goal-row:hover {
+  background: var(--cafe-accent-soft) !important;
+}
+
+body.cafe-light .gchk,
+body.cafe-dark .gchk {
+  border-color: var(--cafe-border) !important;
+  background: var(--cafe-card) !important;
+  border-radius: 4px !important;
+}
+
+body.cafe-light .goal-row.done .gchk,
+body.cafe-dark .goal-row.done .gchk {
+  background: var(--cafe-text) !important;
+  border-color: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+}
+
+/* History status badges */
+body.cafe-light .hchk.ok,
+body.cafe-dark .hchk.ok {
+  background: #E8F0E8 !important;
+  color: #3A6A3A !important;
+}
+
+body.cafe-light .hchk.fail,
+body.cafe-dark .hchk.fail {
+  background: #F5EDED !important;
+  color: #8A4444 !important;
+}
+
+body.cafe-light .hbadge.ok,
+body.cafe-dark .hbadge.ok {
+  background: #E8F0E8 !important;
+  color: #3A6A3A !important;
+}
+
+body.cafe-light .hbadge.exp,
+body.cafe-dark .hbadge.exp {
+  background: #F5EDED !important;
+  color: #8A4444 !important;
+}
+
+body.cafe-light .hist-bar-fill,
+body.cafe-dark .hist-bar-fill {
+  background: var(--cafe-text) !important;
+}
+
+/* ========== NOTE CARDS ========== */
+body.cafe-light .note-card,
+body.cafe-dark .note-card {
+  background: var(--cafe-card) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 10px !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  transform: rotate(0deg) !important;
+}
+
+body.cafe-light .note-card:hover,
+body.cafe-dark .note-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
+}
+
+body.cafe-light .note-add-card,
+body.cafe-dark .note-add-card {
+  border: 1px dashed var(--cafe-border) !important;
+  background: transparent !important;
+  border-radius: 10px !important;
+}
+
+body.cafe-light .note-add-card:hover,
+body.cafe-dark .note-add-card:hover {
+  border-color: var(--cafe-text-muted) !important;
+  background: var(--cafe-accent-soft) !important;
+}
+
+/* Note post-its — clean style, no pin */
+body.cafe-light .note-postit,
+body.cafe-dark .note-postit {
+  background: var(--cafe-accent-soft) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+body.cafe-light .note-postit::after,
+body.cafe-dark .note-postit::after {
+  display: none !important;
+}
+
+/* ========== RETROLESSON ========== */
+body.cafe-light .rl-box,
+body.cafe-dark .rl-box {
+  background: var(--cafe-accent-soft) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 10px !important;
+}
+
+body.cafe-light .rl-type,
+body.cafe-dark .rl-type {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .rl-diff.d-e { background: #E8F0E8 !important; color: #3A6A3A !important; }
+body.cafe-light .rl-diff.d-m { background: #F5EDE0 !important; color: #8A6A2A !important; }
+body.cafe-light .rl-diff.d-h { background: #F5EDED !important; color: #8A4444 !important; }
+body.cafe-dark .rl-diff.d-e { background: #1A2A1A !important; color: #7AAA7A !important; }
+body.cafe-dark .rl-diff.d-m { background: #2A2418 !important; color: #CCAA66 !important; }
+body.cafe-dark .rl-diff.d-h { background: #2A1A1A !important; color: #CC6666 !important; }
 
 /* ========== LANDING PAGE CAFÉ OVERRIDES ========== */
 
@@ -998,15 +1250,15 @@ body.cafe-light[data-page="landing"] {
 /* Clock on landing */
 body.cafe-light .clock,
 body.cafe-dark .clock {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-highlight) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
 
 /* Greeting */
 body.cafe-light .greeting,
 body.cafe-dark .greeting {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
   color: var(--cafe-text) !important;
   font-weight: 700 !important;
 }
@@ -1014,83 +1266,81 @@ body.cafe-dark .greeting {
 /* Brand name */
 body.cafe-light .brand-name,
 body.cafe-dark .brand-name {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-accent) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
   text-shadow: none !important;
 }
 
 body.cafe-light .brand-sub,
 body.cafe-dark .brand-sub {
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   color: var(--cafe-text-muted) !important;
 }
 
 /* Enter button */
 body.cafe-light .enter-btn,
 body.cafe-dark .enter-btn {
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 0.9rem !important;
-  font-weight: 600 !important;
-  background: var(--cafe-accent) !important;
-  border: 1.5px solid var(--cafe-accent) !important;
-  border-radius: 50px !important;
-  color: #F0E8DC !important;
-  box-shadow: 0 4px 16px var(--cafe-shadow) !important;
-  letter-spacing: 0.04em !important;
+  font-weight: 500 !important;
+  background: var(--cafe-text) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: var(--cafe-bg) !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  letter-spacing: 0.02em !important;
 }
 
 body.cafe-light .enter-btn svg,
 body.cafe-dark .enter-btn svg {
-  stroke: #F0E8DC !important;
+  stroke: var(--cafe-bg) !important;
 }
 
 body.cafe-light .enter-btn:hover,
 body.cafe-dark .enter-btn:hover {
-  background: var(--cafe-highlight) !important;
-  border-color: var(--cafe-highlight) !important;
-  box-shadow: 0 6px 24px rgba(196,168,130,0.35) !important;
-  transform: translateY(-2px) !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* Glass pill */
 body.cafe-light .glass-pill,
 body.cafe-dark .glass-pill {
-  background: rgba(255,255,255,0.1) !important;
+  background: var(--cafe-card) !important;
   border: 1px solid var(--cafe-border) !important;
-  border-radius: 50px !important;
+  border-radius: 10px !important;
   box-shadow: var(--cafe-shadow-card) !important;
-  backdrop-filter: blur(8px) !important;
+  backdrop-filter: none !important;
 }
 
 body.cafe-light .pill-opt,
 body.cafe-dark .pill-opt {
-  border-radius: 50px !important;
-  color: var(--cafe-text-mid) !important;
+  border-radius: 8px !important;
+  color: var(--cafe-text-muted) !important;
 }
 
 body.cafe-light .pill-opt.active,
 body.cafe-dark .pill-opt.active {
-  background: var(--cafe-highlight) !important;
-  color: #fff !important;
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
   box-shadow: none !important;
 }
 
 body.cafe-light .pill-opt:hover,
 body.cafe-dark .pill-opt:hover {
-  color: var(--cafe-accent) !important;
-  background: rgba(196,168,130,0.15) !important;
+  color: var(--cafe-text) !important;
+  background: var(--cafe-accent-soft) !important;
 }
 
 body.cafe-light .theme-label,
 body.cafe-dark .theme-label {
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   color: var(--cafe-text-muted) !important;
 }
 
 /* Quote box */
 body.cafe-light .quote-box,
 body.cafe-dark .quote-box {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
   font-style: italic !important;
   color: var(--cafe-text-mid) !important;
 }
@@ -1098,51 +1348,51 @@ body.cafe-dark .quote-box {
 /* Bottom bar on landing */
 body.cafe-light .bottom-group-left .retro-toggle,
 body.cafe-dark .bottom-group-left .retro-toggle {
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 0.65rem !important;
-  border-radius: 50px !important;
+  border-radius: 8px !important;
   background: transparent !important;
 }
 
 body.cafe-light .bottom-group-left .retro-toggle {
-  border: 1.5px solid var(--cafe-border) !important;
-  color: var(--cafe-text-mid) !important;
+  border: 1px solid var(--cafe-border) !important;
+  color: var(--cafe-text-muted) !important;
 }
 
 body.cafe-dark .bottom-group-left .retro-toggle {
-  border: 1.5px solid var(--cafe-border) !important;
+  border: 1px solid var(--cafe-border) !important;
   color: var(--cafe-text-muted) !important;
 }
 
 body.cafe-light .bottom-group-left .retro-toggle:hover,
 body.cafe-dark .bottom-group-left .retro-toggle:hover {
-  border-color: var(--cafe-highlight) !important;
-  color: var(--cafe-highlight) !important;
-  background: rgba(196,168,130,0.12) !important;
+  border-color: var(--cafe-text) !important;
+  color: var(--cafe-text) !important;
+  background: transparent !important;
   transform: none !important;
   box-shadow: none !important;
 }
 
-/* Landing page background for light mode */
+/* Landing page background */
 body.cafe-light .bg-overlay {
-  background: rgba(232,224,212,0.6) !important;
+  background: rgba(245,241,235,0.5) !important;
 }
 
 body.cafe-dark .bg-overlay {
-  background: rgba(26,23,20,0.65) !important;
+  background: rgba(20,18,16,0.6) !important;
 }
 
 /* ========== LOGIN PAGE CAFÉ OVERRIDES ========== */
 
-/* Stars become warm golden tones */
+/* Stars — subtle in café */
 body.cafe-light .star:nth-child(odd),
 body.cafe-dark .star:nth-child(odd) {
-  background: var(--cafe-highlight) !important;
+  background: var(--cafe-text-muted) !important;
 }
 
 body.cafe-light .star:nth-child(even),
 body.cafe-dark .star:nth-child(even) {
-  background: var(--cafe-accent) !important;
+  background: var(--cafe-border) !important;
 }
 
 /* Login card */
@@ -1150,14 +1400,14 @@ body.cafe-light .login-card,
 body.cafe-dark .login-card {
   background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
-  border-radius: 16px !important;
-  box-shadow: var(--cafe-shadow-card) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
 }
 
 body.cafe-light .card-header h1,
 body.cafe-dark .card-header h1 {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  color: var(--cafe-accent) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
 }
 
 body.cafe-light .card-header p,
@@ -1173,23 +1423,23 @@ body.cafe-dark .card-body {
 /* Tabs on login */
 body.cafe-light .tabs .tab,
 body.cafe-dark .tabs .tab {
-  background: var(--cafe-surface) !important;
-  color: var(--cafe-text-mid) !important;
+  background: var(--cafe-accent-soft) !important;
+  color: var(--cafe-text-muted) !important;
   border-radius: 8px !important;
-  font-family: 'DM Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 body.cafe-light .tabs .tab.on,
 body.cafe-dark .tabs .tab.on {
-  background: var(--cafe-highlight) !important;
-  color: #fff !important;
-  box-shadow: 0 2px 8px rgba(196,168,130,0.3) !important;
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  box-shadow: none !important;
 }
 
 /* Login input fields */
 body.cafe-light .field input,
 body.cafe-dark .field input {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
   border-color: var(--cafe-border) !important;
   color: var(--cafe-text) !important;
   border-radius: 8px !important;
@@ -1197,25 +1447,25 @@ body.cafe-dark .field input {
 
 body.cafe-light .field input:focus,
 body.cafe-dark .field input:focus {
-  border-color: var(--cafe-highlight) !important;
-  box-shadow: 0 0 0 3px rgba(196,168,130,0.2) !important;
+  border-color: var(--cafe-text-muted) !important;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06) !important;
 }
 
 /* Login button */
 body.cafe-light .login-btn,
 body.cafe-dark .login-btn {
-  background: var(--cafe-accent) !important;
-  color: #F0E8DC !important;
-  border-radius: 50px !important;
-  box-shadow: 0 3px 12px var(--cafe-shadow) !important;
-  font-family: 'DM Sans', sans-serif !important;
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  font-family: 'Inter', sans-serif !important;
   border: none !important;
 }
 
 body.cafe-light .login-btn:hover,
 body.cafe-dark .login-btn:hover {
-  background: var(--cafe-highlight) !important;
-  box-shadow: 0 5px 20px rgba(196,168,130,0.35) !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* Card footer */
@@ -1235,12 +1485,12 @@ body.cafe-dark .saved-user {
 
 body.cafe-light .saved-user:hover,
 body.cafe-dark .saved-user:hover {
-  border-color: var(--cafe-highlight) !important;
+  border-color: var(--cafe-text-muted) !important;
 }
 
 body.cafe-light .saved-avatar,
 body.cafe-dark .saved-avatar {
-  background: var(--cafe-surface) !important;
+  background: var(--cafe-card) !important;
 }
 
 body.cafe-light .saved-name,
@@ -1253,26 +1503,26 @@ body.cafe-dark .saved-email {
   color: var(--cafe-text-muted) !important;
 }
 
-/* Pixel heart — warm in café mode */
+/* Pixel heart */
 body.cafe-light .ph.p,
 body.cafe-dark .ph.p {
-  background: var(--cafe-highlight) !important;
+  background: var(--cafe-text) !important;
 }
 
 /* Brand on login */
 body.cafe-light .brand span,
 body.cafe-dark .brand span {
-  color: var(--cafe-highlight) !important;
+  color: var(--cafe-text) !important;
   font-family: 'Source Code Pro', monospace !important;
 }
 
 body.cafe-light .lyric,
 body.cafe-dark .lyric {
   color: var(--cafe-text-muted) !important;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
 }
 
-/* ========== DARK MODE SPECIFIC OVERRIDES ========== */
+/* ========== DARK MODE SPECIFIC ========== */
 
 body.cafe-dark {
   background: var(--cafe-bg) !important;
@@ -1283,6 +1533,18 @@ body.cafe-dark .login-card,
 body.cafe-dark .card-body {
   background: var(--cafe-card) !important;
 }
+
+/* Dark heatmap cells */
+body.cafe-dark .hm-cell.l1 { background: rgba(240,236,230,0.08) !important; }
+body.cafe-dark .hm-cell.l2 { background: rgba(240,236,230,0.2) !important; }
+body.cafe-dark .hm-cell.l3 { background: rgba(240,236,230,0.4) !important; }
+body.cafe-dark .hm-cell.l4 { background: var(--cafe-text) !important; }
+
+/* Dark goal badges */
+body.cafe-dark .hchk.ok { background: #1A2A1A !important; color: #7AAA7A !important; }
+body.cafe-dark .hchk.fail { background: #2A1A1A !important; color: #CC6666 !important; }
+body.cafe-dark .hbadge.ok { background: #1A2A1A !important; color: #7AAA7A !important; }
+body.cafe-dark .hbadge.exp { background: #2A1A1A !important; color: #CC6666 !important; }
 
 /* ========== LESSON PANEL — CAFÉ ========== */
 
@@ -1295,60 +1557,183 @@ body.cafe-dark .lesson-panel {
 }
 
 body.cafe-light .lesson-overlay {
-  background: rgba(93,77,60,0.20) !important;
+  background: rgba(0,0,0,0.15) !important;
 }
 
 body.cafe-dark .lesson-overlay {
-  background: rgba(0,0,0,0.40) !important;
+  background: rgba(0,0,0,0.50) !important;
 }
 
 /* ========== RADIO PLAYER — CAFÉ ========== */
 
-body.cafe-dark #rm-radio-btn {
-  background: #3E372E !important;
-  color: #F0E8DC !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35) !important;
-}
-
 body.cafe-light #rm-radio-btn {
-  background: #DDD5C8 !important;
-  color: #3D3329 !important;
-  box-shadow: 0 2px 8px rgba(93,77,60,0.15) !important;
+  background: var(--cafe-card) !important;
+  color: var(--cafe-text) !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  border: 1px solid var(--cafe-border) !important;
 }
 
+body.cafe-dark #rm-radio-btn {
+  background: var(--cafe-card) !important;
+  color: var(--cafe-text) !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  border: 1px solid var(--cafe-border) !important;
+}
+
+body.cafe-light #rm-radio-panel,
 body.cafe-dark #rm-radio-panel {
-  background: rgba(36,32,25,0.95) !important;
-  border-color: rgba(255,255,255,0.08) !important;
-  color: #F0E8DC !important;
+  background: var(--cafe-card) !important;
+  border: 1px solid var(--cafe-border) !important;
+  color: var(--cafe-text) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
 }
 
-body.cafe-light #rm-radio-panel {
-  background: rgba(237,230,218,0.96) !important;
-  border-color: rgba(93,77,60,0.12) !important;
-  color: #3D3329 !important;
-}
-
+body.cafe-light .rm-ctrl-btn,
 body.cafe-dark .rm-ctrl-btn {
-  background: rgba(255,255,255,0.08) !important;
-  border-color: rgba(255,255,255,0.10) !important;
+  background: var(--cafe-accent-soft) !important;
+  border: 1px solid var(--cafe-border) !important;
+  border-radius: 8px !important;
 }
 
-body.cafe-light .rm-ctrl-btn {
-  background: rgba(93,77,60,0.06) !important;
-  border-color: rgba(93,77,60,0.10) !important;
-}
-
+body.cafe-light #rm-play.rm-ctrl-btn,
 body.cafe-dark #rm-play.rm-ctrl-btn {
-  background: rgba(196,168,130,0.20) !important;
-  border-color: rgba(196,168,130,0.30) !important;
-}
-
-body.cafe-light #rm-play.rm-ctrl-btn {
-  background: rgba(93,77,60,0.10) !important;
-  border-color: rgba(93,77,60,0.15) !important;
+  background: var(--cafe-text) !important;
+  border-color: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
 }
 
 body.cafe-dark #rm-radio-btn.playing::before,
 body.cafe-light #rm-radio-btn.playing::before {
-  border-color: var(--cafe-highlight) !important;
+  border-color: var(--cafe-text) !important;
+}
+
+/* ========== PROFILE PANEL (pp) ========== */
+body.cafe-light .profile-panel,
+body.cafe-dark .profile-panel {
+  background: var(--cafe-card) !important;
+  border-color: var(--cafe-border) !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
+}
+
+body.cafe-light .pp-input,
+body.cafe-dark .pp-input {
+  background: var(--cafe-accent-soft) !important;
+  border-color: var(--cafe-border) !important;
+  color: var(--cafe-text) !important;
+}
+
+body.cafe-light .pp-logout,
+body.cafe-dark .pp-logout {
+  color: #8A4444 !important;
+  border-color: #D4A0A0 !important;
+}
+
+/* ========== INLINE LOGIN SCREEN ========== */
+body.cafe-light #loginScreen,
+body.cafe-dark #loginScreen {
+  background: var(--cafe-bg) !important;
+}
+
+body.cafe-light .login-box,
+body.cafe-dark .login-box {
+  background: var(--cafe-card) !important;
+  border-color: var(--cafe-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--cafe-shadow-hover) !important;
+  background-image: none !important;
+}
+
+body.cafe-light .login-box::before,
+body.cafe-dark .login-box::before {
+  display: none !important;
+}
+
+body.cafe-light .login-title,
+body.cafe-dark .login-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
+}
+
+body.cafe-light .login-sub,
+body.cafe-dark .login-sub {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .login-input,
+body.cafe-light .login-name-input,
+body.cafe-dark .login-input,
+body.cafe-dark .login-name-input {
+  background: var(--cafe-accent-soft) !important;
+  border-color: var(--cafe-border) !important;
+  color: var(--cafe-text) !important;
+}
+
+body.cafe-light .login-input:focus,
+body.cafe-light .login-name-input:focus,
+body.cafe-dark .login-input:focus,
+body.cafe-dark .login-name-input:focus {
+  border-color: var(--cafe-text-muted) !important;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06) !important;
+}
+
+/* ========== SPLASH OVERRIDES ========== */
+body.cafe-light .splash-title,
+body.cafe-dark .splash-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: var(--cafe-text) !important;
+  text-shadow: none !important;
+}
+
+body.cafe-light .splash-sub,
+body.cafe-dark .splash-sub {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .splash-btn,
+body.cafe-dark .splash-btn {
+  background: var(--cafe-text) !important;
+  color: var(--cafe-bg) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--cafe-shadow-card) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+body.cafe-light .splash-btn:hover,
+body.cafe-dark .splash-btn:hover {
+  box-shadow: var(--cafe-shadow-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+body.cafe-light .splash-brand,
+body.cafe-dark .splash-brand {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .splash-lyric,
+body.cafe-dark .splash-lyric {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .splash-footer,
+body.cafe-dark .splash-footer {
+  color: var(--cafe-text-muted) !important;
+}
+
+/* ========== PIXEL STARS ON SPLASH ========== */
+body.cafe-light .px-star,
+body.cafe-dark .px-star {
+  background: var(--cafe-text-muted) !important;
+  opacity: 0.08 !important;
+}
+
+/* ========== HOME BUTTON ========== */
+body.cafe-light .home-btn,
+body.cafe-dark .home-btn {
+  color: var(--cafe-text-muted) !important;
+}
+
+body.cafe-light .home-btn:hover,
+body.cafe-dark .home-btn:hover {
+  color: var(--cafe-text) !important;
 }
