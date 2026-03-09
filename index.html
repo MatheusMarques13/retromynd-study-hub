@@ -146,7 +146,8 @@ body{font-family:'Kalam','Kalam','Caveat',cursive;font-size:16px;background:var(
 .note-textarea{width:100%;min-height:120px;font-family:'Kalam','Caveat',cursive;font-size:17px;line-height:var(--line-h);padding:0;border:none;background:transparent;color:var(--text);outline:none;resize:vertical;position:relative;z-index:5}
 .note-textarea::placeholder{color:var(--text-light)}
 .note-postits{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;position:relative;z-index:5}
-.note-postit{padding:8px 12px;border-radius:3px;font-size:15px;color:var(--text);box-shadow:0 2px 4px rgba(0,0,0,.06);min-width:80px;max-width:200px;position:relative;animation:popIn .2s ease;word-break:break-word}
+.note-postit{padding:18px 12px 8px 12px;border-radius:3px;font-size:15px;color:var(--text);box-shadow:0 2px 4px rgba(0,0,0,.06);min-width:80px;max-width:200px;position:relative;animation:popIn .2s ease;word-break:break-word}
+.note-postit::after{content:'';width:16px;height:16px;background:radial-gradient(circle at 40% 40%,#e74c3c,#c0392b);border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.3);position:absolute;top:-6px;right:14px;z-index:2}
 .note-postit-del{position:absolute;top:2px;right:4px;font-size:12px;color:var(--text-light);cursor:pointer;opacity:0;transition:all .15s}
 .note-postit:hover .note-postit-del{opacity:.6}
 .note-postit-del:hover{opacity:1!important;color:var(--pink)}
