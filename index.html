@@ -671,8 +671,8 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
     {emoji:'😞',label:'Baixo',color:'#FF9800'},
     {emoji:'😟',label:'Ruim',color:'#F44336'}
   ];
-  var DAYS_PT=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  var DOW_LABELS=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  var DAYS_PT=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];// indexed by getDay() (0=Sun)
+  var DOW_LABELS=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];// Mon-first for calendar header
   var _selectedMood=null;
   var _noteVal='';
 
@@ -807,10 +807,10 @@ body.cafe-dark .rm-footer a:hover, body.cafe-light .rm-footer a:hover { text-dec
     var topMood=null;var topCount=0;
     for(var i=0;i<5;i++){if(counts[i]>topCount){topCount=counts[i];topMood=i;}}
     if(total===0)topMood=null;
-    var streak=0;var check=new Date();
-    while(true){var ck=dateKey(check);if(!data.entries[ck])break;streak++;check.setDate(check.getDate()-1);}
+    var streak=0;var check=new Date();var maxStreak=366;
+    while(maxStreak-->0){var ck=dateKey(check);if(!data.entries[ck])break;streak++;check.setDate(check.getDate()-1);}
     var avgLabel=null;
-    if(total>0){var LABELS=['Ótimo','Bem','Normal','Baixo','Ruim'];avgLabel=LABELS[Math.min(4,Math.round(moodSum/total))];}
+    if(total>0){avgLabel=MOODS[Math.min(4,Math.round(moodSum/total))].label;}
     return{topMood:topMood,streak:streak,avgLabel:avgLabel};
   }
 
