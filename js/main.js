@@ -730,11 +730,9 @@
     app.innerHTML = `<div class="notes-grid">
       <div class="note-add-card" onclick="window.createNote()"><span>+</span><small>Nova nota</small></div>
       ${notes.map((n,i) => {
-        const postitCount = (n.postits && n.postits.length) ? ` • ${n.postits.length} post-it${n.postits.length>1?'s':''}` : '';
         return `<div class="note-card" style="background:var(--${n.color||colors[i%colors.length]});--rot:${(Math.random()*4-2).toFixed(1)}deg" onclick="window.openNote(${n.id})">
           <div class="note-card-del" onclick="event.stopPropagation();window.deleteNote(${n.id})">×</div>
           <div class="note-card-title">${n.title||'Sem título'}</div>
-          <div class="note-card-preview">${n.content||''}${postitCount}</div>
         </div>`;
       }).join('')}
     </div>`;
