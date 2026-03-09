@@ -1,0 +1,419 @@
+<!-- RetroMynd Radio -->
+<style>
+  #rm-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  #rm-radio-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #5C4D3C;
+    color: #F0EAE0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.30);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* Light theme override — detect via :root or body without dark class */
+  body:not(.dark) #rm-radio-btn,
+  body[data-theme="light"] #rm-radio-btn,
+  body[data-theme="comfy"] #rm-radio-btn {
+    background: #DDD5C8;
+    color: #3A2E22;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  #rm-radio-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  }
+
+  #rm-radio-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* Pulse ring when playing */
+  #rm-radio-btn.playing::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid #A8896A;
+    animation: rm-pulse 1.8s ease-out infinite;
+    pointer-events: none;
+  }
+
+  #rm-radio-btn {
+    position: relative;
+  }
+
+  @keyframes rm-pulse {
+    0%   { opacity: 0.8; transform: scale(1); }
+    70%  { opacity: 0;   transform: scale(1.5); }
+    100% { opacity: 0;   transform: scale(1.5); }
+  }
+
+  /* Panel */
+  #rm-radio-panel {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    width: 280px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(44, 36, 28, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.40);
+    border: 1px solid rgba(255,255,255,0.08);
+    transform-origin: bottom right;
+    animation: rm-slide-up 0.22s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+    color: #F0EAE0;
+  }
+
+  body:not(.dark) #rm-radio-panel,
+  body[data-theme="light"] #rm-radio-panel,
+  body[data-theme="comfy"] #rm-radio-panel {
+    background: rgba(240, 232, 220, 0.95);
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    color: #3A2E22;
+  }
+
+  .rm-album-art {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.1);
+  }
+
+  .rm-album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .rm-panel-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @keyframes rm-slide-up {
+    from { opacity: 0; transform: translateY(10px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  #rm-track-title {
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-family: inherit;
+  }
+
+  .rm-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rm-btn-group {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .rm-ctrl-btn {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: inherit;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.12s ease;
+    padding: 0;
+    outline: none;
+  }
+
+  body:not(.dark) .rm-ctrl-btn,
+  body[data-theme="light"] .rm-ctrl-btn,
+  body[data-theme="comfy"] .rm-ctrl-btn {
+    background: rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.10);
+  }
+
+  .rm-ctrl-btn:hover {
+    background: rgba(255,255,255,0.18);
+  }
+
+  body:not(.dark) .rm-ctrl-btn:hover,
+  body[data-theme="light"] .rm-ctrl-btn:hover,
+  body[data-theme="comfy"] .rm-ctrl-btn:hover {
+    background: rgba(0,0,0,0.12);
+  }
+
+  #rm-play.rm-ctrl-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.20);
+  }
+
+  body:not(.dark) #rm-play.rm-ctrl-btn,
+  body[data-theme="light"] #rm-play.rm-ctrl-btn,
+  body[data-theme="comfy"] #rm-play.rm-ctrl-btn {
+    background: rgba(0,0,0,0.10);
+    border-color: rgba(0,0,0,0.14);
+  }
+
+  .rm-close-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.50;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 4px;
+    transition: opacity 0.12s ease;
+    outline: none;
+  }
+
+  .rm-close-btn:hover {
+    opacity: 0.85;
+  }
+
+  /* ===== RETRO THEME ===== */
+  body.retro-dark #rm-radio-btn {
+    background: #2a2520;
+    color: #FFD700;
+    border: 1px solid #444;
+    box-shadow: 0 0 8px rgba(255,215,0,0.15), 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  body.retro-light #rm-radio-btn {
+    background: #e8e0d2;
+    color: #5c4d3c;
+    border: 1px solid #c4b8a4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  body.retro-dark #rm-radio-panel {
+    background: rgba(30,25,20,0.96);
+    border: 1px solid rgba(255,215,0,0.15);
+    color: #FFD700;
+    box-shadow: 0 0 12px rgba(255,215,0,0.08), 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  body.retro-light #rm-radio-panel {
+    background: rgba(232,224,210,0.96);
+    border: 1px solid rgba(92,77,60,0.15);
+    color: #3a2e22;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  body.retro-dark .rm-ctrl-btn {
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.20);
+    color: #FFD700;
+  }
+
+  body.retro-light .rm-ctrl-btn {
+    background: rgba(92,77,60,0.06);
+    border: 1px solid rgba(92,77,60,0.15);
+    color: #5c4d3c;
+  }
+
+  body.retro-dark .rm-ctrl-btn:hover {
+    background: rgba(255,215,0,0.15);
+  }
+
+  body.retro-light .rm-ctrl-btn:hover {
+    background: rgba(92,77,60,0.12);
+  }
+
+  body.retro-dark #rm-play.rm-ctrl-btn {
+    background: rgba(255,215,0,0.15);
+    border-color: rgba(255,215,0,0.30);
+  }
+
+  body.retro-light #rm-play.rm-ctrl-btn {
+    background: rgba(92,77,60,0.10);
+    border-color: rgba(92,77,60,0.20);
+  }
+
+  body.retro-dark #rm-radio-btn.playing::before {
+    border-color: #FFD700;
+  }
+
+  body.retro-light #rm-radio-btn.playing::before {
+    border-color: #A8896A;
+  }
+
+  body.retro-dark #rm-track-title {
+    color: rgba(255,215,0,0.75);
+  }
+
+  body.retro-dark .rm-close-btn {
+    color: #FFD700;
+  }
+
+  /* ===== SVG ICON COLOR - COMFY THEME ===== */
+  #rm-player .rm-ctrl-btn { color: #8B8B8B; }
+  #rm-player .rm-ctrl-btn:hover { color: #555; background: rgba(0,0,0,0.06); }
+  #rm-player .rm-ctrl-btn:active { color: #333; }
+  #rm-radio-btn .rm-icon { color: #666; }
+
+  /* ===== SVG ICON COLOR - RETRO THEME ===== */
+  body.retro-dark #rm-player .rm-ctrl-btn,
+  body.retro-light #rm-player .rm-ctrl-btn {
+    color: var(--rpixel, #e8f0ff);
+  }
+
+  body.retro-dark #rm-player .rm-ctrl-btn:hover,
+  body.retro-light #rm-player .rm-ctrl-btn:hover {
+    color: var(--rgold, #f5c518);
+    background: rgba(245,197,24,0.1);
+  }
+
+  body.retro-dark .rm-album-art,
+  body.retro-light .rm-album-art {
+    border-radius: 0;
+    border: 2px solid var(--rborder, #1e3a6e);
+  }
+
+  body.retro-dark #rm-radio-btn .rm-icon,
+  body.retro-light #rm-radio-btn .rm-icon {
+    color: var(--rpixel, #e8f0ff);
+  }
+
+  /* ===== CAFÉ THEME ===== */
+  body.cafe-dark #rm-radio-btn,
+  body.cafe-light #rm-radio-btn {
+    background: #5C4D3C;
+    color: #F0EAE0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+
+  body.cafe-dark #rm-radio-panel,
+  body.cafe-light #rm-radio-panel {
+    background: rgba(44, 36, 28, 0.92);
+    border: 1px solid rgba(212,197,169,0.15);
+    color: #F0EAE0;
+  }
+
+  body.cafe-light #rm-radio-btn {
+    background: #D4C5A9;
+    color: #3A2E22;
+  }
+
+  body.cafe-light #rm-radio-panel {
+    background: rgba(240, 232, 220, 0.95);
+    border: 1px solid rgba(0,0,0,0.10);
+    color: #3A2E22;
+  }
+
+  body.cafe-dark #rm-player .rm-ctrl-btn,
+  body.cafe-light #rm-player .rm-ctrl-btn {
+    color: #6B5344;
+  }
+
+  body.cafe-dark #rm-player .rm-ctrl-btn:hover,
+  body.cafe-light #rm-player .rm-ctrl-btn:hover {
+    color: #8B6F47;
+    background: rgba(139,111,71,0.08);
+  }
+
+  body.cafe-dark .rm-album-art,
+  body.cafe-light .rm-album-art {
+    border-radius: 8px;
+    border: 1px solid rgba(212,197,169,0.3);
+  }
+
+  body.cafe-dark #rm-radio-btn .rm-icon,
+  body.cafe-light #rm-radio-btn .rm-icon {
+    color: #8B6F47;
+  }
+
+  body.cafe-dark .rm-ctrl-btn {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  body.cafe-light .rm-ctrl-btn {
+    background: rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.10);
+  }
+
+  body.cafe-dark #rm-radio-btn.playing::before {
+    border-color: #C17950;
+  }
+
+  body.cafe-light #rm-radio-btn.playing::before {
+    border-color: #A8896A;
+  }
+</style>
+
+<div id="rm-player">
+  <!-- Collapsed: Radio button -->
+  <button id="rm-radio-btn" aria-label="Rádio Lo-fi">
+    <svg class="rm-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 20h.01"/>
+      <path d="M8.5 16.5a5 5 0 0 1 7 0"/>
+      <path d="M5 12.5a10 10 0 0 1 14 0"/>
+      <path d="M1.5 8.5a15 15 0 0 1 21 0"/>
+    </svg>
+  </button>
+
+  <!-- Expanded: Control panel (slides up from button) -->
+  <div id="rm-radio-panel">
+    <div class="rm-album-art">
+      <img id="rm-thumbnail" src="" alt="Video thumbnail" />
+    </div>
+    <div class="rm-panel-content">
+      <div id="rm-track-title">Carregando rádio...</div>
+      <div class="rm-controls">
+        <div class="rm-btn-group">
+          <button id="rm-prev" class="rm-ctrl-btn" aria-label="Anterior"><svg class="rm-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg></button>
+          <button id="rm-play" class="rm-ctrl-btn" aria-label="Tocar"><svg class="rm-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+          <button id="rm-next" class="rm-ctrl-btn" aria-label="Próximo"><svg class="rm-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg></button>
+        </div>
+        <button class="rm-close-btn" id="rm-close" aria-label="Fechar"><svg class="rm-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden YouTube player container -->
+<div id="yt-player" style="display:none;position:absolute;width:0;height:0;overflow:hidden;"></div>

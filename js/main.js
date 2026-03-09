@@ -61,10 +61,10 @@
     _serverMap: {
       goals:        () => ({ type: 'goals',  data: store.get('goals', []) }),
       notes:        () => ({ type: 'notes',  data: store.get('notes', []) }),
-      lessons:      () => ({ type: 'lessons', data: getLessonCloudData() }),
       pomodoros:    () => ({ type: 'timer',  data: { pomodoros: parseInt(store.getRaw('pomodoros', '0')), totalMinutes: 0 } }),
       streak:       () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
       streak_days:  () => ({ type: 'streak', data: { current: parseInt(store.getRaw('streak', '0')), best: parseInt(store.getRaw('streak', '0')), days: store.get('streak_days', {}) } }),
+      lessons:      () => ({ type: 'lessons', data: store.get('lessons', { completed: [], history: [] }) }),
     },
 
     async flush() {
@@ -143,24 +143,10 @@
   window._store = store;
 
   window.addEventListener('beforeunload', () => {
-    // Mark lessons dirty if there's lesson data to save
-    try {
-      const ld = JSON.parse(localStorage.getItem('lesson_history_v1') || '[]');
-      const lq = JSON.parse(localStorage.getItem('lesson_quiz_v1') || '[]');
-      if (ld.length > 0 || lq.length > 0) store._dirty.add('lessons');
-    } catch(e) {}
     store.flushSync();
   });
   window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      // Sync lesson data when page goes hidden (tab switch, minimize, etc.)
-      try {
-        const ld = JSON.parse(localStorage.getItem('lesson_history_v1') || '[]');
-        const lq = JSON.parse(localStorage.getItem('lesson_quiz_v1') || '[]');
-        if (ld.length > 0 || lq.length > 0) store._dirty.add('lessons');
-      } catch(e) {}
-      store.flushNow();
-    }
+    if (document.visibilityState === 'hidden') store.flushNow();
   });
   setInterval(() => { if (store._dirty.size > 0) store.flush(); }, 30000);
 
@@ -404,35 +390,28 @@
       }
 
       // LESSONS SYNC
-      // load.js returns lesson_data column as allData.lessons.data
-      // save.js stores at lesson_data.lessons, so server data could be at .data.lessons or .data directly
       if (allData.lessons && allData.lessons.data) {
-        const raw = allData.lessons.data;
-        const serverLessons = raw.lessons || raw; // handle both nesting levels
-        if (serverLessons.codeHistory || serverLessons.quizHistory) {
-          mergeLessonFromServer(serverLessons);
-          const afterMerge = getLessonCloudData();
-          const serverCodeCount = (serverLessons.codeHistory || []).length;
-          const serverQuizCount = (serverLessons.quizHistory || []).length;
-          if (afterMerge.codeHistory.length > serverCodeCount || afterMerge.quizHistory.length > serverQuizCount) {
-            needsResync = true;
-            store._dirty.add('lessons');
-          }
-          if (serverCodeCount > 0 || serverQuizCount > 0) loaded++;
+        const serverLessons = allData.lessons.data;
+        const localLessons = store.get('lessons', { completed: [], history: [] });
+        // Merge completed lessons by id (local wins on conflict)
+        const merged = new Map();
+        (serverLessons.completed || []).forEach(l => merged.set(l.id, l));
+        (localLessons.completed || []).forEach(l => merged.set(l.id, l));
+        const result = {
+          completed: Array.from(merged.values()),
+          history: [...(serverLessons.history || []), ...(localLessons.history || [])]
+            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+            .filter((v, i, a) => a.findIndex(t => t.id === v.id && t.timestamp === v.timestamp) === i)
+        };
+        store.set('lessons', result, false);
+        if (result.completed.length > (serverLessons.completed || []).length) {
+          needsResync = true;
+          store._dirty.add('lessons');
         }
-      }
-      // If we have local lesson data but server doesn't, push to server
-      if (!store._dirty.has('lessons')) {
-        const localLessons = getLessonCloudData();
-        if (localLessons.codeHistory.length > 0 || localLessons.quizHistory.length > 0) {
-          const hasServerLessons = allData.lessons && allData.lessons.data &&
-            ((allData.lessons.data.lessons && (allData.lessons.data.lessons.codeHistory || allData.lessons.data.lessons.quizHistory)) ||
-             allData.lessons.data.codeHistory || allData.lessons.data.quizHistory);
-          if (!hasServerLessons) {
-            needsResync = true;
-            store._dirty.add('lessons');
-          }
-        }
+        if (result.completed.length > 0) loaded++;
+      } else if (store.get('lessons', { completed: [], history: [] }).completed.length > 0) {
+        needsResync = true;
+        store._dirty.add('lessons');
       }
 
       // STREAK
@@ -490,6 +469,7 @@
     const goals = getGoals(), notes = getNotes();
     const streak = parseInt(store.getRaw('streak', '0'));
     const pomos = parseInt(store.getRaw('pomodoros', '0'));
+    const lessons = store.get('lessons', { completed: [], history: [] });
     const todayKey = localDateKey(new Date());
     const todayGoals = goals.filter(g => localDateKey(new Date(g.date)) === todayKey);
     const doneGoals = todayGoals.filter(g => g.done).length;
@@ -497,6 +477,7 @@
     const sN = $('sN'); if (sN) sN.textContent = notes.length;
     const sG = $('sG'); if (sG) sG.textContent = `${doneGoals}/${todayGoals.length}`;
     const sP = $('sP'); if (sP) sP.textContent = pomos;
+    const sL = $('sL'); if (sL) sL.textContent = (lessons.completed || []).length;
   }
   window.loadStats = loadStats;
 
@@ -749,11 +730,9 @@
     app.innerHTML = `<div class="notes-grid">
       <div class="note-add-card" onclick="window.createNote()"><span>+</span><small>Nova nota</small></div>
       ${notes.map((n,i) => {
-        const postitCount = (n.postits && n.postits.length) ? ` • ${n.postits.length} post-it${n.postits.length>1?'s':''}` : '';
         return `<div class="note-card" style="background:var(--${n.color||colors[i%colors.length]});--rot:${(Math.random()*4-2).toFixed(1)}deg" onclick="window.openNote(${n.id})">
           <div class="note-card-del" onclick="event.stopPropagation();window.deleteNote(${n.id})">×</div>
           <div class="note-card-title">${n.title||'Sem título'}</div>
-          <div class="note-card-preview">${n.content||''}${postitCount}</div>
         </div>`;
       }).join('')}
     </div>`;
@@ -858,51 +837,6 @@
   }
 
   // ═══ RETROLESSON ═══
-  // localStorage keys used by the lesson iframe (shared same-origin via blob URL)
-  const LESSON_HISTORY_KEY = 'lesson_history_v1';
-  const LESSON_QUIZ_KEY = 'lesson_quiz_v1';
-
-  function getLessonCloudData() {
-    try {
-      const codeHistory = JSON.parse(localStorage.getItem(LESSON_HISTORY_KEY) || '[]');
-      const quizHistory = JSON.parse(localStorage.getItem(LESSON_QUIZ_KEY) || '[]');
-      return { codeHistory, quizHistory };
-    } catch(e) { return { codeHistory: [], quizHistory: [] }; }
-  }
-
-  function syncLessonToCloud() {
-    const data = getLessonCloudData();
-    if (data.codeHistory.length > 0 || data.quizHistory.length > 0) {
-      store._dirty.add('lessons');
-      store._localModifiedAt = Date.now();
-      store.flushNow().catch(function(){});
-    }
-  }
-
-  function mergeLessonFromServer(serverData) {
-    if (!serverData || typeof serverData !== 'object') return;
-    try {
-      // Merge code challenge history
-      if (Array.isArray(serverData.codeHistory)) {
-        const local = JSON.parse(localStorage.getItem(LESSON_HISTORY_KEY) || '[]');
-        const merged = new Map();
-        serverData.codeHistory.forEach(h => merged.set(h.date, h));
-        local.forEach(h => merged.set(h.date, h)); // local wins for same date
-        const result = Array.from(merged.values()).sort((a, b) => a.date.localeCompare(b.date));
-        localStorage.setItem(LESSON_HISTORY_KEY, JSON.stringify(result));
-      }
-      // Merge quiz history
-      if (Array.isArray(serverData.quizHistory)) {
-        const local = JSON.parse(localStorage.getItem(LESSON_QUIZ_KEY) || '[]');
-        const merged = new Map();
-        serverData.quizHistory.forEach(h => merged.set(h.date, h));
-        local.forEach(h => merged.set(h.date, h)); // local wins for same date
-        const result = Array.from(merged.values()).sort((a, b) => a.date.localeCompare(b.date));
-        localStorage.setItem(LESSON_QUIZ_KEY, JSON.stringify(result));
-      }
-    } catch(e) { console.warn('[Lessons] Merge error:', e); }
-  }
-
   function initRetroLesson() {
     const container = $('rlC'); if(!container) return;
     const ch = [
@@ -922,22 +856,51 @@
     if (panel) panel.classList.add('open'); if (overlay) overlay.classList.add('open');
     if (iframe && !iframe.src.includes('blob:')) {
       const dataEl = $('lessonData');
-      if (dataEl) { try { const html = atob(dataEl.textContent.trim()); iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' })); } catch(e) {} }
+      if (dataEl) {
+        try {
+          const html = atob(dataEl.textContent.trim());
+          iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+        } catch(e) {}
+      }
+    }
+    // After iframe loads, send bridge init signal
+    if (iframe) {
+      iframe.onload = function() {
+        try {
+          iframe.contentWindow.postMessage({ type: 'initBridge' }, '*');
+        } catch(e) {}
+      };
     }
   };
+
+  // ═══ RETROLESSON postMessage BRIDGE ═══
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'lessonComplete') return;
+    const lessons = store.get('lessons', { completed: [], history: [] });
+    const entry = {
+      id: e.data.lessonId || Date.now(),
+      title: e.data.title || 'Lesson',
+      language: e.data.language || 'JS',
+      difficulty: e.data.difficulty || 'medium',
+      completedAt: new Date().toISOString(),
+      score: e.data.score || null,
+      timestamp: Date.now()
+    };
+    // Avoid duplicate completed entries by id
+    if (!lessons.completed.find(l => l.id === entry.id)) {
+      lessons.completed.push(entry);
+    }
+    // Always push to history (tracks every attempt)
+    lessons.history.push(entry);
+    store.set('lessons', lessons);
+    store.flushNow();
+    // Update stats display
+    try { loadStats(); } catch(e2) {}
+  });
   window.closeLesson = function() {
     const panel = $('lessonPanel'), overlay = $('lessonOverlay');
     if (panel) panel.classList.remove('open'); if (overlay) overlay.classList.remove('open');
-    // Sync lesson progress to cloud when closing
-    syncLessonToCloud();
   };
-
-  // Listen for messages from lesson iframe (closeLesson + session updates)
-  window.addEventListener('message', function(e) {
-    if (e.data === 'closeLesson') {
-      window.closeLesson();
-    }
-  });
 
   // ═══ THEME ═══
   window.setTheme = function(theme) {
@@ -970,73 +933,8 @@
     }
   }
 
-  // ═══ MIGRATE LEGACY DATA ═══
-  function migrateLegacyData() {
-    if (localStorage.getItem('rms_migrated_v2')) return;
-    try {
-      // Try both prefixed and unprefixed legacy keys
-      const user = auth ? auth.getUser() : null;
-      const prefixes = [''];
-      if (user && user.email) {
-        prefixes.push('rm_' + user.email.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_');
-      }
-      for (const pfx of prefixes) {
-        // Migrate goals
-        const oldGoals = localStorage.getItem(pfx + 'rmGoals2');
-        if (oldGoals) {
-          const parsed = JSON.parse(oldGoals);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const existing = store.get('goals', []);
-            const existingIds = new Set(existing.map(g => g.text + '|' + g.date));
-            let added = 0;
-            for (const g of parsed) {
-              const key = g.text + '|' + (g.date || '');
-              if (!existingIds.has(key)) {
-                existing.push({
-                  id: g.id || Date.now() + added,
-                  text: g.text,
-                  done: !!g.done,
-                  date: g.date ? new Date(g.date + 'T12:00:00').toISOString() : new Date().toISOString()
-                });
-                existingIds.add(key);
-                added++;
-              }
-            }
-            if (added > 0) {
-              store.set('goals', existing, false);
-              store._dirty.add('goals');
-            }
-          }
-        }
-        // Migrate notes
-        const oldNotes = localStorage.getItem(pfx + 'rmNotes3');
-        if (oldNotes) {
-          const parsed = JSON.parse(oldNotes);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const existing = store.get('notes', []);
-            const existingIds = new Set(existing.map(n => n.id));
-            let added = 0;
-            for (const n of parsed) {
-              if (!existingIds.has(n.id)) {
-                existing.push(n);
-                existingIds.add(n.id);
-                added++;
-              }
-            }
-            if (added > 0) {
-              store.set('notes', existing, false);
-              store._dirty.add('notes');
-            }
-          }
-        }
-      }
-    } catch(e) { console.warn('[Migration] Error:', e); }
-    localStorage.setItem('rms_migrated_v2', '1');
-  }
-
   // ═══ INIT ═══
   function init() {
-    migrateLegacyData();
     const savedTheme = localStorage.getItem('rms_theme') || 'light';
     window.setTheme(savedTheme);
     if (auth && auth.isAuthenticated()) showHub();

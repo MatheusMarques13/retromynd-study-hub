@@ -2,12 +2,12 @@
   'use strict';
   var THEME_KEY = 'rm_theme';
 
-  /* ===== INJECT GOOGLE FONTS ===== */
+  /* ===== INJECT GOOGLE FONTS (retro) ===== */
   if (!document.getElementById('rm-retro-fonts')) {
     var link = document.createElement('link');
     link.id = 'rm-retro-fonts';
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap';
     document.head.appendChild(link);
   }
 
@@ -260,219 +260,7 @@
   + '  background:var(--rsurface)!important; border:2px solid var(--rborder)!important;'
   + '  color:var(--rpixel)!important; border-radius:0!important; }'
 
-
-  /* ╔══════════════════════════════════════════════╗ */
-  /* ║           CAFÉ THEME — PARIS CHIC            ║ */
-  /* ╚══════════════════════════════════════════════╝ */
-
-  + 'body.cafe {'
-  + '  --cbg:#1a1410; --csurface:#231e18; --ccard:#2c2520; --cborder:#3d342b;'
-  + '  --ctext:#f0e8dc; --cdim:#a89880; --cgold:#c9a96e; --ccream:#f5efe4;'
-  + '  --caccent:#8b6e4e; --crose:#c4787a; --cwarm:#e8c9a0;'
-  + '  --cshadow:0 2px 16px rgba(0,0,0,.35); --cglow:rgba(201,169,110,.15);'
-  + '}'
-
-  /* --- Café: Global --- */
-  + 'body.cafe {'
-  + '  background:linear-gradient(165deg,#1a1410 0%,#1e1814 30%,#211c16 60%,#191310 100%)!important;'
-  + '  color:var(--ctext)!important;'
-  + '}'
-  + 'body.cafe::before {'
-  + '  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;'
-  + '  background:radial-gradient(ellipse 120% 80% at 20% 50%,rgba(201,169,110,.04) 0%,transparent 70%),'
-  + '  radial-gradient(ellipse 100% 60% at 80% 30%,rgba(139,110,78,.03) 0%,transparent 60%);'
-  + '}'
-  + 'body.cafe::after {'
-  + '  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;'
-  + '  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.2) 100%);'
-  + '}'
-
-  /* --- Café: Nuclear font override --- */
-  + 'body.cafe * {'
-  + '  font-family:"Cormorant Garamond",Garamond,"Times New Roman",serif!important;'
-  + '}'
-  + 'body.cafe h1:not(#rmLoginOverlay h1), body.cafe h2:not(#rmLoginOverlay *),'
-  + 'body.cafe h3, body.cafe h4, body.cafe h5, body.cafe h6 {'
-  + '  font-family:"Playfair Display",Didot,"Times New Roman",serif!important;'
-  + '  font-weight:600!important; letter-spacing:.02em!important;'
-  + '  color:var(--cgold)!important;'
-  + '  text-shadow:0 1px 12px rgba(201,169,110,.2)!important;'
-  + '}'
-
-  /* --- Café: Selection --- */
-  + 'body.cafe ::selection { background:var(--cgold);color:#1a1410; }'
-
-  /* --- Café: Scrollbar --- */
-  + 'body.cafe ::-webkit-scrollbar { width:5px;height:5px; }'
-  + 'body.cafe ::-webkit-scrollbar-track { background:var(--csurface); }'
-  + 'body.cafe ::-webkit-scrollbar-thumb { background:var(--cborder);border-radius:3px; }'
-  + 'body.cafe ::-webkit-scrollbar-thumb:hover { background:var(--cgold); }'
-
-  /* --- Café: Cards --- */
-  + 'body.cafe [class*="card"], body.cafe [class*="Card"], body.cafe [class*="widget"],'
-  + 'body.cafe [class*="panel"]:not(#rmProfilePanel), body.cafe [class*="box"]:not(input):not(select) {'
-  + '  background:var(--ccard)!important;'
-  + '  border:1px solid var(--cborder)!important;'
-  + '  border-radius:8px!important;'
-  + '  box-shadow:var(--cshadow)!important;'
-  + '  color:var(--ctext)!important;'
-  + '}'
-
-  /* --- Café: Header/Nav --- */
-  + 'body.cafe header, body.cafe [class*="header"]:not(#rmProfilePanel *):not(#rmProfileBar *),'
-  + 'body.cafe nav, body.cafe [class*="nav"]:not(#rmProfilePanel *),'
-  + 'body.cafe [class*="toolbar"], body.cafe [class*="topbar"] {'
-  + '  background:var(--csurface)!important; border-color:var(--cborder)!important; color:var(--ctext)!important; }'
-
-  /* --- Café: Backgrounds --- */
-  + 'body.cafe main, body.cafe [class*="main"], body.cafe [class*="content"],'
-  + 'body.cafe [class*="wrapper"], body.cafe [class*="layout"], body.cafe [class*="page"],'
-  + 'body.cafe [class*="grid"], body.cafe [class*="body"],'
-  + 'body.cafe [class*="container"]:not(#rmLoginOverlay):not(#rmLoginOverlay *),'
-  + 'body.cafe [class*="section"]:not(#rmProfilePanel *) {'
-  + '  background:transparent!important; color:var(--ctext)!important; }'
-
-  /* --- Café: Text --- */
-  + 'body.cafe p, body.cafe li, body.cafe td, body.cafe th, body.cafe label,'
-  + 'body.cafe [class*="desc"], body.cafe [class*="sub"], body.cafe [class*="info"]:not(#rmProfileBar *) {'
-  + '  color:var(--ctext)!important; }'
-  + 'body.cafe [class*="card"] span, body.cafe [class*="card"] div,'
-  + 'body.cafe main span, body.cafe main div,'
-  + 'body.cafe [class*="content"] span, body.cafe [class*="content"] div {'
-  + '  color:var(--ctext)!important; }'
-
-  /* --- Café: Dim text --- */
-  + 'body.cafe [class*="muted"], body.cafe [class*="secondary"], body.cafe [class*="gray"],'
-  + 'body.cafe [class*="grey"], body.cafe [class*="hint"], body.cafe [class*="caption"],'
-  + 'body.cafe small, body.cafe [class*="placeholder"], body.cafe [class*="empty"] {'
-  + '  color:var(--cdim)!important; }'
-
-  /* --- Café: Stats --- */
-  + 'body.cafe [class*="stat"] [class*="val"], body.cafe [class*="stat"] [class*="num"],'
-  + 'body.cafe [class*="stat"] [class*="count"], body.cafe [class*="streak"], body.cafe [class*="score"] {'
-  + '  font-family:"Playfair Display",serif!important; color:var(--cgold)!important;'
-  + '  text-shadow:0 1px 8px var(--cglow)!important; font-size:1.8rem!important; font-weight:700!important; }'
-  + 'body.cafe [class*="stat"] [class*="label"], body.cafe [class*="stat"] [class*="title"], body.cafe [class*="stat"] small {'
-  + '  color:var(--cdim)!important; font-size:.65rem!important; letter-spacing:.18em!important;'
-  + '  text-transform:uppercase!important; font-weight:500!important; }'
-
-  /* --- Café: Timer --- */
-  + 'body.cafe [class*="timer"] [class*="display"], body.cafe [class*="timer"] [class*="time"],'
-  + 'body.cafe [class*="clock"], body.cafe [class*="countdown"], body.cafe [class*="digit"] {'
-  + '  font-family:"Playfair Display",serif!important; color:var(--cwarm)!important;'
-  + '  text-shadow:0 2px 20px rgba(232,201,160,.15)!important; font-weight:700!important; }'
-
-  /* --- Café: Buttons --- */
-  + 'body.cafe button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn):not(.pb-logout)'
-  + ':not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle),'
-  + 'body.cafe [type="button"]:not(#rmLoginOverlay *), body.cafe [type="submit"]:not(#rmLoginOverlay *) {'
-  + '  background:transparent!important; border:1px solid var(--caccent)!important;'
-  + '  color:var(--cwarm)!important; border-radius:4px!important; cursor:pointer!important;'
-  + '  font-weight:600!important; font-size:.78rem!important; letter-spacing:.08em!important;'
-  + '  padding:7px 16px!important; transition:all .25s ease!important; }'
-  + 'body.cafe button:not(#rmLoginOverlay button):not(.rm-tb):not(.rm-bt):not(.pb-btn)'
-  + ':not(.pb-logout):not(.pp-save):not(.pp-logout):not(.pp-close):not(.retro-toggle):hover {'
-  + '  background:var(--cgold)!important; color:#1a1410!important; border-color:var(--cgold)!important;'
-  + '  box-shadow:0 2px 16px rgba(201,169,110,.25)!important; }'
-
-  /* Café: Active buttons */
-  + 'body.cafe button.active:not(#rmLoginOverlay button):not(.rm-tb):not(.pb-btn),'
-  + 'body.cafe [class*="selected"]:not(#rmLoginOverlay *), body.cafe [aria-selected="true"]:not(#rmLoginOverlay *) {'
-  + '  background:var(--cgold)!important; color:#1a1410!important; border-color:var(--cgold)!important;'
-  + '  box-shadow:0 2px 12px var(--cglow)!important; }'
-
-  /* Café: Danger buttons */
-  + 'body.cafe [class*="danger"], body.cafe [class*="reset"], body.cafe [class*="delete"] {'
-  + '  border-color:var(--crose)!important; color:var(--crose)!important; }'
-
-  /* --- Café: Inputs --- */
-  + 'body.cafe input:not(.rm-f):not(.pp-input):not(#rmLoginOverlay input),'
-  + 'body.cafe textarea:not(#rmLoginOverlay textarea), body.cafe select:not(#rmLoginOverlay select) {'
-  + '  background:var(--csurface)!important; border:1px solid var(--cborder)!important;'
-  + '  color:var(--ctext)!important; border-radius:4px!important; caret-color:var(--cgold)!important;'
-  + '  font-size:.85rem!important; }'
-  + 'body.cafe input:not(#rmLoginOverlay input):focus, body.cafe textarea:not(#rmLoginOverlay textarea):focus {'
-  + '  border-color:var(--cgold)!important; box-shadow:0 0 0 2px rgba(201,169,110,.15)!important; }'
-  + 'body.cafe input::placeholder, body.cafe textarea::placeholder { color:var(--cdim)!important; }'
-
-  /* --- Café: Checkboxes --- */
-  + 'body.cafe input[type="checkbox"] {'
-  + '  appearance:none!important;-webkit-appearance:none!important;'
-  + '  width:16px!important;height:16px!important; border:1px solid var(--caccent)!important;'
-  + '  background:var(--csurface)!important; border-radius:3px!important; cursor:pointer!important; position:relative!important; }'
-  + 'body.cafe input[type="checkbox"]:checked {'
-  + '  background:var(--cgold)!important; border-color:var(--cgold)!important; }'
-  + 'body.cafe input[type="checkbox"]:checked::after {'
-  + '  content:"\\u2713";position:absolute;top:-2px;left:1px;color:#1a1410;font-weight:900;font-size:13px; }'
-
-  /* --- Café: Tags/Badges --- */
-  + 'body.cafe [class*="tag"]:not(#rmLoginOverlay *), body.cafe [class*="badge"]:not(#rmLoginOverlay *) {'
-  + '  background:rgba(201,169,110,.1)!important; border:1px solid var(--cgold)!important;'
-  + '  color:var(--cgold)!important; border-radius:3px!important; font-size:.6rem!important;'
-  + '  font-weight:600!important; letter-spacing:.1em!important; }'
-
-  /* --- Café: Tabs --- */
-  + 'body.cafe [class*="tab"]:not(.rm-tb):not(#rmLoginOverlay *), body.cafe [role="tab"] {'
-  + '  background:transparent!important; color:var(--cdim)!important;'
-  + '  border:1px solid transparent!important; border-radius:4px!important;'
-  + '  font-weight:600!important; font-size:.72rem!important; letter-spacing:.06em!important;'
-  + '  padding:6px 14px!important; transition:all .2s ease!important; }'
-  + 'body.cafe [class*="tab"].active:not(.rm-tb), body.cafe [class*="tab"][class*="active"]:not(.rm-tb),'
-  + 'body.cafe [role="tab"][aria-selected="true"] {'
-  + '  background:var(--cgold)!important; color:#1a1410!important; border-color:var(--cgold)!important; }'
-
-  /* --- Café: Progress --- */
-  + 'body.cafe [class*="progress"], body.cafe progress {'
-  + '  background:var(--csurface)!important; border:1px solid var(--cborder)!important; border-radius:4px!important; }'
-  + 'body.cafe [class*="progress"] [class*="fill"] {'
-  + '  background:linear-gradient(90deg,var(--caccent),var(--cgold))!important;'
-  + '  border-radius:3px!important; }'
-
-  /* --- Café: Remove notebook paper --- */
-  + 'body.cafe [class*="ruled"], body.cafe [class*="paper"], body.cafe [class*="notebook"], body.cafe [class*="lined"] {'
-  + '  background-image:none!important; background:var(--ccard)!important; }'
-  + 'body.cafe [class*="card"]::before, body.cafe [class*="card"]::after,'
-  + 'body.cafe [class*="paper"]::before, body.cafe [class*="paper"]::after,'
-  + 'body.cafe [class*="note"]::before, body.cafe [class*="note"]::after {'
-  + '  background:none!important; background-image:none!important; border:none!important; display:none!important; }'
-
-  /* --- Café: Notebook holes hidden --- */
-  + 'body.cafe .nb-holes { display:none!important; }'
-  + 'body.cafe .nb { border-left:2px solid rgba(201,169,110,.15)!important; }'
-  + 'body.cafe .nb-body { background:var(--ccard)!important; background-image:none!important; }'
-  + 'body.cafe .stat { background:var(--ccard)!important; background-image:none!important;'
-  + '  border:1px solid var(--cborder)!important; border-radius:8px!important; }'
-  + 'body.cafe .nb-body::before, body.cafe .nb-header::before { display:none!important; }'
-
-  /* --- Café: Links --- */
-  + 'body.cafe a:not(#rmLoginOverlay a) { color:var(--cgold)!important; }'
-  + 'body.cafe a:hover { color:var(--cwarm)!important; }'
-
-  /* --- Café: Dividers --- */
-  + 'body.cafe hr, body.cafe [class*="divider"], body.cafe [class*="separator"] {'
-  + '  border-color:var(--cborder)!important; background:var(--cborder)!important; }'
-
-  /* --- Café: Tooltips --- */
-  + 'body.cafe [class*="tooltip"], body.cafe [class*="popup"],'
-  + 'body.cafe [class*="modal"]:not(#rmLoginOverlay), body.cafe [class*="dropdown"] {'
-  + '  background:var(--csurface)!important; border:1px solid var(--cborder)!important;'
-  + '  color:var(--ctext)!important; border-radius:6px!important; }'
-
-  /* --- Café: Profile panel --- */
-  + 'body.cafe .profile-panel {'
-  + '  background:var(--csurface)!important; background-image:none!important;'
-  + '  border-left:1px solid var(--cborder)!important; }'
-
-  /* --- Café: Login box --- */
-  + 'body.cafe .login-box {'
-  + '  background:var(--ccard)!important; background-image:none!important;'
-  + '  border:1px solid var(--cborder)!important; border-radius:8px!important; }'
-
-  /* --- Café: Subtle grain texture overlay --- */
-  + '@keyframes cafeGrain { 0%,100%{transform:translate(0,0)} 10%{transform:translate(-1%,-1%)} 30%{transform:translate(1%,0)} 50%{transform:translate(-1%,1%)} 70%{transform:translate(1%,-1%)} 90%{transform:translate(0,1%)} }'
-
-
-  /* ========== THEME TOGGLE BUTTON ========== */
+  /* ========== RETRO TOGGLE BUTTON ========== */
   + '.retro-toggle { font-family:Inter,sans-serif!important; font-size:.6rem; padding:3px 10px;'
   + '  border:1.5px solid #f2d6d0; color:#d4726a; background:transparent; cursor:pointer;'
   + '  font-weight:600; transition:all .2s; border-radius:12px; margin-left:4px; }'
@@ -483,11 +271,6 @@
   + 'body.retro-light .retro-toggle { border-color:#1e3a6e!important; color:#1e3a6e!important;'
   + '  border-radius:0!important; font-family:"Space Mono",monospace!important; }'
   + 'body.retro-light .retro-toggle:hover { background:var(--rgold)!important; color:#000!important; border-color:var(--rgold)!important; }'
-  + 'body.cafe .retro-toggle { font-family:"Cormorant Garamond",serif!important; font-size:.7rem!important;'
-  + '  border:1px solid var(--caccent)!important; color:var(--cgold)!important;'
-  + '  border-radius:4px!important; letter-spacing:.1em!important; font-weight:600!important; }'
-  + 'body.cafe .retro-toggle:hover { background:var(--cgold)!important; color:#1a1410!important;'
-  + '  border-color:var(--cgold)!important; }'
 
   /* ========== SMOOTH TRANSITIONS ========== */
   + 'body { transition:background .5s ease,color .5s ease; }'
@@ -498,42 +281,55 @@
   document.head.appendChild(css);
 
   /* ===== THEME LOGIC ===== */
-  var THEMES = ['comfy', 'retro-dark', 'cafe'];
-  var THEME_LABELS = { 'comfy': 'RETRO', 'retro-dark': 'CAF\u00c9', 'retro-light': 'CAF\u00c9', 'cafe': 'COMFY' };
-
   function getTheme() { return localStorage.getItem(THEME_KEY) || 'comfy'; }
   function setTheme(t) { localStorage.setItem(THEME_KEY, t); }
   function isRetro() { var t = getTheme(); return t === 'retro-dark' || t === 'retro-light'; }
-  function isCafe() { return getTheme() === 'cafe'; }
+  function isCafe() { var t = getTheme(); return t === 'cafe-dark' || t === 'cafe-light'; }
 
   function applyTheme(theme) {
-    document.body.classList.remove('retro-dark','retro-light','retro-mode','cafe');
+    document.body.classList.remove('retro-dark','retro-light','retro-mode','cafe-dark','cafe-light');
     if (theme === 'retro-dark') document.body.classList.add('retro-dark');
     else if (theme === 'retro-light') document.body.classList.add('retro-light');
-    else if (theme === 'cafe') document.body.classList.add('cafe');
+    else if (theme === 'cafe-dark') document.body.classList.add('cafe-dark');
+    else if (theme === 'cafe-light') document.body.classList.add('cafe-light');
     setTheme(theme);
     updateToggleButtons(theme);
   }
 
   function updateToggleButtons(theme) {
-    var label = THEME_LABELS[theme] || 'RETRO';
+    var isR = (theme === 'retro-dark' || theme === 'retro-light');
+    var isC = (theme === 'cafe-dark' || theme === 'cafe-light');
     document.querySelectorAll('.retro-toggle').forEach(function(btn) {
-      btn.textContent = label;
+      if (isR) {
+        btn.textContent = 'CAFÉ';
+      } else if (isC) {
+        btn.textContent = 'COMFY';
+      } else {
+        btn.textContent = 'RETRO';
+      }
     });
   }
 
-  /* Toggle cycles: comfy -> retro-dark -> cafe -> comfy */
+  /* Toggle cycles: comfy → retro-dark → cafe-dark → comfy */
   window.toggleRetroMode = function(force) {
     if (typeof force === 'string') { applyTheme(force); return; }
     var current = getTheme();
-    if (current === 'comfy') applyTheme('retro-dark');
-    else if (isRetro()) applyTheme('cafe');
-    else if (isCafe()) applyTheme('comfy');
-    else applyTheme('retro-dark');
+    if (current === 'comfy') {
+      applyTheme('retro-dark');
+    } else if (isRetro()) {
+      /* retro → café (preserve light/dark preference) */
+      var wasDark = (current === 'retro-dark');
+      applyTheme(wasDark ? 'cafe-dark' : 'cafe-light');
+    } else if (isCafe()) {
+      applyTheme('comfy');
+    } else {
+      applyTheme('retro-dark');
+    }
   };
 
   /* ===== HOOK EXISTING LIGHT/DARK BUTTONS ===== */
   function hookThemeButtons() {
+    /* Hook the hub's own theme toggle buttons */
     var themeToggle = document.getElementById('themeToggle');
     if (themeToggle && !themeToggle._rmHooked) {
       themeToggle._rmHooked = true;
@@ -543,7 +339,13 @@
           if (isRetro()) {
             if (val === 'light') applyTheme('retro-light');
             else if (val === 'dark') applyTheme('retro-dark');
+            /* system: default to retro-dark */
             else applyTheme('retro-dark');
+          } else if (isCafe()) {
+            if (val === 'light') applyTheme('cafe-light');
+            else if (val === 'dark') applyTheme('cafe-dark');
+            /* system: default to cafe-dark */
+            else applyTheme('cafe-dark');
           }
         });
       });
@@ -552,22 +354,30 @@
 
   /* ===== INJECT TOGGLE BUTTON ===== */
   function injectToggleButton() {
+    /* Try profile bar first */
     var bar = document.getElementById('rmProfileBar');
     if (bar && !bar.querySelector('.retro-toggle')) {
       var btn = document.createElement('button');
       btn.className = 'retro-toggle';
-      btn.textContent = THEME_LABELS[getTheme()] || 'RETRO';
+      var theme = getTheme();
+      var isR = (theme === 'retro-dark' || theme === 'retro-light');
+      var isC = (theme === 'cafe-dark' || theme === 'cafe-light');
+      btn.textContent = isR ? 'CAFÉ' : (isC ? 'COMFY' : 'RETRO');
       btn.onclick = function() { window.toggleRetroMode(); };
       var sairBtn = bar.querySelector('.pb-logout');
       if (sairBtn) bar.insertBefore(btn, sairBtn);
       else bar.appendChild(btn);
       return;
     }
+    /* Fallback: inject near theme toggle in hub header */
     var hubHeader = document.querySelector('.hub-header');
     if (hubHeader && !hubHeader.querySelector('.retro-toggle')) {
       var btn2 = document.createElement('button');
       btn2.className = 'retro-toggle';
-      btn2.textContent = THEME_LABELS[getTheme()] || 'RETRO';
+      var theme2 = getTheme();
+      var isR2 = (theme2 === 'retro-dark' || theme2 === 'retro-light');
+      var isC2 = (theme2 === 'cafe-dark' || theme2 === 'cafe-light');
+      btn2.textContent = isR2 ? 'CAFÉ' : (isC2 ? 'COMFY' : 'RETRO');
       btn2.onclick = function() { window.toggleRetroMode(); };
       var themeToggle = document.getElementById('themeToggle');
       if (themeToggle) themeToggle.parentNode.insertBefore(btn2, themeToggle.nextSibling);

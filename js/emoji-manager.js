@@ -17,7 +17,21 @@
     
     heart: `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--pink)" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
 
-    bolt: `<svg width="16" height="16" viewBox="0 0 24 24" fill="var(--pink)" xmlns="http://www.w3.org/2000/svg"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`
+    bolt: `<svg width="16" height="16" viewBox="0 0 24 24" fill="var(--pink)" xmlns="http://www.w3.org/2000/svg"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+
+    tomato: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="15" r="7" fill="#FF6B6B"/><path d="M12 8V5" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/><path d="M9 6Q8 4 9.5 3" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M15 6Q16 4 14.5 3" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="10" cy="12" r="1.5" fill="white" opacity="0.4"/></svg>`,
+
+    crown: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18l-3-9-4.5 3.5L12 5 8.5 12.5 4 9z" fill="#FFD54F" stroke="#FF8F00" stroke-width="1.5" stroke-linejoin="round"/><rect x="3" y="18" width="18" height="3" rx="1" fill="#FFD54F" stroke="#FF8F00" stroke-width="1.5"/></svg>`,
+
+    owl: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="14" rx="7" ry="8" fill="var(--lavender)" opacity="0.2" stroke="var(--lavender)" stroke-width="1.5"/><circle cx="9" cy="11" r="2.5" fill="white" stroke="var(--lavender)" stroke-width="1"/><circle cx="15" cy="11" r="2.5" fill="white" stroke="var(--lavender)" stroke-width="1"/><circle cx="9" cy="11.5" r="1.2" fill="#5B21B6"/><circle cx="15" cy="11.5" r="1.2" fill="#5B21B6"/><path d="M10 16 Q12 18 14 16" stroke="var(--lavender)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M9 7L11 9M15 7L13 9" stroke="var(--lavender)" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+
+    sunrise: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17h18" stroke="var(--pink)" stroke-width="1.5" stroke-linecap="round"/><path d="M5 17a7 7 0 0 1 14 0" stroke="#FFB74D" stroke-width="1.5" fill="none"/><circle cx="12" cy="10" r="2" fill="#FFB74D"/><line x1="12" y1="4" x2="12" y2="6" stroke="#FFB74D" stroke-width="1.5" stroke-linecap="round"/><line x1="6.22" y1="6.22" x2="7.64" y2="7.64" stroke="#FFB74D" stroke-width="1.5" stroke-linecap="round"/><line x1="17.78" y1="6.22" x2="16.36" y2="7.64" stroke="#FFB74D" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="10" x2="6" y2="10" stroke="#FFB74D" stroke-width="1.5" stroke-linecap="round"/><line x1="18" y1="10" x2="20" y2="10" stroke="#FFB74D" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+
+    faceGreat:   `<svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#FFF9C4" stroke="#FFD54F" stroke-width="1.5"/><circle cx="14" cy="16" r="2" fill="#5D4037"/><circle cx="26" cy="16" r="2" fill="#5D4037"/><path d="M13 24 Q20 30 27 24" stroke="#5D4037" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="15.5" cy="15" r="0.8" fill="white" opacity="0.8"/></svg>`,
+    faceGood:    `<svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#DCEDC8" stroke="#AED581" stroke-width="1.5"/><circle cx="14" cy="16" r="2" fill="#33691E"/><circle cx="26" cy="16" r="2" fill="#33691E"/><path d="M14 24 Q20 28 26 24" stroke="#33691E" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+    faceNeutral: `<svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1.5"/><circle cx="14" cy="16" r="2" fill="#424242"/><circle cx="26" cy="16" r="2" fill="#424242"/><line x1="13" y1="25" x2="27" y2="25" stroke="#424242" stroke-width="2" stroke-linecap="round"/></svg>`,
+    faceBad:     `<svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#BBDEFB" stroke="#90CAF9" stroke-width="1.5"/><path d="M12 15 Q14 13 16 15" stroke="#1565C0" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M24 15 Q26 13 28 15" stroke="#1565C0" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="14" cy="17" r="2" fill="#1565C0"/><circle cx="26" cy="17" r="2" fill="#1565C0"/><path d="M14 27 Q20 23 26 27" stroke="#1565C0" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M15 20 Q14 23 15 25" stroke="#90CAF9" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>`,
+    faceTerrible:`<svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#E8EAF6" stroke="#9FA8DA" stroke-width="1.5"/><path d="M12 14 Q14 12 16 14" stroke="#283593" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M24 14 Q26 12 28 14" stroke="#283593" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="14" cy="16" r="2" fill="#283593"/><circle cx="26" cy="16" r="2" fill="#283593"/><path d="M13 27 Q20 22 27 27" stroke="#283593" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M12 19 Q9 23 11 28" stroke="#9FA8DA" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M28 19 Q31 23 29 28" stroke="#9FA8DA" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
   };
 
   // Mapeia emojis unicode para SVG
@@ -81,6 +95,15 @@
     '⏲️': SVG_ICONS.timer,
     '⏲': SVG_ICONS.timer,
     '🔗': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+    '🍅': SVG_ICONS.tomato,
+    '👑': SVG_ICONS.crown,
+    '🦉': SVG_ICONS.owl,
+    '🌅': SVG_ICONS.sunrise,
+    '😊': SVG_ICONS.faceGreat,
+    '🙂': SVG_ICONS.faceGood,
+    '😐': SVG_ICONS.faceNeutral,
+    '😢': SVG_ICONS.faceBad,
+    '😭': SVG_ICONS.faceTerrible,
   };
 
   // Build regex pattern from all emoji keys
