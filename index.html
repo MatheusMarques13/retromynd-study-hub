@@ -584,6 +584,50 @@ body.cafe-dark .snip-tag,body.cafe-light .snip-tag{background:rgba(196,168,130,0
 body.cafe-dark .snip-date,body.cafe-light .snip-date{color:var(--cafe-text-muted,#9A8E82)!important}
 body.cafe-dark .snip-empty,body.cafe-light .snip-empty{color:var(--cafe-text-mid,#6B5E52)!important}
 
+/* ═══ ACHIEVEMENTS ═══ */
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.ach-badge{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:var(--radius);border:1px solid var(--border);background:var(--paper);cursor:pointer;transition:all .2s;position:relative;text-align:center;user-select:none}
+.ach-badge.unlocked{border-color:var(--lavender);box-shadow:0 0 10px rgba(196,181,253,.3),0 2px 8px rgba(0,0,0,.08)}
+.ach-badge.unlocked:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(196,181,253,.5),0 4px 12px rgba(0,0,0,.1)}
+.ach-badge.locked{opacity:.3;filter:grayscale(1);cursor:default}
+.ach-badge-icon{font-size:28px;line-height:1}
+.ach-badge-title{font-size:11px;font-weight:700;color:var(--text);line-height:1.2}
+.ach-badge.locked .ach-badge-title{color:var(--text-light)}
+.ach-badge-date{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-light);line-height:1.4}
+.ach-progress{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--text-mid);text-align:center;padding:8px 0 0;letter-spacing:.5px}
+.ach-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1e1e2e;color:#cdd6f4;font-size:11px;padding:6px 10px;border-radius:6px;white-space:normal;width:140px;z-index:200;pointer-events:none;opacity:0;transition:opacity .15s;text-align:center;font-family:'Kalam','Caveat',cursive;line-height:1.4}
+.ach-tooltip.show{opacity:1}
+.ach-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1e1e2e}
+.ach-toast{position:fixed;bottom:24px;right:24px;background:#2A2435;color:#E8E0F0;font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 20px;border-radius:8px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;transform:translateY(10px) scale(.95);max-width:280px;text-align:center;border:1px solid var(--lavender,#C4B5FD);line-height:1.6}
+.ach-toast.show{opacity:1;transform:translateY(0) scale(1)}
+@media(max-width:768px){.ach-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.ach-grid{grid-template-columns:repeat(2,1fr)}}
+/* Achievements – dark mode */
+[data-theme="dark"] .ach-badge{background:#2A2435;border-color:var(--border)}
+[data-theme="dark"] .ach-badge.unlocked{border-color:var(--lavender);box-shadow:0 0 14px rgba(196,181,253,.4)}
+[data-theme="dark"] .ach-toast{background:#1e1a2e;border-color:var(--lavender)}
+/* Achievements – retro theme */
+body.retro-dark .ach-badge,body.retro-light .ach-badge{border-radius:0!important;border:2px solid var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .ach-badge.unlocked,body.retro-light .ach-badge.unlocked{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important}
+body.retro-dark .ach-badge.locked,body.retro-light .ach-badge.locked{opacity:.3!important;filter:none!important}
+body.retro-dark .ach-badge-title,body.retro-light .ach-badge-title{font-family:'Press Start 2P',monospace!important;font-size:7px!important;color:var(--rpixel,#e8f0ff)!important}
+body.retro-dark .ach-badge.locked .ach-badge-icon,body.retro-light .ach-badge.locked .ach-badge-icon{visibility:hidden;height:0;font-size:0!important;margin:0!important}
+body.retro-dark .ach-badge.locked .ach-badge-title,body.retro-light .ach-badge.locked .ach-badge-title{color:var(--rdim,#4a6fa5)!important}
+body.retro-dark .ach-badge.locked::before,body.retro-light .ach-badge.locked::before{content:'[???]';font-family:'Press Start 2P',monospace;font-size:8px;color:var(--rdim,#4a6fa5);display:block}
+body.retro-dark .ach-progress,body.retro-light .ach-progress{color:var(--rdim,#4a6fa5)!important}
+body.retro-dark .ach-toast,body.retro-light .ach-toast{border-radius:0!important;border:2px solid var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important;color:var(--rgold,#f5c518)!important}
+body.retro-dark .ach-tooltip,body.retro-light .ach-tooltip{border-radius:0!important;border:1px solid var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important;color:var(--rpixel,#e8f0ff)!important;font-family:'Press Start 2P',monospace!important;font-size:7px!important}
+body.retro-dark .ach-tooltip::after,body.retro-light .ach-tooltip::after{border-top-color:var(--rsurface,#0d1b2a)!important}
+/* Achievements – café theme */
+body.cafe-dark .ach-badge,body.cafe-light .ach-badge{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:12px!important}
+body.cafe-dark .ach-badge.unlocked,body.cafe-light .ach-badge.unlocked{border-color:#C17950!important;box-shadow:0 0 10px rgba(193,121,80,.25)!important}
+body.cafe-dark .ach-badge.locked,body.cafe-light .ach-badge.locked{filter:sepia(1) grayscale(.5)!important}
+body.cafe-dark .ach-badge-title,body.cafe-light .ach-badge-title{font-family:'DM Sans',sans-serif!important;color:var(--cafe-text,#3D3329)!important}
+body.cafe-dark .ach-progress,body.cafe-light .ach-progress{color:var(--cafe-text-muted,#9A8E82)!important;font-family:'DM Sans',sans-serif!important}
+body.cafe-dark .ach-toast,body.cafe-light .ach-toast{border-radius:12px!important;background:rgba(255,253,247,.97)!important;color:#3D3329!important;border-color:rgba(193,121,80,.4)!important}
+body.cafe-dark .ach-tooltip,body.cafe-light .ach-tooltip{border-radius:8px!important;background:#3D3329!important;color:#EDE6DA!important;font-family:'DM Sans',sans-serif!important}
+body.cafe-dark .ach-tooltip::after,body.cafe-light .ach-tooltip::after{border-top-color:#3D3329!important}
+
 </style>
 </head>
 <body><div class="stars-container" id="starsContainer"></div><div class="moon"></div>
@@ -678,6 +722,12 @@ body.cafe-dark .snip-empty,body.cafe-light .snip-empty{color:var(--cafe-text-mid
 <div class="nb-header"><h2>Code Snippets</h2><span class="nb-tag tag-blue pixel">CODE</span></div>
 <div class="nb-body"><div id="snippetsApp"></div></div>
 </div></div>
+
+<div class="grid">
+<div class="nb card-full" id="achievementsCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
+<div class="nb-header"><h2>Conquistas</h2><span class="nb-tag tag-lav pixel">BADGES</span></div>
+<div class="nb-body"><div id="achievementsApp"></div></div>
+</div></div>
 </div>
 
 <div class="hub-footer">RETROMYND STUDY HUB - CRUEL SUMMER EDITION - 2026</div>
@@ -770,6 +820,177 @@ body.cafe-dark .snip-empty,body.cafe-light .snip-empty{color:var(--cafe-text-mid
 <script src="/js/inject-player.js"></script>
 <script src="js/flashcards.js"></script>
 <script src="js/loader.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var ACHIEVEMENTS = [
+    { id: 'first_goal',   icon: '⭐', title: 'Primeiro Passo', desc: 'Complete sua primeira meta' },
+    { id: 'streak_3',     icon: '🔥', title: 'On Fire',        desc: '3 dias de streak' },
+    { id: 'streak_7',     icon: '💪', title: 'Semana Perfeita',desc: '7 dias de streak seguidos' },
+    { id: 'pomodoro_10',  icon: '🍅', title: 'Tomato Master',  desc: 'Complete 10 pomodoros' },
+    { id: 'pomodoro_50',  icon: '⏰', title: 'Time Lord',      desc: 'Complete 50 pomodoros' },
+    { id: 'pomodoro_100', icon: '👑', title: 'Rei do Foco',    desc: 'Complete 100 pomodoros' },
+    { id: 'notes_5',      icon: '📝', title: 'Escritor',       desc: 'Crie 5 notas' },
+    { id: 'notes_20',     icon: '📚', title: 'Autor',          desc: 'Crie 20 notas' },
+    { id: 'goals_10',     icon: '🎯', title: 'Focused',        desc: 'Complete 10 metas' },
+    { id: 'goals_50',     icon: '🚀', title: 'Unstoppable',    desc: 'Complete 50 metas' },
+    { id: 'night_owl',    icon: '🦉', title: 'Night Owl',      desc: 'Estude depois da meia-noite' },
+    { id: 'early_bird',   icon: '🌅', title: 'Early Bird',     desc: 'Estude antes das 7h' },
+    { id: 'music_lover',  icon: '🎵', title: 'Music Lover',    desc: 'Use o player de música' }
+  ];
+
+  var STORAGE_KEY = 'rmAchievements';
+  var _toastTimer = null;
+  var _delegateBound = false;
+
+  function getUnlocked() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+
+  function saveUnlocked(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function formatDate(ts) {
+    var d = new Date(ts);
+    return d.getDate().toString().padStart(2,'0') + '/' +
+           (d.getMonth()+1).toString().padStart(2,'0') + '/' +
+           d.getFullYear().toString().slice(2);
+  }
+
+  function showToast(msg) {
+    var toast = document.getElementById('achToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'achToast';
+      toast.className = 'ach-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (_toastTimer) clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3500);
+  }
+
+  function renderAchievements() {
+    var app = document.getElementById('achievementsApp');
+    if (!app) return;
+    var unlocked = getUnlocked();
+    var unlockedCount = Object.keys(unlocked).length;
+
+    var html = '<div class="ach-grid">';
+    for (var i = 0; i < ACHIEVEMENTS.length; i++) {
+      var a = ACHIEVEMENTS[i];
+      var u = unlocked[a.id];
+      var cls = u ? 'unlocked' : 'locked';
+      html += '<div class="ach-badge ' + cls + '" data-id="' + escHtml(a.id) + '">';
+      html += '<div class="ach-badge-icon">' + a.icon + '</div>';
+      html += '<div class="ach-badge-title">' + escHtml(a.title) + '</div>';
+      if (u) html += '<div class="ach-badge-date">' + formatDate(u.unlockedAt) + '</div>';
+      html += '<div class="ach-tooltip">' + escHtml(a.desc) + '</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+    html += '<div class="ach-progress">' + unlockedCount + '/13 conquistas desbloqueadas</div>';
+    app.innerHTML = html;
+
+    if (!_delegateBound) {
+      _delegateBound = true;
+      document.addEventListener('click', function(e) {
+        var badge = e.target && e.target.closest && e.target.closest('.ach-badge');
+        if (!badge) {
+          var tips = document.querySelectorAll('#achievementsApp .ach-tooltip.show');
+          for (var k = 0; k < tips.length; k++) tips[k].classList.remove('show');
+          return;
+        }
+        var tooltip = badge.querySelector('.ach-tooltip');
+        if (!tooltip) return;
+        var wasShown = tooltip.classList.contains('show');
+        var allTips = document.querySelectorAll('#achievementsApp .ach-tooltip.show');
+        for (var m = 0; m < allTips.length; m++) allTips[m].classList.remove('show');
+        if (!wasShown) tooltip.classList.add('show');
+      });
+    }
+  }
+
+  function checkAchievements() {
+    var goals = [], notes = [], pomodoros = 0, streak = 0, hasPlayer = false;
+    try { goals = JSON.parse(localStorage.getItem('rms_goals')) || []; } catch(e) {}
+    try { notes = JSON.parse(localStorage.getItem('rms_notes')) || []; } catch(e) {}
+    try { pomodoros = parseInt(localStorage.getItem('rms_pomodoros') || '0', 10) || 0; } catch(e) {}
+    try { streak = parseInt(localStorage.getItem('rms_streak') || '0', 10) || 0; } catch(e) {}
+    try { hasPlayer = !!localStorage.getItem('rmPlayer'); } catch(e) {}
+
+    if (!Array.isArray(goals)) goals = [];
+    if (!Array.isArray(notes)) notes = [];
+
+    var completedGoals = 0;
+    for (var i = 0; i < goals.length; i++) {
+      if (goals[i] && goals[i].done) completedGoals++;
+    }
+    var noteCount = notes.length;
+    var hour = new Date().getHours();
+
+    var unlocked = getUnlocked();
+    var newly = [];
+
+    function tryUnlock(id) {
+      if (!unlocked[id]) {
+        unlocked[id] = { unlockedAt: Date.now() };
+        newly.push(id);
+      }
+    }
+
+    if (completedGoals >= 1)   tryUnlock('first_goal');
+    if (streak >= 3)           tryUnlock('streak_3');
+    if (streak >= 7)           tryUnlock('streak_7');
+    if (pomodoros >= 10)       tryUnlock('pomodoro_10');
+    if (pomodoros >= 50)       tryUnlock('pomodoro_50');
+    if (pomodoros >= 100)      tryUnlock('pomodoro_100');
+    if (noteCount >= 5)        tryUnlock('notes_5');
+    if (noteCount >= 20)       tryUnlock('notes_20');
+    if (completedGoals >= 10)  tryUnlock('goals_10');
+    if (completedGoals >= 50)  tryUnlock('goals_50');
+    if (hour >= 0 && hour < 5) tryUnlock('night_owl');
+    if (hour < 7)              tryUnlock('early_bird');
+    if (hasPlayer)             tryUnlock('music_lover');
+
+    if (newly.length > 0) {
+      saveUnlocked(unlocked);
+      for (var j = 0; j < newly.length; j++) {
+        (function(id, delay) {
+          var ach = null;
+          for (var k = 0; k < ACHIEVEMENTS.length; k++) {
+            if (ACHIEVEMENTS[k].id === id) { ach = ACHIEVEMENTS[k]; break; }
+          }
+          if (ach) setTimeout(function(){ showToast('🎉 Nova conquista: ' + ach.title + '!'); }, delay);
+        })(newly[j], j * 1200);
+      }
+      renderAchievements();
+    }
+  }
+
+  setTimeout(function(){
+    renderAchievements();
+    checkAchievements();
+  }, 800);
+
+  setInterval(function(){
+    if (document.hidden) return;
+    checkAchievements();
+  }, 30000);
+
+})();
+</script>
 <footer class="rm-footer">
   <span class="rm-footer-inner">
     feito por Matheus Marques · conheça meu trabalho: <a href="https://mmarques.dev" target="_blank" rel="noopener noreferrer">mmarques.dev</a>
