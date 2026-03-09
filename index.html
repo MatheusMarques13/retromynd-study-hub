@@ -728,6 +728,210 @@ body.cafe-dark .ach-tooltip::after,body.cafe-light .ach-tooltip::after{border-to
 <div class="nb-header"><h2>Conquistas</h2><span class="nb-tag tag-lav pixel">BADGES</span></div>
 <div class="nb-body"><div id="achievementsApp"></div></div>
 </div></div>
+
+<!-- ROW 7: Mood Tracker -->
+<style>
+/* ═══ MOOD TRACKER ═══ */
+.mood-selector{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;border:2px solid var(--border);border-radius:12px;background:var(--paper);cursor:pointer;transition:all .2s;font-size:28px;line-height:1;outline:none}
+.mood-btn:hover{border-color:var(--lavender);transform:translateY(-2px);box-shadow:0 4px 12px rgba(196,181,253,.3)}
+.mood-btn.mood-selected{border-color:var(--lavender);background:var(--lavender-soft);box-shadow:0 0 14px rgba(196,181,253,.4),0 2px 8px rgba(0,0,0,.08);transform:translateY(-2px)}
+.mood-btn-label{font-size:11px;font-weight:600;color:var(--text-mid);white-space:nowrap}
+.mood-btn.mood-selected .mood-btn-label{color:#7C3AED}
+.mood-history{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.mood-hist-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.mood-hist-emoji{font-size:20px;width:38px;height:38px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--paper);transition:all .2s}
+.mood-hist-emoji.mood-today{border-color:var(--lavender);box-shadow:0 0 10px rgba(196,181,253,.4);background:var(--lavender-soft)}
+.mood-hist-emoji.mood-empty{opacity:.3}
+.mood-hist-date{font-family:'Press Start 2P',monospace;font-size:5px;color:var(--text-light)}
+.mood-streak-wrap{text-align:center;margin-bottom:12px}
+.mood-streak{font-family:'Press Start 2P',monospace;font-size:9px;color:#7C3AED;background:var(--lavender-soft);border:1px solid var(--lavender);border-radius:20px;padding:6px 16px;display:inline-block;letter-spacing:.5px}
+.mood-section-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:0}
+/* Mood Tracker – dark mode */
+[data-theme="dark"] .mood-btn{background:var(--paper);border-color:var(--border)}
+[data-theme="dark"] .mood-btn:hover{border-color:var(--lavender)}
+[data-theme="dark"] .mood-btn.mood-selected{border-color:var(--lavender);background:var(--lavender-soft);box-shadow:0 0 16px rgba(184,169,240,.5),0 2px 8px rgba(0,0,0,.3)}
+[data-theme="dark"] .mood-btn.mood-selected .mood-btn-label{color:var(--lavender)}
+[data-theme="dark"] .mood-hist-emoji{background:var(--paper);border-color:var(--border)}
+[data-theme="dark"] .mood-hist-emoji.mood-today{border-color:var(--lavender);background:var(--lavender-soft)}
+[data-theme="dark"] .mood-streak{border-color:var(--lavender);color:var(--lavender);background:var(--lavender-soft)}
+/* Mood Tracker – retro theme */
+body.retro-dark .mood-btn,body.retro-light .mood-btn{border-radius:0!important;border:2px solid var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-btn:hover,body.retro-light .mood-btn:hover{border-color:var(--rgold,#f5c518)!important;box-shadow:none!important}
+body.retro-dark .mood-btn.mood-selected,body.retro-light .mood-btn.mood-selected{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-btn-label,body.retro-light .mood-btn-label{font-family:'Press Start 2P',monospace!important;font-size:6px!important;color:var(--rpixel,#e8f0ff)!important}
+body.retro-dark .mood-btn.mood-selected .mood-btn-label,body.retro-light .mood-btn.mood-selected .mood-btn-label{color:var(--rgold,#f5c518)!important}
+body.retro-dark .mood-hist-emoji,body.retro-light .mood-hist-emoji{border-radius:0!important;border-color:var(--rborder,#1e3a6e)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-hist-emoji.mood-today,body.retro-light .mood-hist-emoji.mood-today{border-color:var(--rgold,#f5c518)!important;box-shadow:0 0 8px var(--rgold,#f5c518)!important}
+body.retro-dark .mood-hist-date,body.retro-light .mood-hist-date{color:var(--rdim,#4a6fa5)!important}
+body.retro-dark .mood-streak,body.retro-light .mood-streak{border-radius:0!important;border-color:var(--rgold,#f5c518)!important;color:var(--rgold,#f5c518)!important;background:var(--rsurface,#0d1b2a)!important}
+body.retro-dark .mood-section-label,body.retro-light .mood-section-label{color:var(--rdim,#4a6fa5)!important}
+/* Mood Tracker – café theme */
+body.cafe-dark .mood-btn,body.cafe-light .mood-btn{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important;border-radius:16px!important}
+body.cafe-dark .mood-btn:hover,body.cafe-light .mood-btn:hover{border-color:#C17950!important;box-shadow:0 4px 12px rgba(193,121,80,.2)!important}
+body.cafe-dark .mood-btn.mood-selected,body.cafe-light .mood-btn.mood-selected{border-color:#C17950!important;background:rgba(193,121,80,.1)!important;box-shadow:0 0 12px rgba(193,121,80,.25)!important}
+body.cafe-dark .mood-btn.mood-selected .mood-btn-label,body.cafe-light .mood-btn.mood-selected .mood-btn-label{color:#C17950!important}
+body.cafe-dark .mood-hist-emoji,body.cafe-light .mood-hist-emoji{background:var(--cafe-card,#EDE6DA)!important;border-color:var(--cafe-border,#D0C5B5)!important}
+body.cafe-dark .mood-hist-emoji.mood-today,body.cafe-light .mood-hist-emoji.mood-today{border-color:#C17950!important;background:rgba(193,121,80,.1)!important}
+body.cafe-dark .mood-streak,body.cafe-light .mood-streak{border-color:#C17950!important;color:#C17950!important;background:rgba(193,121,80,.08)!important;border-radius:50px!important}
+body.cafe-dark .mood-section-label,body.cafe-light .mood-section-label{color:var(--cafe-text-muted,#9A8E82)!important}
+@media(max-width:480px){.mood-btn{padding:8px 10px;font-size:24px}.mood-selector{gap:6px}}
+</style>
+
+<div class="grid">
+<div class="nb card-full" id="moodTrackerCard" style="position:relative"><div class="nb-holes"><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div><div class="nb-hole"></div></div>
+<div class="nb-header"><h2>Mood Tracker</h2><span class="nb-tag tag-lav pixel">MOOD</span></div>
+<div class="nb-body"><div id="moodTrackerApp"></div></div>
+</div></div>
+
+<script>
+(function() {
+  'use strict';
+  var STORAGE_KEY = 'rmMoodTracker';
+  var MAX_STREAK = 365;
+  var MOODS = [
+    { key: 'great',    emoji: '\uD83D\uDE0A', label: '\u00D3timo' },
+    { key: 'good',     emoji: '\uD83D\uDE42', label: 'Bem' },
+    { key: 'neutral',  emoji: '\uD83D\uDE10', label: 'Normal' },
+    { key: 'bad',      emoji: '\uD83D\uDE14', label: 'Mal' },
+    { key: 'terrible', emoji: '\uD83D\uDE22', label: 'P\u00E9ssimo' }
+  ];
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  function fmtDate(s) {
+    var p = s.split('-');
+    return p[2] + '/' + p[1];
+  }
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
+  }
+
+  function save(entries) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch (e) {}
+  }
+
+  function logMood(moodKey) {
+    var entries = load();
+    var t = todayStr();
+    var moodObj = null;
+    for (var j = 0; j < MOODS.length; j++) {
+      if (MOODS[j].key === moodKey) { moodObj = MOODS[j]; break; }
+    }
+    if (!moodObj) return;
+    var entry = { date: t, mood: moodKey, emoji: moodObj.emoji };
+    var found = false;
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].date === t) { entries[i] = entry; found = true; break; }
+    }
+    if (!found) entries.push(entry);
+    entries.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    if (entries.length > MAX_STREAK) entries = entries.slice(0, MAX_STREAK);
+    save(entries);
+    render();
+  }
+
+  function getLast7Days() {
+    var days = [];
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push(d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()));
+    }
+    return days;
+  }
+
+  function calcStreak(entries) {
+    if (!entries.length) return 0;
+    var byDate = {};
+    for (var i = 0; i < entries.length; i++) byDate[entries[i].date] = true;
+    var t = todayStr();
+    var yest = new Date(); yest.setDate(yest.getDate() - 1);
+    var yestStr = yest.getFullYear() + '-' + pad(yest.getMonth() + 1) + '-' + pad(yest.getDate());
+    if (!byDate[t] && !byDate[yestStr]) return 0;
+    var start = byDate[t] ? 0 : 1;
+    var streak = 0;
+    for (var n = start; n < MAX_STREAK; n++) {
+      var dd = new Date();
+      dd.setDate(dd.getDate() - n);
+      var ds = dd.getFullYear() + '-' + pad(dd.getMonth() + 1) + '-' + pad(dd.getDate());
+      if (byDate[ds]) { streak++; } else { break; }
+    }
+    return streak;
+  }
+
+  function render() {
+    var app = document.getElementById('moodTrackerApp');
+    if (!app) return;
+    var entries = load();
+    var t = todayStr();
+    var todayEntry = null;
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].date === t) { todayEntry = entries[i]; break; }
+    }
+    var streak = calcStreak(entries);
+    var last7 = getLast7Days();
+    var byDate = {};
+    for (var j = 0; j < entries.length; j++) byDate[entries[j].date] = entries[j];
+
+    var html = '<p class="mood-section-label">Como voc\u00EA est\u00E1 hoje?</p>';
+    html += '<div class="mood-selector">';
+    for (var m = 0; m < MOODS.length; m++) {
+      var mood = MOODS[m];
+      var sel = (todayEntry && todayEntry.mood === mood.key) ? ' mood-selected' : '';
+      html += '<button class="mood-btn' + sel + '" data-mood="' + mood.key + '" title="' + mood.label + '">';
+      html += '<span>' + mood.emoji + '</span>';
+      html += '<span class="mood-btn-label">' + mood.label + '</span>';
+      html += '</button>';
+    }
+    html += '</div>';
+
+    if (streak > 0) {
+      var dias = streak === 1 ? 'dia seguido' : 'dias seguidos';
+      html += '<div class="mood-streak-wrap"><span class="mood-streak">\uD83D\uDD25 ' + streak + ' ' + dias + '</span></div>';
+    }
+
+    html += '<p class="mood-section-label">\u00DAltimos 7 dias</p>';
+    html += '<div class="mood-history">';
+    for (var d = 0; d < last7.length; d++) {
+      var ds = last7[d];
+      var e = byDate[ds];
+      var isToday = ds === t;
+      var cls = 'mood-hist-emoji' + (isToday ? ' mood-today' : '') + (!e ? ' mood-empty' : '');
+      html += '<div class="mood-hist-item">';
+      html += '<div class="' + cls + '">' + (e ? e.emoji : '\u00B7') + '</div>';
+      html += '<div class="mood-hist-date">' + fmtDate(ds) + '</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+
+    app.innerHTML = html;
+  }
+
+  function init() {
+    var app = document.getElementById('moodTrackerApp');
+    if (!app) return;
+    app.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.mood-btn');
+      if (btn) logMood(btn.getAttribute('data-mood'));
+    });
+    render();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
 </div>
 
 <div class="hub-footer">RETROMYND STUDY HUB - CRUEL SUMMER EDITION - 2026</div>
