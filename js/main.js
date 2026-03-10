@@ -1073,8 +1073,10 @@
       const dataEl = $('lessonData');
       if (dataEl) {
         try {
-          const html = atob(dataEl.textContent.trim());
-          iframe.src = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+          const bin = atob(dataEl.textContent.trim());
+          const bytes = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          iframe.src = URL.createObjectURL(new Blob([bytes], { type: 'text/html;charset=utf-8' }));
         } catch(e) {}
       }
     }
