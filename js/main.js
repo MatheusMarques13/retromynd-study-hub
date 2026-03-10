@@ -1078,11 +1078,13 @@
         } catch(e) {}
       }
     }
-    // After iframe loads, send bridge init signal
+    // After iframe loads, send bridge init signal + language
     if (iframe) {
       iframe.onload = function() {
         try {
           iframe.contentWindow.postMessage({ type: 'initBridge' }, '*');
+          const lang = window.i18n ? window.i18n.getLang() : 'pt';
+          iframe.contentWindow.postMessage({ type: 'setLang', lang: lang }, '*');
         } catch(e) {}
       };
     }
