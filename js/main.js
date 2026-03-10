@@ -98,7 +98,7 @@
             if (mapper && mapper().type === type) this._dirty.add(key);
           }
           if (e.message && (e.message.includes('401') || e.message.toLowerCase().includes('token') || e.message.toLowerCase().includes('expirado'))) {
-            showSaveStatus('error', 'Sessão expirada! Faça login novamente.');
+            showSaveStatus('error', window.t ? window.t('Sessão expirada') : 'Sessão expirada! Faça login novamente.');
             break;
           }
         }
@@ -109,7 +109,7 @@
       this._lastSyncOk = allOk;
 
       if (allOk && ops.size > 0) {
-        showSaveStatus('ok', 'Salvo na nuvem ✓');
+        showSaveStatus('ok', (window.t ? window.t('Salvo na nuvem') : 'Salvo na nuvem') + ' ✓');
       }
 
       if (this._dirty.size > 0) {
@@ -118,7 +118,7 @@
           const delay = Math.min(2000 * Math.pow(2, this._retryCount - 1), 30000);
           setTimeout(() => this.flush(), delay);
         } else {
-          showSaveStatus('error', 'Falha ao salvar na nuvem. Dados salvos localmente.');
+          showSaveStatus('error', window.t ? window.t('Falha ao salvar') : 'Falha ao salvar na nuvem. Dados salvos localmente.');
         }
       }
     },
@@ -201,7 +201,7 @@
     if (closeBtn) closeBtn.onclick = () => closeProfile();
     if (overlay) overlay.onclick = () => closeProfile();
     if (logoutBtn) logoutBtn.onclick = () => {
-      showSaveStatus('warn', 'Salvando antes de sair...');
+      showSaveStatus('warn', window.t ? window.t('Salvando antes de sair') : 'Salvando antes de sair...');
       store.flushNow().then(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('rms_user');
@@ -236,14 +236,16 @@
       if (ppEmail) ppEmail.textContent = user.email || '';
       if (ppBio) ppBio.value = user.bio || localStorage.getItem('rms_bio') || '';
       if (ppAvatarBig) ppAvatarBig.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
-      if (ppSince) ppSince.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR') : 'Hoje';
+      const _t = window.t || (k => k);
+      const locale = (window.i18n && window.i18n.getLang() === 'en') ? 'en-US' : 'pt-BR';
+      if (ppSince) ppSince.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString(locale) : _t('Hoje');
       const goals = getGoals(), notes = getNotes();
       const streak = parseInt(store.getRaw('streak', '0')), pomos = parseInt(store.getRaw('pomodoros', '0'));
       if (ppStats) ppStats.innerHTML = `
-        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--pink)">${streak}</div><div class="pp-stat-lbl">Streak</div></div>
-        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--blue)">${notes.length}</div><div class="pp-stat-lbl">Notas</div></div>
-        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--lavender)">${goals.length}</div><div class="pp-stat-lbl">Metas</div></div>
-        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--mint)">${pomos}</div><div class="pp-stat-lbl">Pomodoros</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--pink)">${streak}</div><div class="pp-stat-lbl">${_t('Streak')}</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--blue)">${notes.length}</div><div class="pp-stat-lbl">${_t('Notas')}</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--lavender)">${goals.length}</div><div class="pp-stat-lbl">${_t('Metas')}</div></div>
+        <div class="pp-stat-card"><div class="pp-stat-num" style="color:var(--mint)">${pomos}</div><div class="pp-stat-lbl">${_t('Pomodoros')}</div></div>
       `;
     }
   }
@@ -285,7 +287,7 @@
     const user = auth ? auth.getUser() : null;
     if (user) {
       const headerName = $('headerName'), headerAvatar = $('headerAvatar');
-      if (headerName) headerName.textContent = user.name || user.email || 'Estudante';
+      if (headerName) headerName.textContent = user.name || user.email || (window.t ? window.t('Estudante') : 'Estudante');
       if (headerAvatar) headerAvatar.textContent = user.avatar || localStorage.getItem('rms_avatar') || '💖';
     }
     updateDate();
@@ -308,7 +310,7 @@
     if (!auth || !auth.isAuthenticated()) return;
 
     try {
-      if (attempt === 1) showSaveStatus('warn', 'Sincronizando...');
+      if (attempt === 1) showSaveStatus('warn', (window.t ? window.t('Sincronizando') : 'Sincronizando') + '...');
 
       const token = localStorage.getItem('token');
       const controller = new AbortController();
@@ -322,12 +324,12 @@
       clearTimeout(timeout);
 
       if (!resp.ok) {
-        if (resp.status === 401) { showSaveStatus('error', 'Sessão expirada!'); return; }
+        if (resp.status === 401) { showSaveStatus('error', window.t ? window.t('Sessão expirada') : 'Sessão expirada!'); return; }
         throw new Error(`HTTP ${resp.status}`);
       }
 
       const allData = await resp.json();
-      if (!allData || typeof allData !== 'object') { showSaveStatus('ok', 'Conectado ✓'); return; }
+      if (!allData || typeof allData !== 'object') { showSaveStatus('ok', (window.t ? window.t('Conectado') : 'Conectado') + ' ✓'); return; }
 
       let loaded = 0;
       let needsResync = false;
@@ -574,8 +576,8 @@
       }
 
       store._lastSyncOk = true;
-      if (loaded > 0) showSaveStatus('ok', 'Dados sincronizados ✓');
-      else showSaveStatus('ok', 'Conectado ✓');
+      if (loaded > 0) showSaveStatus('ok', (window.t ? window.t('Dados sincronizados') : 'Dados sincronizados') + ' ✓');
+      else showSaveStatus('ok', (window.t ? window.t('Conectado') : 'Conectado') + ' ✓');
 
       // Always refresh stats after sync so pomodoro count, streak, etc. reflect cloud data
       loadStats();
@@ -596,9 +598,9 @@
         return syncFromServer(attempt + 1);
       }
       store._lastSyncOk = false;
-      if (e.name === 'AbortError') showSaveStatus('error', 'Timeout. Dados locais OK.');
-      else if (e.name === 'TypeError') showSaveStatus('error', 'Sem internet — dados locais OK');
-      else showSaveStatus('error', 'Erro sync: ' + e.message.substring(0, 60));
+      if (e.name === 'AbortError') showSaveStatus('error', window.t ? window.t('Timeout') : 'Timeout. Dados locais OK.');
+      else if (e.name === 'TypeError') showSaveStatus('error', window.t ? window.t('Sem internet') : 'Sem internet — dados locais OK');
+      else showSaveStatus('error', (window.t ? window.t('Erro sync') : 'Erro sync: ') + e.message.substring(0, 60));
     }
   }
 
@@ -606,8 +608,9 @@
   function updateDate() {
     const el = $('dateD'); if (!el) return;
     const d = new Date();
-    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const _t = window.t || (k => k);
+    const dias = [_t('Domingo'),_t('Segunda'),_t('Terça'),_t('Quarta'),_t('Quinta'),_t('Sexta'),_t('Sábado')];
+    const meses = [_t('Jan'),_t('Fev'),_t('Mar'),_t('Abr'),_t('Mai'),_t('Jun'),_t('Jul'),_t('Ago'),_t('Set'),_t('Out'),_t('Nov'),_t('Dez')];
     el.textContent = `${dias[d.getDay()]}, ${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
   }
 
@@ -684,10 +687,11 @@
   }
 
   function updateModeButtons() {
+    const _t = window.t || (k => k);
     document.querySelectorAll('.tm-btn[data-min]').forEach(b => {
       b.classList.toggle('on', parseInt(b.dataset.min) === pomMode);
     });
-    const tL = $('tL'); if (tL) tL.textContent = pomMode <= 15 ? 'BREAK TIME' : 'FOCUS MODE';
+    const tL = $('tL'); if (tL) tL.textContent = pomMode <= 15 ? _t('BREAK TIME') : _t('FOCUS MODE');
   }
 
   function initPomodoro() {
@@ -696,7 +700,7 @@
         pomMode = parseInt(btn.dataset.min); pomSec = pomMode * 60;
         pomRunning = false; clearInterval(pomTimer);
         updateTimerDisplay(); updateModeButtons(); savePomState();
-        const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
+        const tB = $('tB'); if (tB) tB.textContent = (window.t ? window.t('Iniciar') : 'Iniciar');
       };
     });
     const tB = $('tB'); if (tB) tB.onclick = toggleTimer;
@@ -711,16 +715,16 @@
     if (pomRunning) {
       clearInterval(pomTimer); pomRunning = false;
       savePomState();
-      const tB = $('tB'); if (tB) tB.textContent = 'Continuar';
+      const tB = $('tB'); if (tB) tB.textContent = (window.t ? window.t('Continuar') : 'Continuar');
     } else {
       pomRunning = true;
       savePomState();
-      const tB = $('tB'); if (tB) tB.textContent = 'Pausar';
+      const tB = $('tB'); if (tB) tB.textContent = (window.t ? window.t('Pausar') : 'Pausar');
       pomTimer = setInterval(() => {
         pomSec--;
         if (pomSec <= 0) {
           clearInterval(pomTimer); pomRunning = false; pomSec = 0;
-          const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
+          const tB = $('tB'); if (tB) tB.textContent = (window.t ? window.t('Iniciar') : 'Iniciar');
           if (pomMode >= 25) {
             const p = parseInt(store.getRaw('pomodoros', '0')) + 1;
             store.setRaw('pomodoros', p);
@@ -741,7 +745,7 @@
   function resetTimer() {
     clearInterval(pomTimer); pomRunning = false; pomSec = pomMode * 60;
     updateTimerDisplay(); savePomState();
-    const tB = $('tB'); if (tB) tB.textContent = 'Iniciar';
+    const tB = $('tB'); if (tB) tB.textContent = (window.t ? window.t('Iniciar') : 'Iniciar');
   }
 
   function updateTimerDisplay() {
@@ -819,7 +823,7 @@
     const goals = getGoals().filter(g => localDateKey(new Date(g.date)) === todayKey);
 
     if (!goals.length) {
-      container.innerHTML = '<div class="goal-empty">Nenhuma meta hoje ✏️</div>';
+      container.innerHTML = '<div class="goal-empty">' + (window.t ? window.t('Nenhuma meta hoje') : 'Nenhuma meta hoje') + ' ✏️</div>';
       const pager = $('goalPager'); if (pager) pager.style.display = 'none';
       return;
     }
@@ -861,16 +865,17 @@
     const doneAll = allGoals.filter(g => g.done).length;
     const pendingAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) === todayKey).length;
     const expiredAll = allGoals.filter(g => !g.done && localDateKey(new Date(g.date)) < todayKey).length;
+    const _t = window.t || (k => k);
     if (summaryEl) {
       summaryEl.innerHTML = `
-        <div class="hist-stat"><div class="hist-stat-num green">${doneAll}</div><div class="hist-stat-lbl">Concluídas</div></div>
-        <div class="hist-stat"><div class="hist-stat-num red">${expiredAll}</div><div class="hist-stat-lbl">Expiradas</div></div>
-        <div class="hist-stat"><div class="hist-stat-num blue">${pendingAll}</div><div class="hist-stat-lbl">Pendentes</div></div>
+        <div class="hist-stat"><div class="hist-stat-num green">${doneAll}</div><div class="hist-stat-lbl">${_t('Concluidas')}</div></div>
+        <div class="hist-stat"><div class="hist-stat-num red">${expiredAll}</div><div class="hist-stat-lbl">${_t('Expiradas')}</div></div>
+        <div class="hist-stat"><div class="hist-stat-num blue">${pendingAll}</div><div class="hist-stat-lbl">${_t('Pendentes')}</div></div>
       `;
     }
-    if (sortedDates.length === 0) { container.innerHTML = '<div class="hist-empty">Nenhuma meta registrada ainda</div>'; return; }
+    if (sortedDates.length === 0) { container.innerHTML = '<div class="hist-empty">' + _t('Nenhuma meta registrada ainda') + '</div>'; return; }
     let html = '';
-    const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const diasSemana = [_t('Dom'),_t('Seg'),_t('Ter'),_t('Qua'),_t('Qui'),_t('Sex'),_t('Sáb')];
     sortedDates.forEach(dateKey => {
       let goals = byDate[dateKey];
       const isToday = dateKey === todayKey;
@@ -885,8 +890,8 @@
       const pct = goals.length > 0 ? Math.round(done / goals.length * 100) : 0;
       html += `<div class="hist-section">`;
       html += `<div class="hist-date-header">`;
-      html += `<span class="hist-date-label ${isToday ? 'today' : ''}">${isToday ? '📌 HOJE' : dateLabel}</span>`;
-      if (isToday) html += `<span class="hist-date-live">● LIVE</span>`;
+      html += `<span class="hist-date-label ${isToday ? 'today' : ''}">${isToday ? '📌 ' + _t('HOJE') : dateLabel}</span>`;
+      if (isToday) html += `<span class="hist-date-live">● ${_t('LIVE')}</span>`;
       html += `<span class="hist-date-stats">${done}/${goals.length} (${pct}%)</span>`;
       html += `</div>`;
       html += `<div class="hist-bar"><div class="hist-bar-fill" style="width:${pct}%"></div></div>`;
@@ -896,12 +901,12 @@
         const chkCls = isDone ? 'ok' : (isExpired ? 'fail' : 'pend');
         const chkIcon = isDone ? '✓' : (isExpired ? '✗' : '●');
         const badgeCls = isDone ? 'ok' : (isExpired ? 'exp' : 'live');
-        const badgeText = isDone ? 'DONE' : (isExpired ? 'EXPIRED' : 'ACTIVE');
+        const badgeText = isDone ? _t('DONE') : (isExpired ? _t('EXPIRED') : _t('ACTIVE'));
         html += `<div class="hist-row ${cls}"><div class="hchk ${chkCls}">${chkIcon}</div><span class="hlabel">${g.text}</span><span class="hbadge ${badgeCls}">${badgeText}</span></div>`;
       });
       html += `</div>`;
     });
-    container.innerHTML = html || '<div class="hist-empty">Nenhuma meta com esse filtro</div>';
+    container.innerHTML = html || '<div class="hist-empty">' + _t('Nenhuma meta com esse filtro') + '</div>';
   }
 
   window.toggleGoal = function(id) {
@@ -942,7 +947,7 @@
       ${notes.map((n,i) => {
         return `<div class="note-card" style="background:var(--${n.color||colors[i%colors.length]});--rot:${(Math.random()*4-2).toFixed(1)}deg" onclick="window.openNote(${n.id})">
           <div class="note-card-del" onclick="event.stopPropagation();window.deleteNote(${n.id})">×</div>
-          <div class="note-card-title">${n.title||'Sem título'}</div>
+          <div class="note-card-title">${n.title||(window.t ? window.t('Sem título') : 'Sem título')}</div>
         </div>`;
       }).join('')}
     </div>`;
@@ -1143,12 +1148,34 @@
     }
   }
 
+  // ═══ i18n RE-RENDER ═══
+  window.addEventListener('langChange', function() {
+    try { if (window.i18n) window.i18n.applyToDOM(); } catch(e) {}
+    try { updateDate(); } catch(e) {}
+    try { loadStats(); } catch(e) {}
+    try { renderGoals(); } catch(e) {}
+    try { renderNotesList(); } catch(e) {}
+    try { initPomodoro(); } catch(e) {}
+    try { if (window.initFlashcards) window.initFlashcards(); } catch(e) {}
+    try { if (window.initSnippets) window.initSnippets(); } catch(e) {}
+    try { if (typeof renderAchievements === 'function') renderAchievements(); } catch(e) {}
+    // Send lang to lesson iframe
+    try {
+      const iframe = $('lessonIframe');
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ type: 'setLang', lang: window.i18n.getLang() }, '*');
+      }
+    } catch(e) {}
+  });
+
   // ═══ INIT ═══
   function init() {
     const savedTheme = localStorage.getItem('rms_theme') || 'light';
     window.setTheme(savedTheme);
     if (auth && auth.isAuthenticated()) showHub();
     else window.location.href = '/login.html';
+    // Apply i18n after DOM is ready
+    if (window.i18n) window.i18n.applyToDOM();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
