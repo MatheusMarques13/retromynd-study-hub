@@ -1084,7 +1084,15 @@
     if (iframe) {
       iframe.onload = function() {
         try {
-          iframe.contentWindow.postMessage({ type: 'initBridge' }, '*');
+          // Send stored history to lesson iframe
+          let codingHist = null, quizHist = null;
+          try { codingHist = JSON.parse(localStorage.getItem('lesson_history_v1')); } catch(ex) {}
+          try { quizHist = JSON.parse(localStorage.getItem('quiz_history_v1')); } catch(ex) {}
+          iframe.contentWindow.postMessage({
+            type: 'initBridge',
+            codingHistory: codingHist,
+            quizHistory: quizHist
+          }, '*');
           const lang = window.i18n ? window.i18n.getLang() : 'pt';
           iframe.contentWindow.postMessage({ type: 'setLang', lang: lang }, '*');
         } catch(e) {}
@@ -1094,7 +1102,18 @@
 
   // ═══ RETROLESSON postMessage BRIDGE ═══
   window.addEventListener('message', function(e) {
-    if (!e.data || e.data.type !== 'lessonComplete') return;
+    if (!e.data) return;
+    // Handle lessonSync — stores lesson iframe history in parent localStorage
+    if (e.data.type === 'lessonSync') {
+      if (e.data.coding) {
+        try { localStorage.setItem('lesson_history_v1', JSON.stringify(e.data.coding.history)); } catch(ex) {}
+      }
+      if (e.data.quiz) {
+        try { localStorage.setItem('quiz_history_v1', JSON.stringify(e.data.quiz.history)); } catch(ex) {}
+      }
+      return;
+    }
+    if (e.data.type !== 'lessonComplete') return;
     const lessons = store.get('lessons', { completed: [], history: [] });
     const entry = {
       id: e.data.lessonId || Date.now(),
