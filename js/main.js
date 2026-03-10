@@ -69,6 +69,8 @@
       snippets:     () => ({ type: 'snippets', data: (() => { try { return JSON.parse(localStorage.getItem('rmSnippets')) || []; } catch(e) { return []; } })() }),
       achievements: () => ({ type: 'achievements', data: (() => { try { return JSON.parse(localStorage.getItem('rmAchievements')) || {}; } catch(e) { return {}; } })() }),
       mood:         () => ({ type: 'mood', data: (() => { try { return JSON.parse(localStorage.getItem('rmMoodTracker')) || []; } catch(e) { return []; } })() }),
+      rl_coding_hist: () => ({ type: 'rl_coding_hist', data: store.get('rl_coding_hist', []) }),
+      rl_quiz_hist:   () => ({ type: 'rl_quiz_hist',   data: store.get('rl_quiz_hist', []) }),
     },
 
     async flush() {
@@ -574,6 +576,42 @@
         try { localMood = JSON.parse(localStorage.getItem('rmMoodTracker')) || []; } catch(e) { localMood = []; }
         if (localMood.length > 0) { needsResync = true; store._dirty.add('mood'); }
       }
+
+      // RETROLESSON CODING HISTORY SYNC
+      if (allData.rl_coding_hist && Array.isArray(allData.rl_coding_hist.data)) {
+        const serverHist = allData.rl_coding_hist.data;
+        const localHist = store.get('rl_coding_hist', []);
+        if (localHist.length === 0 && serverHist.length > 0) {
+          store.set('rl_coding_hist', serverHist, false);
+          loaded++;
+        } else if (localHist.length > 0 && serverHist.length > 0) {
+          const merged = new Map();
+          serverHist.forEach(h => merged.set(h.date, h));
+          localHist.forEach(h => merged.set(h.date, h));
+          const result = Array.from(merged.values()).sort((a,b) => a.date.localeCompare(b.date));
+          store.set('rl_coding_hist', result, false);
+          if (result.length > serverHist.length) { needsResync = true; store._dirty.add('rl_coding_hist'); }
+          loaded++;
+        } else if (localHist.length > 0) { needsResync = true; store._dirty.add('rl_coding_hist'); }
+      } else if (store.get('rl_coding_hist', []).length > 0) { needsResync = true; store._dirty.add('rl_coding_hist'); }
+
+      // RETROLESSON QUIZ HISTORY SYNC
+      if (allData.rl_quiz_hist && Array.isArray(allData.rl_quiz_hist.data)) {
+        const serverHist = allData.rl_quiz_hist.data;
+        const localHist = store.get('rl_quiz_hist', []);
+        if (localHist.length === 0 && serverHist.length > 0) {
+          store.set('rl_quiz_hist', serverHist, false);
+          loaded++;
+        } else if (localHist.length > 0 && serverHist.length > 0) {
+          const merged = new Map();
+          serverHist.forEach(h => merged.set(h.date, h));
+          localHist.forEach(h => merged.set(h.date, h));
+          const result = Array.from(merged.values()).sort((a,b) => a.date.localeCompare(b.date));
+          store.set('rl_quiz_hist', result, false);
+          if (result.length > serverHist.length) { needsResync = true; store._dirty.add('rl_quiz_hist'); }
+          loaded++;
+        } else if (localHist.length > 0) { needsResync = true; store._dirty.add('rl_quiz_hist'); }
+      } else if (store.get('rl_quiz_hist', []).length > 0) { needsResync = true; store._dirty.add('rl_quiz_hist'); }
 
       store._lastSyncOk = true;
       if (loaded > 0) showSaveStatus('ok', (window.t ? window.t('Dados sincronizados') : 'Dados sincronizados') + ' ✓');
@@ -1084,14 +1122,11 @@
     if (iframe) {
       iframe.onload = function() {
         try {
-          // Send stored history to lesson iframe
-          let codingHist = null, quizHist = null;
-          try { codingHist = JSON.parse(localStorage.getItem('lesson_history_v1')); } catch(ex) {}
-          try { quizHist = JSON.parse(localStorage.getItem('quiz_history_v1')); } catch(ex) {}
+          // Send stored history to lesson iframe (from cloud-synced store)
           iframe.contentWindow.postMessage({
             type: 'initBridge',
-            codingHistory: codingHist,
-            quizHistory: quizHist
+            codingHistory: store.get('rl_coding_hist', []),
+            quizHistory: store.get('rl_quiz_hist', [])
           }, '*');
           const lang = window.i18n ? window.i18n.getLang() : 'pt';
           iframe.contentWindow.postMessage({ type: 'setLang', lang: lang }, '*');
@@ -1103,13 +1138,13 @@
   // ═══ RETROLESSON postMessage BRIDGE ═══
   window.addEventListener('message', function(e) {
     if (!e.data) return;
-    // Handle lessonSync — stores lesson iframe history in parent localStorage
+    // Handle lessonSync — persists lesson iframe history via store (cloud-synced)
     if (e.data.type === 'lessonSync') {
-      if (e.data.coding) {
-        try { localStorage.setItem('lesson_history_v1', JSON.stringify(e.data.coding.history)); } catch(ex) {}
+      if (e.data.coding && e.data.coding.history) {
+        store.set('rl_coding_hist', e.data.coding.history);
       }
-      if (e.data.quiz) {
-        try { localStorage.setItem('quiz_history_v1', JSON.stringify(e.data.quiz.history)); } catch(ex) {}
+      if (e.data.quiz && e.data.quiz.history) {
+        store.set('rl_quiz_hist', e.data.quiz.history);
       }
       return;
     }

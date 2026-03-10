@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
 
     // Categorize data_type
     const hubTypes = ['goals', 'notes', 'timer', 'streak', 'hub_state', 'history', 'quiz_history', 'seen_quiz', 'seen_coding', 'gen_cycle', 'flashcards', 'snippets', 'achievements', 'mood'];
-    const lessonTypes = ['quiz', 'lessons'];
+    const lessonTypes = ['quiz', 'lessons', 'rl_coding_hist', 'rl_quiz_hist'];
 
     if (hubTypes.includes(data_type)) {
       currentHub[data_type] = data;

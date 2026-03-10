@@ -66,7 +66,12 @@ module.exports = async (req, res) => {
     if (hubData.achievements) result.achievements = { data: hubData.achievements, updated_at: data.updated_at };
     if (hubData.mood) result.mood = { data: hubData.mood, updated_at: data.updated_at };
 
-    if (data.lesson_data) result.lessons = { data: data.lesson_data, updated_at: data.updated_at };
+    if (data.lesson_data) {
+      result.lessons = { data: data.lesson_data, updated_at: data.updated_at };
+      // RetroLesson history (stored inside lesson_data)
+      if (data.lesson_data.rl_coding_hist) result.rl_coding_hist = { data: data.lesson_data.rl_coding_hist, updated_at: data.updated_at };
+      if (data.lesson_data.rl_quiz_hist) result.rl_quiz_hist = { data: data.lesson_data.rl_quiz_hist, updated_at: data.updated_at };
+    }
     if (data.preferences) result.preferences = { data: data.preferences, updated_at: data.updated_at };
 
     console.log(`[LOAD] Returning ${Object.keys(result).length} data types`);
