@@ -638,6 +638,14 @@ body.cafe-dark .ach-toast,body.cafe-light .ach-toast{border-radius:14px!importan
 body.cafe-dark .ach-tooltip,body.cafe-light .ach-tooltip{border-radius:10px!important;background:var(--cafe-text,#1A1A1A)!important;color:var(--cafe-bg,#F5F1EB)!important;font-family:'Inter',sans-serif!important}
 body.cafe-dark .ach-tooltip::after,body.cafe-light .ach-tooltip::after{border-top-color:var(--cafe-text,#1A1A1A)!important}
 
+/* Override para o hub */
+#rm-player {
+  position: fixed !important;
+  bottom: 2rem !important;
+  right: 2rem !important;
+  z-index: 999 !important;
+}
+
 /* ═══ MOOD TRACKER ═══ */
 .mood-selector{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
 .mood-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;border:2px solid var(--border);border-radius:12px;background:var(--paper);cursor:pointer;transition:all .2s;font-size:28px;line-height:1;outline:none}
