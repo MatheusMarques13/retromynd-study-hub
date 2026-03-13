@@ -1123,10 +1123,13 @@
       iframe.onload = function() {
         try {
           // Send stored history to lesson iframe (from cloud-synced store)
+          const _ch = store.get('rl_coding_hist', []);
+          const _qh = store.get('rl_quiz_hist', []);
+          console.log('[HUB] initBridge sending coding:', _ch.length, 'quiz:', _qh.length);
           iframe.contentWindow.postMessage({
             type: 'initBridge',
-            codingHistory: store.get('rl_coding_hist', []),
-            quizHistory: store.get('rl_quiz_hist', [])
+            codingHistory: _ch,
+            quizHistory: _qh
           }, '*');
           const lang = window.i18n ? window.i18n.getLang() : 'pt';
           iframe.contentWindow.postMessage({ type: 'setLang', lang: lang }, '*');
@@ -1140,11 +1143,14 @@
     if (!e.data) return;
     // Handle lessonSync — persists lesson iframe history via store (cloud-synced)
     if (e.data.type === 'lessonSync') {
+      console.log('[HUB] lessonSync received:', JSON.stringify(e.data).substring(0, 200));
       if (e.data.coding && e.data.coding.history) {
         store.set('rl_coding_hist', e.data.coding.history);
+        console.log('[HUB] rl_coding_hist saved, entries:', e.data.coding.history.length);
       }
       if (e.data.quiz && e.data.quiz.history) {
         store.set('rl_quiz_hist', e.data.quiz.history);
+        console.log('[HUB] rl_quiz_hist saved, entries:', e.data.quiz.history.length);
       }
       return;
     }
